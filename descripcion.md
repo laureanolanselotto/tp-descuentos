@@ -1,7 +1,9 @@
 # Integrantes
 
 legajo - Apellido(s), Nombre(s)
+
 52872 -Lanselotto,laureano
+
 52717-Zanin , santi
 
 ### descripcion
