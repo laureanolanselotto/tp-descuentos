@@ -16,5 +16,6 @@ aplicacaion que funcione com hub para los descuentos de las billeteras virtuales
 |:-|:-|
 |CRUD |1. CRUD login del Usuario<br>2. CRUD Selecion de billetera<br>3.CRUD listado de descuento|
 
-#Alcanse 
+# Alcanse 
+
 el objetivos es facilitar la visualizacion de los decuentos disponible en la billeteras virtuales sin la necesidad de ingresar indibidual mente a la aplicaciones correspodiente , ademas de tener la posibilidad de ver las billeteras que mas comicions dejan anualmente con el fin facilitar al usario de una mejor gestion de su dinero
