@@ -15,7 +15,7 @@ aplicacaion que funcione com hub para los descuentos de las billeteras virtuales
 |Req|Detalle|
 |:-|:-|
 |CRUD |1. CRUD login del Usuario<br>2. CRUD Selecion de billetera<br>3.CRUD listado de descuento<br>4.CRUD billeteras|
-|CUU||mostrar la billeteras con mayor rendimiento|
+|CUU|| mostrar la billeteras con mayor rendimiento |
 
 # Alcance 
 
