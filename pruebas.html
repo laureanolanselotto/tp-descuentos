@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema con Calendario</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-horizontal {
+      display: flex;
+      justify-content: center;
+      background-color: #2c3e50;
+      padding: 15px 0;
+    }
+
+    .nav-horizontal button {
+      background: none;
+      border: none;
+      color: white;
+      margin: 0 20px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .nav-horizontal button:hover {
+      background-color: #34495e;
+    }
+
+    .contenido {
+      padding: 40px;
+      text-align: center;
+    }
+    
+    /* Estilos para el calendario */
+    .calendar {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .calendar-header {
+      text-align: center;
+      background-color: #007bff;
+      color: white;
+      padding: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      text-transform: uppercase;
+    }
+
+    .calendar-days div {
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .current-day {
+      background-color: #000000;
+      color: white;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Calendario fijo en la parte superior -->
+  <div class="calendar" id="calendario-superior">
+    <div class="calendar-header" id="month-year-header"></div>
+    <div class="calendar-days" id="week-days">
+      <div>lunes</div>
+      <div>martes</div>
+      <div>miercoles</div>
+      <div>jueves</div>
+      <div>viernes</div>
+      <div>sabado</div>
+      <div>domingo</div>
+    </div>
+  </div>
+
+  <nav class="nav-horizontal">
+    <button onclick="mostrarContenido('beneficio')">Beneficio</button>
+    <button onclick="mostrarContenido('rendimiento')">Rendimiento</button>
+  </nav>
+
+  <div class="contenido" id="contenido-inferior">
+    <h2>Contenido adicional</h2>
+    <p>Este es el contenido inferior que cambiará al seleccionar una opción.</p>
+  </div>
+
+  <script>
+    // Función para mostrar el calendario
+    function configurarCalendario() {
+      const monthYearHeader = document.getElementById('month-year-header');
+      const weekDaysContainer = document.getElementById('week-days');
+      
+      const today = new Date();
+      const currentDay = today.getDay();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
+      
+      const monthNames = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      ];
+      
+      monthYearHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      
+      let adjustedCurrentDay = currentDay === 0 ? 6 : currentDay - 1;
+      const dayElements = weekDaysContainer.children;
+      dayElements[adjustedCurrentDay].classList.add('current-day');
+    }
+
+    // Función para mostrar contenido dinámico
+    function mostrarContenido(seccion) {
+      const inferior = document.getElementById('contenido-inferior');
+
+      if (seccion === 'beneficio') {
+        fetch('beneficio.html')
+          .then(response => response.text())
+          .then(html => {
+            inferior.innerHTML = html;
+          })
+          .catch(err => {
+            inferior.innerHTML = `<h2>Error</h2><p>No se pudo cargar beneficio.html</p>`;
+            console.error(err);
+          });
+        return;
+      }
+
+      if (seccion === 'rendimiento') {
+        fetch('rendimiento.html')
+          .then(response => response.text())
+          .then(html => {
+            inferior.innerHTML = html;
+          })
+          .catch(err => {
+            inferior.innerHTML = `<h2>Error</h2><p>No se pudo cargar rendimiento.html</p>`;
+            console.error(err);
+          });
+        return;
+      }
+
+      inferior.innerHTML = `<p>Seleccione una opción válida del menú.</p>`;
+    }
+
+    // Inicializar el calendario al cargar la página
+    window.onload = function() {
+      configurarCalendario();
+      // Opcional: cargar contenido por defecto
+      mostrarContenido('beneficio');
+    };
+  </script>
+
+</body>
+</html>
