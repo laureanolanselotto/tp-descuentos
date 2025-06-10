@@ -3,172 +3,183 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema con Calendario</title>
+  <title>Promociones</title>
   <style>
     body {
+      background-color: #1c1c1e;
+      color: white;
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 16px;
     }
 
-    .nav-horizontal {
+    h1 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .tabs, .sub-tabs {
       display: flex;
-      justify-content: center;
-      background-color: #2c3e50;
-      padding: 15px 0;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
 
-    .nav-horizontal button {
-      background: none;
+    .tab, .sub-tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background-color: #2c2c2e;
+      color: #a1a1aa;
       border: none;
-      color: white;
-      margin: 0 20px;
-      padding: 10px;
-      font-size: 16px;
       cursor: pointer;
-      border-radius: 5px;
+      font-size: 14px;
+      transition: 0.3s;
     }
 
-    .nav-horizontal button:hover {
-      background-color: #34495e;
-    }
-
-    .contenido {
-      padding: 40px;
-      text-align: center;
-    }
-    
-    /* Estilos para el calendario */
-    .calendar {
-      width: 100%;
-      max-width: 1000px;
-      margin: 0 auto;
-      border: 1px solid #ddd;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .calendar-header {
-      text-align: center;
-      background-color: #007bff;
+    .tab.active, .sub-tab.active {
+      background-color: #7c3aed;
       color: white;
-      padding: 15px;
-      font-size: 1.2em;
-      font-weight: bold;
-      text-transform: uppercase;
     }
 
-    .calendar-days {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      background-color: #ffffff;
-      color: rgb(0, 0, 0);
-      text-transform: uppercase;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 16px;
     }
 
-    .calendar-days div {
-      padding: 15px;
+    .card {
+      background-color: #2c2c2e;
+      border-radius: 16px;
+      padding: 10px;
       text-align: center;
-      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    .current-day {
-      background-color: #000000;
-      color: white;
-      border-radius: 10px;
+    .card:hover {
+      background-color: #3f3f46;
+    }
+
+    .card img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: white;
+    }
+
+    .card .name {
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .card .discount {
+      background-color: #000;
+      border-radius: 8px;
+      padding: 4px;
+      color: #a78bfa;
+      font-weight: bold;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Calendario fijo en la parte superior -->
-  <div class="calendar" id="calendario-superior">
-    <div class="calendar-header" id="month-year-header"></div>
-    <div class="calendar-days" id="week-days">
-      <div>lunes</div>
-      <div>martes</div>
-      <div>miercoles</div>
-      <div>jueves</div>
-      <div>viernes</div>
-      <div>sabado</div>
-      <div>domingo</div>
-    </div>
+  <h1>Promociones</h1>
+
+  <!-- Tabs de beneficios e interés -->
+  <div class="tabs">
+    <button class="tab active">BENEFICIOS</button>
+    <button class="tab">INTERES</button>
   </div>
 
-  <nav class="nav-horizontal">
-    <button onclick="mostrarContenido('beneficio')">Beneficio</button>
-    <button onclick="mostrarContenido('rendimiento')">Rendimiento</button>
-  </nav>
-
-  <div class="contenido" id="contenido-inferior">
-    <h2>Contenido adicional</h2>
-    <p>Este es el contenido inferior que cambiará al seleccionar una opción.</p>
+  <!-- Días de la semana -->
+  <div class="sub-tabs">
+    <button class="sub-tab">LUNES</button>
+    <button class="sub-tab">MARTES</button>
+    <button class="sub-tab active">MIÉRCOLES</button>
+    <button class="sub-tab">JUEVES</button>
+    <button class="sub-tab">VIERNES</button>
+    <button class="sub-tab">SÁBADO</button>
+    <button class="sub-tab">DOMINGO</button>
   </div>
 
-  <script>
-    // Función para mostrar el calendario
-    function configurarCalendario() {
-      const monthYearHeader = document.getElementById('month-year-header');
-      const weekDaysContainer = document.getElementById('week-days');
-      
-      const today = new Date();
-      const currentDay = today.getDay();
-      const currentMonth = today.getMonth();
-      const currentYear = today.getFullYear();
-      
-      const monthNames = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-      ];
-      
-      monthYearHeader.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-      
-      let adjustedCurrentDay = currentDay === 0 ? 6 : currentDay - 1;
-      const dayElements = weekDaysContainer.children;
-      dayElements[adjustedCurrentDay].classList.add('current-day');
-    }
+  <!-- Promos -->
+  <div class="grid">
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Open Park" />
+      <div class="name">Open Park</div>
+      <div class="discount">100%</div>
+    </button>
 
-    // Función para mostrar contenido dinámico
-    function mostrarContenido(seccion) {
-      const inferior = document.getElementById('contenido-inferior');
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Open Park Land" />
+      <div class="name">Open Park Land</div>
+      <div class="discount">100%</div>
+    </button>
 
-      if (seccion === 'beneficio') {
-        fetch('beneficio.html')
-          .then(response => response.text())
-          .then(html => {
-            inferior.innerHTML = html;
-          })
-          .catch(err => {
-            inferior.innerHTML = `<h2>Error</h2><p>No se pudo cargar beneficio.html</p>`;
-            console.error(err);
-          });
-        return;
-      }
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Educación IT" />
+      <div class="name">Educación IT</div>
+      <div class="discount">45%</div>
+    </button>
 
-      if (seccion === 'rendimiento') {
-        fetch('rendimiento.html')
-          .then(response => response.text())
-          .then(html => {
-            inferior.innerHTML = html;
-          })
-          .catch(err => {
-            inferior.innerHTML = `<h2>Error</h2><p>No se pudo cargar rendimiento.html</p>`;
-            console.error(err);
-          });
-        return;
-      }
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Bonvivir" />
+      <div class="name">Bonvivir</div>
+      <div class="discount">30%</div>
+    </button>
 
-      inferior.innerHTML = `<p>Seleccione una opción válida del menú.</p>`;
-    }
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Taxi Premium" />
+      <div class="name">Taxi Premium</div>
+      <div class="discount">30%</div>
+    </button>
 
-    // Inicializar el calendario al cargar la página
-    window.onload = function() {
-      configurarCalendario();
-      // Opcional: cargar contenido por defecto
-      mostrarContenido('beneficio');
-    };
-  </script>
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="ENTER THE EXIT" />
+      <div class="name">ENTER THE EXIT</div>
+      <div class="discount">25%</div>
+    </button>
+
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Pura Frutta" />
+      <div class="name">Pura Frutta</div>
+      <div class="discount">25%</div>
+    </button>
+
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Alto Parque" />
+      <div class="name">Alto Parque</div>
+      <div class="discount">25%</div>
+    </button>
+
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Vuena" />
+      <div class="name">Vuena</div>
+      <div class="discount">20%</div>
+    </button>
+
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="ACF" />
+      <div class="name">ACF</div>
+      <div class="discount">20%</div>
+    </button>
+
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Le Pain Quotidien" />
+      <div class="name">Le Pain Quotidien</div>
+      <div class="discount">20%</div>
+    </button>
+
+    <button class="card">
+      <img src="https://via.placeholder.com/48" alt="Nic" />
+      <div class="name">Nic</div>
+      <div class="discount">20%</div>
+    </button>
+  </div>
 
 </body>
 </html>
