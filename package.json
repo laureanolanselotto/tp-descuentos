@@ -1,0 +1,31 @@
+{
+  "name": "tp-descuentos",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "tags: #dsw #tp",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p ./tsconfig.json",
+    "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laureanolanselotto/tp-descuentos.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/laureanolanselotto/tp-descuentos/issues"
+  },
+  "homepage": "https://github.com/laureanolanselotto/tp-descuentos#readme",
+  "devDependencies": {
+    "@types/express": "5.0.3",
+    "@types/node": "24.0.7",
+    "tsc-watch": "6.3.1",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "express": "5.1.0"
+  }
+}

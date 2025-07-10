@@ -1,5 +1,7 @@
 import express  from "express";
 import { PersonasRouter } from "./personas/personas.routes.js";
+import { BeneficioRouter } from "./benefico/beneficio.routes.js";
+app.use('/api/beneficios', BeneficioRouter);
 
 const app = express();
 app.use(express.json());
@@ -18,3 +20,4 @@ app.use('/api/personas', PersonasRouter); // utiliza el router de personas para 
 app.listen(3000,()=>{
     console.log('Server is running on port 3000');
 })
+

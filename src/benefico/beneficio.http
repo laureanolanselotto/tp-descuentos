@@ -1,0 +1,36 @@
+### Obtener todos los beneficios
+GET http://localhost:3000/beneficio
+
+###
+
+### Obtener un beneficio por ID
+GET http://localhost:3000/beneficio/1
+
+###
+
+### Crear un nuevo beneficio
+POST http://localhost:3000/beneficio
+Content-Type: application/json
+
+{
+    "nombre": "Descuento Estudiantil",
+    "tipo_beneficio": "Estudiante",
+    "porcentaje": 15
+}
+
+###
+
+### Actualizar un beneficio existente
+PUT http://localhost:3000/beneficio/1
+Content-Type: application/json
+
+{
+    "nombre": "Descuento Jubilado",
+    "tipo_beneficio": "Jubilado",
+    "porcentaje": 20
+}
+
+###
+
+### Eliminar un beneficio
+DELETE http://localhost:3000/beneficio/1
