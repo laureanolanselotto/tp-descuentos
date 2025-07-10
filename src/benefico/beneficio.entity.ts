@@ -4,9 +4,9 @@ export class beneficio {
         public name: string,
         public porcentaje: number,
         public descripcion: string,
-        public fechaInicio: Date,
-        public fechaFin: Date,
-        public mentodoPago: [],
+        public fechaInicio: string,
+        public fechaFin: string,
+        public mentodoPago: string [],
         public tipoDescuento: string,
         public id = crypto.randomUUID()
     ) {}

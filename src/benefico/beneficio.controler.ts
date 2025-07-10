@@ -11,7 +11,7 @@ function sanitizeBeneficioInput(req: Request, res: Response, next: NextFunction)
         descripcion: req.body.descripcion,
         fechaInicio: req.body.fechaInicio,
         fechaFin: req.body.fechaFin,
-        mentodoPago: [],
+        mentodoPago: req.body.mentodoPago,
         tipoDescuento: req.body.tipoDescuento, 
         id: req.body.id,
     };
@@ -51,7 +51,7 @@ function add(req: Request, res: Response) {
         input.tipoDescuento,
         input.id,
     );
-    const nuevoBeneficio = repository.add(beneficio);
+    const nuevoBeneficio = repository.add(Beneficio);
     res.status(201).send({ message: 'Beneficio creado con éxito', data: nuevoBeneficio });
 }
 
