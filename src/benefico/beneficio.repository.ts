@@ -14,23 +14,24 @@ const beneficios = [
 ];
 
 export class BeneficioRepository implements Repository<Beneficio> {
-    public findAll(): Beneficio[] | undefined {
+    public async findAll(): Promise<Beneficio[]> {
         return beneficios;
     }
-    public findOne(params: { id: string }): Beneficio | undefined {
+    public async findOne(params: { id: string }): Promise<Beneficio | undefined> {
         return beneficios.find((beneficio) => beneficio.id === params.id);
     }
-    public add(beneficio: Beneficio): Beneficio | undefined {
+    public async add(beneficio: Beneficio): Promise<Beneficio | undefined> {
         beneficios.push(beneficio);
         return beneficio;
     }
-    public update(beneficio: Beneficio): Beneficio | undefined {
+    public async update(beneficio: Beneficio): Promise<Beneficio | undefined> {
         const index = beneficios.findIndex((b) => b.id === beneficio.id);
         if (index !== -1) {
             beneficios[index] = { ...beneficios[index], ...beneficio };
             return beneficios[index];
-        }    }
-    public delete(params: { id: string }): Beneficio | undefined {
+        }
+    }
+    public async delete(params: { id: string }): Promise<Beneficio | undefined> {
         const index = beneficios.findIndex((b) => b.id === params.id);
         if (index !== -1) {
             const deleted = beneficios[index];

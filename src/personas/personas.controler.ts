@@ -21,13 +21,13 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-function findAll( req:Request, res:Response)  {
-    res.json({data: repository.findAll() });
+async function findAll( req:Request, res:Response)  {
+    res.json({data: await repository.findAll() });
 }
 
-function findOne(req: Request, res: Response) {
+async function findOne(req: Request, res: Response) {
     const id = req.params.id;
-    const persona = repository.findOne({ id });
+    const persona = await repository.findOne({ id });
     if (!persona) {
         res.status(404).send({ message: 'Persona no encontrada' });
         return;
@@ -35,7 +35,7 @@ function findOne(req: Request, res: Response) {
     res.json({data: persona});  
 }
 
-function add (req: Request, res: Response) {
+async function add (req: Request, res: Response) {
     const input = req.body.sanitizedInput;
 
     const Personas = new persona( 
@@ -46,14 +46,14 @@ function add (req: Request, res: Response) {
         input.dni,
         input.id,
     )
-    const Persona=repository.add(Personas);
+    const Persona = await repository.add(Personas);
     res.status(201).send({message : 'Persona creada con éxito', data: Persona});
 
 }
-function uppdate (req: Request, res: Response)  {
+async function uppdate (req: Request, res: Response)  {
     req.body.sanitizedInput.id = req.params.id; // Aseguramos que el ID del objeto actualizado sea el mismo que el de la URL
-    const personasUpdate = repository.update(req.body.sanitizedInput )
-    
+    const personasUpdate = await repository.update(req.body.sanitizedInput )
+
     if (!personasUpdate) {
         res.status(404).send({ message: 'Persona no encontrada' });
     } else {
@@ -61,9 +61,9 @@ function uppdate (req: Request, res: Response)  {
     }
 }
 
-function remove (req: Request, res: Response)  {
+async function remove (req: Request, res: Response)  {
     const id = req.params.id 
-    const eliminar = repository.delete({ id });
+    const eliminar = await repository.delete({ id });
     if (eliminar === undefined) {
         res.status(404).send({ message: 'Persona no encontrada' });
     }

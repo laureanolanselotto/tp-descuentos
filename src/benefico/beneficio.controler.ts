@@ -24,13 +24,14 @@ function sanitizeBeneficioInput(req: Request, res: Response, next: NextFunction)
     next();
 }
 
-function findAll(req: Request, res: Response) {
-    res.json({ data: repository.findAll() });
+async function findAll(req: Request, res: Response) {
+    const beneficios = await repository.findAll();
+    res.json({ data: beneficios });
 }
 
-function findOne(req: Request, res: Response) {
+async function findOne(req: Request, res: Response) {
     const id = req.params.id;
-    const beneficio = repository.findOne({ id });
+    const beneficio = await repository.findOne({ id });
     if (!beneficio) {
         res.status(404).send({ message: 'Beneficio no encontrado' });
         return;
@@ -38,7 +39,7 @@ function findOne(req: Request, res: Response) {
     res.json({ data: beneficio });
 }
 
-function add(req: Request, res: Response) {
+async function add(req: Request, res: Response) {
     const input = req.body.sanitizedInput;
 
     const Beneficio = new beneficio(
@@ -51,13 +52,13 @@ function add(req: Request, res: Response) {
         input.tipoDescuento,
         input.id,
     );
-    const nuevoBeneficio = repository.add(Beneficio);
+    const nuevoBeneficio = await repository.add(Beneficio);
     res.status(201).send({ message: 'Beneficio creado con éxito', data: nuevoBeneficio });
 }
 
-function uppdate(req: Request, res: Response) {
+async function uppdate(req: Request, res: Response) {
     req.body.sanitizedInput.id = req.params.id; // Aseguramos que el ID del objeto actualizado sea el mismo que el de la URL
-    const beneficioUpdate = repository.update(req.body.sanitizedInput);
+    const beneficioUpdate = await repository.update(req.body.sanitizedInput);
 
     if (!beneficioUpdate) {
         res.status(404).send({ message: 'Beneficio no encontrado' });
@@ -66,9 +67,9 @@ function uppdate(req: Request, res: Response) {
     }
 }
 
-function remove(req: Request, res: Response) {
+async function remove(req: Request, res: Response) {
     const id = req.params.id;
-    const eliminar = repository.delete({ id });
+    const eliminar = await repository.delete({ id });
     if (eliminar === undefined) {
         res.status(404).send({ message: 'Beneficio no encontrado' });
         return;

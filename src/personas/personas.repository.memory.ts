@@ -1,8 +1,8 @@
 
 import { persona } from "./personas.entity.js";
 import { Repository } from "../shared/repository.js";
-import {db} from "../shared/db/conn.js";
-const personasArray =  [
+
+const personas =  [
     new persona(
         'lauerano',
         'lanselotto',
@@ -13,31 +13,30 @@ const personasArray =  [
     ),
 ]
 
-const personas = db.collection<persona>('personas')
 
 export class PersonasRepository implements Repository <persona> {
     public async findAll(): Promise<persona[] | undefined >{
-        return await personas.find().toArray();
+        return await personas;
     }
     public async findOne(nombre: {id: string}): Promise<persona | undefined> {
-        return await personasArray.find((persona)=> persona.id === nombre.id);
+        return await (personas.find((persona)=> persona.id === nombre.id));
     }
     public async add(nombre: persona): Promise<persona | undefined> {
-        await personasArray.push(nombre);
+        personas.push(nombre);
         return await nombre;
     }
     public async update(nombre : persona): Promise<persona | undefined> {
-        const index = await personasArray.findIndex((persona) => persona.id === nombre.id);
+        const index = await personas.findIndex((persona) => persona.id === nombre.id);
         if (index !== -1) {
-            personasArray[index] = {...personasArray[index], ...nombre};  
+            personas[index] = {...personas[index], ...nombre};  
         }
-        return await personasArray[index];
+        return await personas[index];
     }
     public async delete(nombre: {id: string}): Promise<persona | undefined> {
-        const personaIdx = await personasArray.findIndex((persona) => persona.id === nombre.id)
+        const personaIdx = await personas.findIndex((persona) => persona.id === nombre.id)
     if (personaIdx !== -1) {
-    const deletePersonas  = personasArray[personaIdx];
-    personasArray.splice(personaIdx, 1); // Elimina la persona del array , el uno es para indicar que se elimina un elemento
+    const deletePersonas  = personas[personaIdx];
+    personas.splice(personaIdx, 1); // Elimina la persona del array , el uno es para indicar que se elimina un elemento
     return await deletePersonas;
     }}
 }
