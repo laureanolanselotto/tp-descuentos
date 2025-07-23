@@ -11,7 +11,7 @@ function sanitizeBeneficioInput(req: Request, res: Response, next: NextFunction)
         descripcion: req.body.descripcion,
         fechaInicio: req.body.fechaInicio,
         fechaFin: req.body.fechaFin,
-        metodoPago: req.body.mentodoPago,
+        metodoPago: req.body.metodoPago,
         tipoDescuento: req.body.tipoDescuento, 
         id: req.body.id,
     };
@@ -43,12 +43,12 @@ async function add(req: Request, res: Response) {
     const input = req.body.sanitizedInput;
 
     const Beneficio = new beneficio(
-        input.nombre,
+        input.name,
+        input.porcentaje,
         input.descripcion,
-        input.descuento,
         input.fechaInicio,
         input.fechaFin,
-        input.mentodoPago,
+        input.metodoPago,
         input.tipoDescuento,
         input.id,
     );
