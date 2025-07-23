@@ -1,24 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="/ingreso/login.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Iniciar Sesión - TP Descuentos</title>
 </head>
 <body>
   
 <div class="form-box">
-  <form class="form">
+  <form class="form" id="loginForm">
       <span class="title">Ingresa</span>
       <span class="subtitle">Mejorá tu manejo de billeteras virtuales</span>
       <div class="form-container">
-  
-        <input type="email" class="input" placeholder="Email">
-        <input type="password" class="input" placeholder="Password">
+        <input type="email" class="input" id="email" placeholder="Email" required>
+        <input type="password" class="input" id="password" placeholder="Contraseña" required>
       </div>
-      <button>Ingresar</button>
-      <button class="button">
+      
+      <!-- Mensaje de error/éxito -->
+      <div id="message" class="message" style="display: none;"></div>
+      
+      <button type="submit" id="loginBtn">Ingresar</button>
+      
+      <!-- Botón de Google (por ahora no funcional) -->
+      <button type="button" class="button google-btn" disabled title="Próximamente disponible">
         <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 256 262">
         <path fill="#4285F4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"></path>
         <path fill="#34A853" d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path>
@@ -28,11 +33,110 @@
         Continuar con Google
       </button>
 
-
   </form>
   <div class="form-section">
-    <a href="signup.html">No tienes una cuenta?</a>
+    <a href="signup.html">¿No tienes una cuenta? Regístrate</a>
+    <br>
+    <a href="/" style="margin-top: 10px; display: inline-block;">Volver al inicio</a>
   </div>
-  </div>
+</div>
+
+<!-- Scripts -->
+<script src="/front/services/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('message');
+    const loginBtn = document.getElementById('loginBtn');
+
+    // Verificar si ya está autenticado
+    if (authService.isAuthenticated()) {
+        showMessage('Ya tienes una sesión activa. Redirigiendo...', 'success');
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 2000);
+        return;
+    }
+
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!email || !password) {
+            showMessage('Por favor, completa todos los campos', 'error');
+            return;
+        }
+
+        try {
+            // Deshabilitar botón durante el proceso
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Ingresando...';
+
+            const result = await authService.login(email, password);
+            
+            showMessage(result.message || 'Login exitoso', 'success');
+            
+            // Redirigir después de un breve delay
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+
+        } catch (error) {
+            console.error('Error en login:', error);
+            showMessage(error.message || 'Error al iniciar sesión', 'error');
+        } finally {
+            // Rehabilitar botón
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Ingresar';
+        }
+    });
+
+    function showMessage(message, type) {
+        messageDiv.textContent = message;
+        messageDiv.className = `message ${type}`;
+        messageDiv.style.display = 'block';
+        
+        // Ocultar mensaje después de 5 segundos
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 5000);
+    }
+});
+</script>
+
+<style>
+.message {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.google-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#loginBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+</style>
+
 </body>
 </html>

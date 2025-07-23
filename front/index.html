@@ -16,6 +16,69 @@
             flex-direction: column;
         }
         
+        .header {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-welcome {
+            display: none;
+        }
+        
+        .user-welcome.visible {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .auth-buttons.hidden {
+            display: none;
+        }
+        
+        .auth-btn {
+            padding: 8px 16px;
+            border: 2px solid white;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .auth-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
         .main-container {
             flex: 1;
             display: flex;
@@ -118,22 +181,29 @@
             font-size: 0.9em;
         }
         
-        @media (max-width: 768px) {
-            .hero {
-                padding: 40px 20px;
-            }
-            
-            .hero h1 {
-                font-size: 2.5em;
-            }
-            
-            .nav-buttons {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
+    <!-- Header con información de usuario -->
+    <div class="header">
+        <div class="logo">
+            <strong>TP Descuentos</strong>
+        </div>
+        <div class="user-info">
+            <!-- Botones para usuarios no autenticados -->
+            <div class="auth-buttons" id="authButtons">
+                <a href="/login" class="auth-btn">Iniciar Sesión</a>
+                <a href="/signup.html" class="auth-btn">Registrarse</a>
+            </div>
+            
+            <!-- Información para usuarios autenticados -->
+            <div class="user-welcome" id="userWelcome">
+                <span id="userName">Bienvenido/a</span>
+                <button class="logout-btn" id="logoutBtn">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
     <div class="main-container">
         <div class="hero">
             <h1>🎯 TP Descuentos</h1>
@@ -146,7 +216,7 @@
                     <small>Descuentos activos</small>
                 </a>
                 
-                <a href="/login" class="nav-btn">
+                <a href="/login" class="nav-btn" id="loginNavBtn">
                     <span class="icon">👤</span>
                     <span>Iniciar Sesión</span>
                     <small>Accede a tu cuenta</small>
@@ -163,18 +233,19 @@
                     <span>API</span>
                     <small>Datos en JSON</small>
                 </a>
+                
             </div>
         </div>
         
         <div class="features">
             <div class="feature">
-                <span class="icon">💰</span>
+                <span class="icon">�</span>
                 <h3>Ahorra Dinero</h3>
                 <p>Encuentra los mejores descuentos sin perder tiempo</p>
             </div>
             
             <div class="feature">
-                <span class="icon">📱</span>
+                <span class="icon">�</span>
                 <h3>Multi-Billetera</h3>
                 <p>Compara ofertas de todas las billeteras virtuales</p>
             </div>
@@ -192,5 +263,67 @@
             </div>
         </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="services/auth.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const authButtons = document.getElementById('authButtons');
+        const userWelcome = document.getElementById('userWelcome');
+        const userName = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginNavBtn = document.getElementById('loginNavBtn');
+
+        // Verificar estado de autenticación
+        updateUIBasedOnAuth();
+
+        // Evento para cerrar sesión
+        logoutBtn.addEventListener('click', async function() {
+            try {
+                await authService.logout();
+                updateUIBasedOnAuth();
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+                // Limpiar datos locales aunque falle la petición al servidor
+                authService.clearAuth();
+                updateUIBasedOnAuth();
+            }
+        });
+
+        function updateUIBasedOnAuth() {
+            if (authService.isAuthenticated()) {
+                // Usuario autenticado
+                const user = authService.getUser();
+                authButtons.classList.add('hidden');
+                userWelcome.classList.add('visible');
+                userName.textContent = `Hola, ${user.nombre}`;
+                
+                // Cambiar el botón de login por perfil/dashboard
+                loginNavBtn.innerHTML = `
+                    <span class="icon">👤</span>
+                    <span>Mi Perfil</span>
+                    <small>Configuración</small>
+                `;
+                loginNavBtn.href = '#'; // Podríamos agregar una página de perfil más adelante
+                loginNavBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    alert('Próximamente: Página de perfil');
+                });
+            } else {
+                // Usuario no autenticado
+                authButtons.classList.remove('hidden');
+                userWelcome.classList.remove('visible');
+                
+                // Restaurar botón de login original
+                loginNavBtn.innerHTML = `
+                    <span class="icon">👤</span>
+                    <span>Iniciar Sesión</span>
+                    <small>Accede a tu cuenta</small>
+                `;
+                loginNavBtn.href = '/login';
+            }
+        }
+    });
+    </script>
 </body>
 </html>
