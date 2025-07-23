@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { PersonasRepository } from "./personas.repository.js"
+import { PersonasRepository } from "./personas.repository.memory.js"
 import { persona } from "./personas.entity.js";
 
 const repository = new PersonasRepository()
@@ -50,7 +50,7 @@ async function add (req: Request, res: Response) {
     res.status(201).send({message : 'Persona creada con éxito', data: Persona});
 
 }
-async function uppdate (req: Request, res: Response)  {
+async function update (req: Request, res: Response)  {
     req.body.sanitizedInput.id = req.params.id; // Aseguramos que el ID del objeto actualizado sea el mismo que el de la URL
     const personasUpdate = await repository.update(req.body.sanitizedInput )
 
@@ -71,6 +71,6 @@ async function remove (req: Request, res: Response)  {
 }
 
 
-export const controler = {sanitizePersonaInput ,findAll,findOne,add, uppdate, remove};
+export const controler = {sanitizePersonaInput ,findAll,findOne,add, update, remove};
 
 //export {sanitizePersonaInput ,findAll, findOne, repository as PersonasRepository}

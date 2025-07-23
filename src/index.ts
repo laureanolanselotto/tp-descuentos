@@ -1,1 +1,0 @@
-console.log('puto que te pario la concha de tu madre');

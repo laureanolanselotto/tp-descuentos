@@ -11,7 +11,7 @@ function sanitizeBeneficioInput(req: Request, res: Response, next: NextFunction)
         descripcion: req.body.descripcion,
         fechaInicio: req.body.fechaInicio,
         fechaFin: req.body.fechaFin,
-        mentodoPago: req.body.mentodoPago,
+        metodoPago: req.body.mentodoPago,
         tipoDescuento: req.body.tipoDescuento, 
         id: req.body.id,
     };
@@ -56,7 +56,7 @@ async function add(req: Request, res: Response) {
     res.status(201).send({ message: 'Beneficio creado con éxito', data: nuevoBeneficio });
 }
 
-async function uppdate(req: Request, res: Response) {
+async function update(req: Request, res: Response) {
     req.body.sanitizedInput.id = req.params.id; // Aseguramos que el ID del objeto actualizado sea el mismo que el de la URL
     const beneficioUpdate = await repository.update(req.body.sanitizedInput);
 
@@ -77,6 +77,6 @@ async function remove(req: Request, res: Response) {
     res.status(200).send({ message: 'Beneficio eliminado con éxito' });
 }
 
-export const controler = { sanitizeBeneficioInput, findAll, findOne, add, uppdate, remove };
+export const controler = { sanitizeBeneficioInput, findAll, findOne, add, update, remove };
 
 //export {sanitizeBeneficioInput ,findAll, findOne, repository as BeneficioRepository}

@@ -1,6 +1,6 @@
 import express  from "express";
 import { PersonasRouter } from "./personas/personas.routes.js";
-import { BeneficioRouter } from "./benefico/beneficio.routes.js"
+import { BeneficioRouter } from "./beneficios/beneficio.routes.js"
 
 const app = express();
 app.use(express.json());
