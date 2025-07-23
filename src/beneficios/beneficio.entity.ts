@@ -6,7 +6,7 @@ export class beneficio {
         public descripcion: string,
         public fechaInicio: string,
         public fechaFin: string,
-        public mentodoPago: string [],
+        public metodoPago: string [],
         public tipoDescuento: string,
         public id = crypto.randomUUID()
     ) {}

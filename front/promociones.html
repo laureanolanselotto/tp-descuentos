@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promociones Activas - TP Descuentos</title>
+    <link rel="stylesheet" href="assets/css/promociones.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- Contenedor de mensajes -->
+    <div id="error-container" style="display: none;"></div>
+    <div id="success-container" style="display: none;"></div>
+    <div id="loading-container" style="display: none;"></div>
+
+    <div class="header">
+        <h1>🎉 Promociones Activas</h1>
+        <p>Descuentos disponibles en billeteras virtuales</p>
+        <button id="refresh-btn" class="refresh-btn">🔄 Actualizar</button>
+    </div>
+
+    <div class="filters">
+        <select id="metodo-pago-filter">
+            <option value="">Todos los métodos de pago</option>
+            <option value="qr">QR</option>
+            <option value="tarjeta">Tarjeta</option>
+            <option value="tarjeta de credito">Tarjeta de Crédito</option>
+        </select>
+        
+        <input type="range" id="porcentaje-filter" min="0" max="100" value="0">
+        <span id="porcentaje-display">Mínimo: 0%</span>
+    </div>
+
+    <div id="promociones-container" class="promo-container">
+        <!-- Las promociones se cargarán dinámicamente aquí -->
+    </div>
+
+    <!-- Template para promociones -->
+    <template id="promocion-template">
+        <div class="card promocion-card">
+            <div class="card header-card">
+                <div class="header-image-container">            
+                    <div class="store-info">
+                        <div class="store-text">
+                            <h2 class="promo-name"></h2>
+                            <p class="promo-description"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card discount-card">
+                <h2 class="promo-porcentaje"></h2>
+                <p class="discount-details promo-tipo"></p>
+                <div class="validity-info">
+                    <p class="fecha-inicio"></p>
+                    <p class="fecha-fin"></p>
+                    <p class="dias-restantes"></p>
+                </div>
+            </div>
+
+            <div class="card payment-methods-card">
+                <h3>Métodos de pago disponibles:</h3>
+                <div class="metodos-pago-lista"></div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="services/api.js"></script>
+    <script src="utils/helpers.js"></script>
+    <script src="js/promociones.js"></script>
+</body>
+</html>
