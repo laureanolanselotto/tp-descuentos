@@ -18,7 +18,7 @@ Content-Type: application/json
     "id": " "
 }
 ### modificar  una persona (PUT y PATCH)
-PUT  http://localhost:3000/api/personas/687acebb7d57801a84717e1b
+PUT  http://localhost:3000/api/personas/687fe3325fae27fd0452534e
 Content-Type: application/json
 
 {
