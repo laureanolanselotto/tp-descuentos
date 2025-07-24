@@ -1,39 +1,61 @@
 import { Request, Response, NextFunction } from 'express'
-import { PersonasRepository } from "./personas.repository.js"
+import { PersonasRepository } from "./personas.repository.memory.js"
 import { persona } from "./personas.entity.js";
+import { Validators } from "../shared/validators/validators.js";
+import { asyncHandler } from "../shared/middleware/errorHandler.js";
 
 const repository = new PersonasRepository()
 
-function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
-    req.body.sanitizedInput = {
-        name: req.body.name,
-        apellido: req.body.apellido,
-        email: req.body.email,
-        tel: req.body.tel,
-        dni: req.body.dni,
+const sanitizePersonaInput = (req: Request, res: Response, next: NextFunction): void => {
+    // Sanitizar y validar datos
+    const sanitizedData = {
+        name: Validators.sanitizeString(req.body.name),
+        apellido: Validators.sanitizeString(req.body.apellido),
+        email: req.body.email?.toLowerCase().trim(),
+        tel: parseInt(req.body.tel),
+        dni: parseInt(req.body.dni),
     };
-    // Elimina los campos undefined
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-        if (req.body.sanitizedInput[key] === undefined) {
-            delete req.body.sanitizedInput[key];
-        }
-    });
-    next();
-}
 
-async function findAll( req:Request, res:Response)  {
-    res.json({data: await repository.findAll() });
-}
-
-async function findOne(req: Request, res: Response) {
-    const id = req.params.id;
-    const persona = await repository.findOne({ id });
-    if (!persona) {
-        res.status(404).send({ message: 'Persona no encontrada' });
+    // Validar datos
+    const validation = Validators.validatePersona(sanitizedData);
+    
+    if (!validation.isValid) {
+        res.status(400).json({
+            success: false,
+            message: 'Datos de entrada inválidos',
+            errors: validation.errors
+        });
         return;
     }
-    res.json({data: persona});  
-}
+
+    req.body.sanitizedInput = sanitizedData;
+    next();
+};
+
+const findAll = asyncHandler(async (req: Request, res: Response) => {
+    const personas = await repository.findAll();
+    res.json({
+        success: true,
+        data: personas || []
+    });
+});
+
+const findOne = asyncHandler(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const persona = await repository.findOne({ id });
+    
+    if (!persona) {
+        return res.status(404).json({
+            success: false,
+            message: 'Persona no encontrada'
+        });
+    }
+    
+    res.json({
+        success: true,
+        data: persona
+    });
+});
 
 async function add (req: Request, res: Response) {
     const input = req.body.sanitizedInput;
@@ -50,7 +72,7 @@ async function add (req: Request, res: Response) {
     res.status(201).send({message : 'Persona creada con éxito', data: Persona});
 
 }
-async function uppdate (req: Request, res: Response)  {
+async function update (req: Request, res: Response)  {
     req.body.sanitizedInput.id = req.params.id; // Aseguramos que el ID del objeto actualizado sea el mismo que el de la URL
     const personasUpdate = await repository.update(req.body.sanitizedInput )
 
@@ -71,6 +93,6 @@ async function remove (req: Request, res: Response)  {
 }
 
 
-export const controler = {sanitizePersonaInput ,findAll,findOne,add, uppdate, remove};
+export const controler = {sanitizePersonaInput ,findAll,findOne,add, update, remove};
 
 //export {sanitizePersonaInput ,findAll, findOne, repository as PersonasRepository}
