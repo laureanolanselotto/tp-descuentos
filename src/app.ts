@@ -17,7 +17,18 @@ const app = express();
 
 // Middleware para servir archivos estáticos del frontend
 app.use('/front', express.static(path.join(__dirname, '../front')));
-app.use('/ingreso', express.static(path.join(__dirname, '../Ingreso')));
+app.use('/assets', express.static(path.join(__dirname, '../front/assets')));
+app.use('/services', express.static(path.join(__dirname, '../front/services')));
+app.use('/utils', express.static(path.join(__dirname, '../front/utils')));
+app.use('/js', express.static(path.join(__dirname, '../front/js')));
+app.use('/ingreso', express.static(path.join(__dirname, '../front/nose/Ingreso')));
+// Si compilas el frontend React (Vite), lo servimos bajo /app
+app.use('/app', express.static(path.join(__dirname, '../fronted/src/dist')));
+app.get('/app/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../fronted/src/dist/index.html'));
+});
+// Exponer también los assets públicos de Vite bajo /app/wallets
+app.use('/app/wallets', express.static(path.join(__dirname, '../fronted/src/dist/wallets')));
 
 // Middleware para parsear JSON
 app.use(express.json());
@@ -36,32 +47,32 @@ app.use('/api/auth', authRouter); // utiliza el router de autenticación para ma
 
 // Ruta para servir la página principal
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../front/index.html'));
+    res.sendFile(path.join(__dirname, '../front/nose/index.html'));
 });
 
 // Ruta para servir promociones
 app.get('/promociones', (req, res) => {
-    res.sendFile(path.join(__dirname, '../front/promociones.html'));
+    res.sendFile(path.join(__dirname, '../front/nose/promociones.html'));
 });
 
 // Ruta para servir la página de login
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Ingreso/login.html'));
+    res.sendFile(path.join(__dirname, '../front/nose/Ingreso/login.html'));
 });
 
 // Ruta para servir la página de registro
 app.get('/signup.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Ingreso/signup.html'));
+    res.sendFile(path.join(__dirname, '../front/nose/Ingreso/signup.html'));
 });
 
 // Ruta para servir la demo de autenticación
 app.get('/auth-demo', (req, res) => {
-    res.sendFile(path.join(__dirname, '../front/auth-demo.html'));
+    res.sendFile(path.join(__dirname, '../front/nose/auth-demo.html'));
 });
 
 // Ruta para servir la vista de base de datos
 app.get('/database', (req, res) => {
-    res.sendFile(path.join(__dirname, '../front/database-view.html'));
+    res.sendFile(path.join(__dirname, '../front/nose/database-view.html'));
 });
 
 // Middleware de manejo de errores (debe ir al final)
