@@ -4,7 +4,7 @@ GET http://localhost:3000/api/personas
 
 ### obtener todos una persona en particular
 
-GET http://localhost:3000/api/personas/68785e46db681e15cd718dc4
+GET http://localhost:3000/api/personas/6880239a570e1552a5d54a71
 ### crear una persona
 POST http://localhost:3000/api/personas
 Content-Type: application/json

@@ -27,8 +27,6 @@ app.use('/app', express.static(path.join(__dirname, '../fronted/src/dist')));
 app.get('/app/*', (req, res) => {
     res.sendFile(path.join(__dirname, '../fronted/src/dist/index.html'));
 });
-// Exponer también los assets públicos de Vite bajo /app/wallets
-app.use('/app/wallets', express.static(path.join(__dirname, '../fronted/src/dist/wallets')));
 
 // Middleware para parsear JSON
 app.use(express.json());

@@ -4,8 +4,7 @@ GET http://localhost:3000/api/beneficios
 ###
 
 ### Obtener un beneficio por ID
-GET http://localhost:3000/api/beneficios/27008bf3-517e-4ef5-9d24-c4a95f010eda
-
+GET http://localhost:3000/api/beneficios/6880239a570e1552a5d54a71
 ###
 
 ### Crear un nuevo beneficio
