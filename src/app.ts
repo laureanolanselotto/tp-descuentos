@@ -1,4 +1,6 @@
 import express  from "express";
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { PersonasRouter } from "./personas/personas.routes.js";
 import { BeneficioRouter } from "./benefico/beneficio.routes.js"
 import { WalletsRouter } from "./wallets/wallets.routes.js"
@@ -17,6 +19,18 @@ app.use(express.json());
 app.use('/api/personas', PersonasRouter); // utiliza el router de personas para hacer todas las peticines
 app.use('/api/beneficios', BeneficioRouter); // utiliza el router de beneficios para hacer todas las peticines
 app.use('/api/wallets', WalletsRouter); // utiliza el router de wallets para hacer todas las peticines
+
+// Static frontend (Virtual Wallets)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.join(__dirname, '../public');
+
+// Serve static files
+app.use('/virtual-wallets', express.static(path.join(publicDir, 'virtual-wallets')));
+// SPA fallback for Virtual Wallets
+app.get('/virtual-wallets/*', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'virtual-wallets', 'index.html'));
+});
 
 app.listen(3000,()=>{
     console.log('Server is running on port 3000');
