@@ -1,0 +1,37 @@
+### Obtener todas las wallets
+GET http://localhost:3000/api/wallets
+
+###
+
+### Obtener una wallet por ID (usar _id de Mongo)
+GET http://localhost:3000/api/wallets/000000000000000000000000
+
+###
+
+### Crear una nueva wallet
+POST http://localhost:3000/api/wallets
+Content-Type: application/json
+
+{
+  "nombre": "galicia",
+  "icono": "https://example.com/icono.png",
+  "interes": 12.5
+}
+
+###
+
+### Actualizar una wallet existente
+PUT http://localhost:3000/api/wallets/68c4664400714dc24d586a42
+Content-Type: application/json
+
+{
+  "nombre": "Billetera X Plus",
+  "icono": "https://example.com/icono2.png",
+  "interes": 14
+}
+
+###
+
+### Eliminar una wallet
+DELETE http://localhost:3000/api/wallets/68c4664400714dc24d586a42
+

@@ -43,9 +43,9 @@ async function add(req: Request, res: Response) {
     const input = req.body.sanitizedInput;
 
     const Beneficio = new beneficio(
-        input.nombre,
+        input.name,
+        input.porcentaje,
         input.descripcion,
-        input.descuento,
         input.fechaInicio,
         input.fechaFin,
         input.mentodoPago,

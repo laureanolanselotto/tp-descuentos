@@ -1,6 +1,7 @@
 import express  from "express";
 import { PersonasRouter } from "./personas/personas.routes.js";
 import { BeneficioRouter } from "./benefico/beneficio.routes.js"
+import { WalletsRouter } from "./wallets/wallets.routes.js"
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api/personas', PersonasRouter); // utiliza el router de personas para hacer todas las peticines
 app.use('/api/beneficios', BeneficioRouter); // utiliza el router de beneficios para hacer todas las peticines
+app.use('/api/wallets', WalletsRouter); // utiliza el router de wallets para hacer todas las peticines
 
 app.listen(3000,()=>{
     console.log('Server is running on port 3000');

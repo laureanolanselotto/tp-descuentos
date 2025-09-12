@@ -5,4 +5,4 @@ const connectionString = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/?re
 const cl = new MongoClient(connectionString)
 await cl.connect();
 
-export let db: Db = cl.db('heroclash4geeks');
+export let db: Db = cl.db('tp-desuentos');

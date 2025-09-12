@@ -4,21 +4,21 @@ GET http://localhost:3000/api/personas
 
 ### obtener todos una persona en particular
 
-GET http://localhost:3000/api/personas/68785e46db681e15cd718dc4
+GET http://localhost:3000/api/personas/68c440bb8fb5ca0c675f7ca7
 ### crear una persona
 POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "Juan",
-    "apellido": "Pérez",
+    "name": "laureano",
+    "apellido": "el mas capo",
     "email": "lasda@gmail.com",
     "tel":231241,
     "dni": 12345678,
     "id": " "
 }
 ### modificar  una persona (PUT y PATCH)
-PUT  http://localhost:3000/api/personas/687acebb7d57801a84717e1b
+PUT  http://localhost:3000/api/personas/68c440bb8fb5ca0c675f7ca7
 Content-Type: application/json
 
 {
@@ -40,4 +40,4 @@ Content-Type: application/json
     "email": "nomeleas@gmail.com"
 }
 ### eliminar una persona
-DELETE http://localhost:3000/api/personas/687ad358c4f7a5c4fbe39650
+DELETE http://localhost:3000/api/personas/68c440bb8fb5ca0c675f7ca7

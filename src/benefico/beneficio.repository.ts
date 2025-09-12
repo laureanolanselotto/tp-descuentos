@@ -1,42 +1,36 @@
 import { Repository } from "../shared/repository.js";
 import { beneficio as Beneficio } from "./beneficio.entity.js";
+import { db } from "../shared/db/conn.js";
+import { ObjectId } from "mongodb";
 
-const beneficios = [
-    new Beneficio(
-        'descuento verano',
-        15,
-        'Descuento válido para compras superiores a $1000',
-        '2024-01-01',
-        '2024-12-31',
-        ['tarjeta', 'qr', 'tarjeta de credito'],
-        'sin tope',
-    ),
-];
+const beneficios = db.collection<Beneficio>("beneficios");
 
 export class BeneficioRepository implements Repository<Beneficio> {
-    public async findAll(): Promise<Beneficio[]> {
-        return beneficios;
+    public async findAll(): Promise<Beneficio[] | undefined> {
+        return await beneficios.find().toArray();
     }
     public async findOne(params: { id: string }): Promise<Beneficio | undefined> {
-        return beneficios.find((beneficio) => beneficio.id === params.id);
+        const _id = new ObjectId(params.id);
+        return (await beneficios.findOne({ _id })) || undefined;
     }
     public async add(beneficio: Beneficio): Promise<Beneficio | undefined> {
-        beneficios.push(beneficio);
+        (await beneficios.insertOne(beneficio)).insertedId;
         return beneficio;
     }
     public async update(beneficio: Beneficio): Promise<Beneficio | undefined> {
-        const index = beneficios.findIndex((b) => b.id === beneficio.id);
-        if (index !== -1) {
-            beneficios[index] = { ...beneficios[index], ...beneficio };
-            return beneficios[index];
-        }
+        const { id, ...beneficioInput } = beneficio;
+        const _id = new ObjectId(beneficio.id);
+        return (
+            (await beneficios.findOneAndUpdate(
+                { _id },
+                { $set: beneficioInput },
+                { returnDocument: "after" }
+            )) || undefined
+        ) as any;
     }
     public async delete(params: { id: string }): Promise<Beneficio | undefined> {
-        const index = beneficios.findIndex((b) => b.id === params.id);
-        if (index !== -1) {
-            const deleted = beneficios[index];
-            beneficios.splice(index, 1);
-            return deleted;
-        }
-        }
+        const _id = new ObjectId(params.id);
+        return (await beneficios.findOneAndDelete({ _id })) || undefined;
+    }
 }
+
