@@ -24,7 +24,8 @@ app.use('/js', express.static(path.join(__dirname, '../front/js')));
 app.use('/ingreso', express.static(path.join(__dirname, '../front/nose/Ingreso')));
 // Si compilas el frontend React (Vite), lo servimos bajo /app
 app.use('/app', express.static(path.join(__dirname, '../fronted/src/dist')));
-app.get('/app/*', (req, res) => {
+// Captura cualquier subruta bajo /app usando una expresión compatible con v6
+app.get('/app/(.*)', (req, res) => {
     res.sendFile(path.join(__dirname, '../fronted/src/dist/index.html'));
 });
 

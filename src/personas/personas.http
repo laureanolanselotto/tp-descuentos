@@ -22,8 +22,8 @@ PUT  http://localhost:3000/api/personas/687acebb7d57801a84717e1b
 Content-Type: application/json
 
 {
-    "name": "hola",
-    "apellido": "escalera",
+    "name": "queso",
+    "apellido": "hola",
     "email": "puto@gmail.com",
     "tel": 325425,
     "dni": 123456723558,
