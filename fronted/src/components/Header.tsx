@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ArrowLeft, Settings, Wallet } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/switch";
-import WalletSelectionModal from "@/components/WalletSelectionModal";
 import WalletSelectorCrud from "@/components/WalletSelectorCrud";
+import AccountModal from "@/components/AccountModal";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -36,7 +35,7 @@ const walletNames: Record<string, string> = {
 
 const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
   const [showWalletModal, setShowWalletModal] = useState(false);
-  const navigate = useNavigate();
+  const [showAccountModal, setShowAccountModal] = useState(false);
   return (
     <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
@@ -68,7 +67,7 @@ const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBa
               <Button variant="secondary" className="w-full" >
                 Notificaciones
               </Button>
-              <Button variant="secondary" className="w-full" onClick={() => navigate('/account')}>
+              <Button variant="secondary" className="w-full" onClick={() => setShowAccountModal(true)}>
                 Cuenta
               </Button>
               <Button variant="destructive" className="w-full mt-2" onClick={onLogout}>Cerrar sesión</Button>
@@ -77,6 +76,8 @@ const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBa
         </Sheet>
   {/* Modal de billeteras */}
   <WalletSelectorCrud isOpen={showWalletModal} selectedWallets={selectedWallets} onSelectWallets={(ids) => { onUpdateSelectedWallets(ids); setShowWalletModal(false); }} onClose={() => setShowWalletModal(false)} />
+  {/* Modal de cuenta */}
+  <AccountModal isOpen={showAccountModal} onClose={() => setShowAccountModal(false)} />
       </div>
     </div>
   );
