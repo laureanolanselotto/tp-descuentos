@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/switch";
 import WalletSelectorCrud from "@/components/WalletSelectorCrud";
 import AccountModal from "@/components/AccountModal";
+import NotificationsModal from "@/components/NotificationsModal";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -36,6 +37,7 @@ const walletNames: Record<string, string> = {
 const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   return (
     <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
@@ -64,7 +66,7 @@ const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBa
               <Button variant="secondary" className="w-full" onClick={() => setShowWalletModal(true)}>
                 Billeteras
               </Button>
-              <Button variant="secondary" className="w-full" >
+              <Button variant="secondary" className="w-full" onClick={() => setShowNotificationsModal(true)}>
                 Notificaciones
               </Button>
               <Button variant="secondary" className="w-full" onClick={() => setShowAccountModal(true)}>
@@ -78,6 +80,8 @@ const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBa
   <WalletSelectorCrud isOpen={showWalletModal} selectedWallets={selectedWallets} onSelectWallets={(ids) => { onUpdateSelectedWallets(ids); setShowWalletModal(false); }} onClose={() => setShowWalletModal(false)} />
   {/* Modal de cuenta */}
   <AccountModal isOpen={showAccountModal} onClose={() => setShowAccountModal(false)} />
+  {/* Modal de notificaciones */}
+  <NotificationsModal isOpen={showNotificationsModal} availableWallets={selectedWallets} onClose={() => setShowNotificationsModal(false)} />
       </div>
     </div>
   );

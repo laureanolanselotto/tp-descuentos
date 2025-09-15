@@ -92,9 +92,13 @@ const Index = () => {
         <div className="text-center space-y-4">
           {/* Espacio para imagen rectangular */}
           <div className="flex justify-center mb-4">
-            <div className="w-[800px] h-[300px] bg-muted rounded-xl flex items-center justify-center">
+            <div className="w-[800px] h-[300px] bg-muted rounded-xl overflow-hidden flex items-center justify-center">
               {/* Aquí puedes colocar tu imagen: <img src="/ruta/imagen.jpg" alt="Banner" className="w-full h-full object-cover rounded-xl" /> */}
-              <span className="text-muted-foreground">Imagen aquí</span>
+              <img
+                src={`${import.meta.env.BASE_URL}wallets/git/Tito_Calder_n_Bailando.gif`}
+                alt="Banner"
+                className="w-full h-full object-contain rounded-xl"
+              />
             </div>
           </div>
           <h1 className="max-w-7xl mx-auto p-6 space-y-8 text-2xl font-bold">
