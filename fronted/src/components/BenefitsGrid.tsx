@@ -18,8 +18,8 @@ interface Benefit {
   id: string;
   name: string;
   discount: number;
-  fechaInicio?: string;
-  fechaFin?: string;
+  fecha_desde?: string;
+  fecha_hasta?: string;
   icon: React.ReactNode;
   category: string;
   walletId: string;
@@ -37,8 +37,8 @@ const benefits: Benefit[] = [
     category: "belleza",
     walletId: "mercadopago",
     availableDays: [1, 2, 5],
-    fechaInicio: "2025-09-01",
-    fechaFin: "2025-09-30",
+    fecha_hasta: "2024-12-31",
+    fecha_desde: "2024-01-01",
     discountType: "Sin tope"
   },
   {
@@ -49,8 +49,8 @@ const benefits: Benefit[] = [
     category: "hogar",
     walletId: "mercadopago",
     availableDays: [1, 3,4, 5,6],
-    fechaInicio: "2025-08-15",
-    fechaFin: "2025-12-31",
+    fecha_desde: "2025-08-15",
+    fecha_hasta: "2025-12-31",
     discountType: "En cuotas"
   },
   {
@@ -61,8 +61,8 @@ const benefits: Benefit[] = [
     category: "Music",
     walletId: "mercadopago",
     availableDays: [0, 6],
-    fechaInicio: "2025-01-01",
-    fechaFin: "2025-12-31",
+    fecha_desde: "2025-01-01",
+    fecha_hasta: "2025-12-31",
   discountType: "Reintegro",
   tope_reintegro: 5000
   },
@@ -74,8 +74,8 @@ const benefits: Benefit[] = [
     category: "transport",
     walletId: "rapipago",
     availableDays: [1, 2, 3, 4, 5],
-    fechaInicio: "2025-09-15",
-    fechaFin: "2025-10-15",
+    fecha_desde: "2025-09-15",
+    fecha_hasta: "2025-10-15",
     discountType: "Sin tope"
   },
   {
@@ -86,8 +86,8 @@ const benefits: Benefit[] = [
     category: "entertainment",
     walletId: "uala",
     availableDays: [5, 6, 0],
-    fechaInicio: "2025-06-01",
-    fechaFin: "2025-09-20",
+    fecha_desde: "2025-06-01",
+    fecha_hasta: "2025-09-20",
     discountType: "En cuotas"
   },
   {
@@ -98,8 +98,8 @@ const benefits: Benefit[] = [
     category: "deporte",
     walletId: "pagofacil",
     availableDays: [0, 2, 3, 4, 5, 6],
-    fechaInicio: "2025-09-10",
-    fechaFin: "2025-09-30",
+    fecha_desde: "2025-09-10",
+    fecha_hasta: "2025-09-30",
     discountType: "Sin tope"
   },
   {
@@ -110,8 +110,8 @@ const benefits: Benefit[] = [
     category: "shopping",
     walletId: "mercadopago",
     availableDays: [1, 3, 5],
-    fechaInicio: "2025-11-01",
-    fechaFin: "2025-12-31",
+    fecha_desde: "2025-11-01",
+    fecha_hasta: "2025-12-31",
   discountType: "Reintegro",
   tope_reintegro: 16000
   },
@@ -123,8 +123,8 @@ const benefits: Benefit[] = [
     category: "travel",
     walletId: "rapipago",
     availableDays: [0, 6],
-    fechaInicio: "2025-07-01",
-    fechaFin: "2025-09-18",
+    fecha_desde: "2025-07-01",
+    fecha_hasta: "2025-09-18",
     discountType: "En cuotas"
   },
   {
@@ -135,8 +135,8 @@ const benefits: Benefit[] = [
     category: "education",
     walletId: "uala",
     availableDays: [1, 2, 3, 4],
-    fechaInicio: "2025-01-01",
-    fechaFin: "2025-03-31",
+    fecha_desde: "2025-01-01",
+    fecha_hasta: "2025-03-31",
     discountType: "Sin tope"
   },
   {
@@ -147,8 +147,8 @@ const benefits: Benefit[] = [
     category: "travel",
     walletId: "pagofacil",
     availableDays: [2, 4],
-    fechaInicio: "2025-09-14",
-    fechaFin: "2025-09-21",
+    fecha_desde: "2025-09-14",
+    fecha_hasta: "2025-09-21",
   discountType: "Reintegro",
   tope_reintegro: 5000
   },
@@ -160,8 +160,8 @@ const benefits: Benefit[] = [
     category: "food",
     walletId: "cuenta-dni",
     availableDays: [0, 6],
-    fechaInicio: "2025-09-01",
-    fechaFin: "2025-12-31",
+    fecha_desde: "2025-09-01",
+    fecha_hasta: "2025-12-31",
     discountType: "Sin tope"
   },
   {
@@ -172,8 +172,8 @@ const benefits: Benefit[] = [
     category: "entertainment",
     walletId: "brubank",
     availableDays: [0, 1, 2, 3, 4, 5, 6],
-    fechaInicio: "2025-01-01",
-    fechaFin: "2025-12-31",
+    fecha_desde: "2025-01-01",
+    fecha_hasta: "2025-12-31",
     discountType: "En cuotas"
   },
   {
@@ -184,8 +184,8 @@ const benefits: Benefit[] = [
     category: "transport",
     walletId: "modo",
     availableDays: [1, 2, 3, 4, 5],
-    fechaInicio: "2025-09-10",
-    fechaFin: "2025-09-25",
+    fecha_desde: "2025-09-10",
+    fecha_hasta: "2025-09-25",
   discountType: "Reintegro",
   tope_reintegro: 5000
   }
@@ -283,3 +283,4 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
 };
 
 export default BenefitsGrid;
+

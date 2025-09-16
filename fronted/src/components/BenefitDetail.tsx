@@ -16,6 +16,8 @@ interface BenefitDetailProps {
     walletId: string;
     availableDays: number[];
     validity?: string;
+    fecha_desde?: string;
+    fecha_hasta?: string;
     limit?: string;
     tope_reintegro?: number;
     imageUrl?: string;
@@ -93,7 +95,8 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
               <div className="flex items-center gap-2">
                 <Timer className="w-5 h-5 text-primary" />
                 <span className="text-sm text-muted-foreground">Vigencia</span>
-                <span className="ml-2 text-sm text-foreground">{benefit.validity || "Consultar condiciones"}</span>
+                <span className="ml-2 text-sm text-foreground">{benefit.fecha_hasta || "Consultar condiciones"}</span>
+              
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
@@ -126,3 +129,7 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
 };
 
 export default BenefitDetail;
+
+
+
+
