@@ -12,7 +12,8 @@
     "front:build": "npm --prefix ./fronted run build",
     "dev": "npm run front:dev",
     "start": "node ./dist/app.js",
-    "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\""
+    "start:dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/app.js\"",
+    "seed": "node ./scripts/seed.mjs"
   },
   "repository": {
     "type": "git",

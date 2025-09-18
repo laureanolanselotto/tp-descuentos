@@ -1,9 +1,9 @@
-import express  from "express";
+﻿import express from "express";
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PersonasRouter } from "./personas/personas.routes.js";
-import { BeneficioRouter } from "./benefico/beneficio.routes.js"
-import { WalletsRouter } from "./wallets/wallets.routes.js"
+import { BeneficioRouter } from "./benefico/beneficio.routes.js";
+import { WalletsRouter } from "./wallets/wallets.routes.js";
 
 const app = express();
 app.use(express.json());
@@ -28,11 +28,10 @@ const publicDir = path.join(__dirname, '../public');
 // Serve static files
 app.use('/virtual-wallets', express.static(path.join(publicDir, 'virtual-wallets')));
 // SPA fallback for Virtual Wallets
-app.get('/virtual-wallets/*', (_req, res) => {
+app.get(/^\/virtual-wallets(?:\/.*)?$/, (_req, res) => {
     res.sendFile(path.join(publicDir, 'virtual-wallets', 'index.html'));
 });
 
-app.listen(3000,()=>{
+app.listen(3000, () => {
     console.log('Server is running on port 3000');
-})
-
+});
