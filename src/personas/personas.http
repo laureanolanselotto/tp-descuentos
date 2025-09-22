@@ -7,16 +7,6 @@ POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "Darth Vader",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": ["68cf79ce11d051e27c6c74ca","68cf79f111d051e27c6c74cb"],
-    "email": "ejemplo@dominio.com",
-    "tel": 2477309919,
-    "dni": 12345678
-}
-Content-Type: application/json
-
-{
     "name": "Tralalero tralala",
     "apellido": "kuka",
     "personaClass": "68d0b3e6fc9576467f753938",
@@ -37,13 +27,12 @@ PUT http://localhost:3000/api/personas/{{id}}
 Content-Type: application/json
 
 {
-  "name": "Anakin Skywalker",
-  "characterClass": "6531d4aedc98243fffe841e5",
-  "level": 10,
-  "hp": 100,
-  "mana": 50,
-  "attack": 30,
-  "items": ["6531d4f9dc98243fffe841e7"]
+"name": "lirili larila",
+    "apellido": "gay",
+    "items": [" 68cf79ce11d051e27c6c74ca"],
+    "email": "tralalerito@gmail.com",
+    "tel": 2477309919,
+    "dni": 12345678
 }
 
 ### POST a character
@@ -51,13 +40,13 @@ POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "Luke Skywalker",
-    "characterClass": "6531d4aadc98243fffe841e4",
-    "items": ["6531d4f9dc98243fffe841e7"],
-    "attack": 20,
-    "mana": 70,
-    "hp": 130,
-    "level": 5
+   "name": "Tralalero tralala",
+    "apellido": "kuka",
+    "personaClass": "68d0b3e6fc9576467f753938",
+    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
+    "email": "laureanolanselotto@gmail.com",
+    "tel": 2477309919,
+    "dni": 12345678
 }
 
 ### POST a character
@@ -66,13 +55,13 @@ POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "Ashoka Tano",
-    "characterClass": "6531d4aadc98243fffe841e4",
-    "items": ["6531d4f9dc98243fffe841e7"],
-    "attack": 20,
-    "mana": 70,
-    "hp": 130,
-    "level": 5
+    "name": "tun tun sajur",
+    "apellido": "no",
+    "personaClass": "68d0b3e6fc9576467f753938",
+    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
+    "email": "laureanolanselotto@gmail.com",
+    "tel": 2477309919,
+    "dni": 12345678
 }
 ### DELETE a character
 @idToDelete = {{createCharacterToDelete.response.body.data.id}}
@@ -83,8 +72,8 @@ PATCH http://localhost:3000/api/personas/{{idToDelete}}
 Content-Type: application/json
 
 {
-  "level": 6,
-  "characterClass":"6531d4aedc98243fffe841e5",
+  "dni": 6,
+  "personaClass":"6531d4aedc98243fffe841e5",
   "items": ["6531d4f9dc98243fffe841e7"]
 }
 

@@ -88,3 +88,4 @@ async function remove(req: Request, res: Response) {
 export  {sanitizePersonaInput ,findAll,findOne,add, update, remove};
 
 //export {sanitizePersonaInput ,findAll, findOne, repository as PersonasRepository}
+

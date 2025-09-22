@@ -22,8 +22,8 @@ PUT http://localhost:3000/api/items/{{id}}
 Content-Type: application/json
 
 {
-    "name": "Lightsaber",
-    "description": "A weapon for a more civilized age"
+    "name": "nose",
+    "description": "nose description"
 }
 
 ### POST 2
@@ -31,8 +31,8 @@ POST http://localhost:3000/api/items
 Content-Type: application/json
 
 {
-    "name": "Death Star",
-    "description": "Planet killer"
+    "name": "tralaletiyo",
+    "description": "tralala"
 }
 
 ### POST
