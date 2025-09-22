@@ -1,43 +1,92 @@
-### obtener todos los personajes
-
 GET http://localhost:3000/api/personas
 
-### obtener todos una persona en particular
 
-GET http://localhost:3000/api/personas/68c440bb8fb5ca0c675f7ca7
-### crear una persona
+### POST a character
+# @name createVader
 POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "laureano",
-    "apellido": "el mas capo",
-    "email": "lasda@gmail.com",
-    "tel":231241,
-    "dni": 12345678,
-    "id": " "
+    "name": "Darth Vader",
+    "personaClass": "68d0b3e6fc9576467f753938",
+    "items": ["68cf79ce11d051e27c6c74ca","68cf79f111d051e27c6c74cb"],
+    "email": "ejemplo@dominio.com",
+    "tel": 2477309919,
+    "dni": 12345678
 }
-### modificar  una persona (PUT y PATCH)
-PUT  http://localhost:3000/api/personas/68c440bb8fb5ca0c675f7ca7
 Content-Type: application/json
 
 {
-    "name": "hola",
-    "apellido": "escalera",
-    "email": "puto@gmail.com",
-    "tel": 325425,
-    "dni": 123456723558,
-    "id": " "
+    "name": "Tralalero tralala",
+    "apellido": "kuka",
+    "personaClass": "68d0b3e6fc9576467f753938",
+    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
+    "email": "laureanolanselotto@gmail.com",
+    "tel": 2477309919,
+    "dni": 12345678
 }
 
-### modifica una persona (PATCH - recurso parcial es decir partes de la persona) 
-PATCH  http://localhost:3000/api/personas/12345678-1234-1234-1234-123456789012   
+### ID
+@id = {{createVader.response.body.data.id}}
+
+### GET one character
+http://localhost:3000/api/personas/{{id}}
+
+### PUT a character
+PUT http://localhost:3000/api/personas/{{id}}
 Content-Type: application/json
 
 {
-    "name": "sexo",
-    "apellido": "gay",
-    "email": "nomeleas@gmail.com"
+  "name": "Anakin Skywalker",
+  "characterClass": "6531d4aedc98243fffe841e5",
+  "level": 10,
+  "hp": 100,
+  "mana": 50,
+  "attack": 30,
+  "items": ["6531d4f9dc98243fffe841e7"]
 }
-### eliminar una persona
-DELETE http://localhost:3000/api/personas/68c440bb8fb5ca0c675f7ca7
+
+### POST a character
+POST http://localhost:3000/api/personas
+Content-Type: application/json
+
+{
+    "name": "Luke Skywalker",
+    "characterClass": "6531d4aadc98243fffe841e4",
+    "items": ["6531d4f9dc98243fffe841e7"],
+    "attack": 20,
+    "mana": 70,
+    "hp": 130,
+    "level": 5
+}
+
+### POST a character
+# @name createCharacterToDelete
+POST http://localhost:3000/api/personas
+Content-Type: application/json
+
+{
+    "name": "Ashoka Tano",
+    "characterClass": "6531d4aadc98243fffe841e4",
+    "items": ["6531d4f9dc98243fffe841e7"],
+    "attack": 20,
+    "mana": 70,
+    "hp": 130,
+    "level": 5
+}
+### DELETE a character
+@idToDelete = {{createCharacterToDelete.response.body.data.id}}
+DELETE http://localhost:3000/api/personas/{{idToDelete}}
+
+### PATCH a character
+PATCH http://localhost:3000/api/personas/{{idToDelete}}
+Content-Type: application/json
+
+{
+  "level": 6,
+  "characterClass":"6531d4aedc98243fffe841e5",
+  "items": ["6531d4f9dc98243fffe841e7"]
+}
+
+### DELETE a character
+DELETE http://localhost:3000/api/personas/{{idToDelete}}

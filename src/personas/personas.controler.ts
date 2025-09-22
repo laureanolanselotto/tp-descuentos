@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { PersonasRepository } from "./personas.repository.js"
-import { persona } from "./personas.entity.js";
+import { persona } from './personas.entity.js'
+import { orm } from '../shared/db/orm.js'
 
-const repository = new PersonasRepository()
+const em = orm.em
 
 function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     req.body.sanitizedInput = {
@@ -11,6 +11,8 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
         email: req.body.email,
         tel: req.body.tel,
         dni: req.body.dni,
+        personaClass: req.body.personaClass,
+        items: req.body.items,
     };
     // Elimina los campos undefined
     Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -21,56 +23,68 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-async function findAll( req:Request, res:Response)  {
-    res.json({data: await repository.findAll() });
+async function findAll(req: Request, res: Response) {
+  try {
+    const personas = await em.find(
+      persona,
+      {},
+      { populate: ['personaClass', 'items'] }
+    )
+    res.status(200).json({ message: 'found all personas', data: personas })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 async function findOne(req: Request, res: Response) {
-    const id = req.params.id;
-    const persona = await repository.findOne({ id });
-    if (!persona) {
-        res.status(404).send({ message: 'Persona no encontrada' });
-        return;
-    }
-    res.json({data: persona});  
-}
-
-async function add (req: Request, res: Response) {
-    const input = req.body.sanitizedInput;
-
-    const Personas = new persona( 
-        input.name, 
-        input.apellido,
-        input.email,
-        input.tel, 
-        input.dni,
-        input.id,
+  try {
+    const id = req.params.id
+    const personaFound = await em.findOneOrFail(
+      persona,
+      { id },
+      { populate: ['personaClass', 'items'] }
     )
-    const Persona = await repository.add(Personas);
-    res.status(201).send({message : 'Persona creada con éxito', data: Persona});
-
-}
-async function uppdate (req: Request, res: Response)  {
-    req.body.sanitizedInput.id = req.params.id; // Aseguramos que el ID del objeto actualizado sea el mismo que el de la URL
-    const personasUpdate = await repository.update(req.body.sanitizedInput )
-
-    if (!personasUpdate) {
-        res.status(404).send({ message: 'Persona no encontrada' });
-    } else {
-        res.status(200).send({ message: 'Persona modificada con éxito', data: personasUpdate });
-    }
+    res.status(200).json({ message: 'found persona', data: personaFound })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
-async function remove (req: Request, res: Response)  {
-    const id = req.params.id 
-    const eliminar = await repository.delete({ id });
-    if (eliminar === undefined) {
-        res.status(404).send({ message: 'Persona no encontrada' });
-    }
-    res.status(200).send({ message: 'Persona eliminada con éxito' });
+async function add(req: Request, res: Response) {
+  try {
+    const personaCreated = em.create(persona, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'persona created', data: personaCreated })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function update(req: Request, res: Response) {
+  try {
+    const id = req.params.id
+    const personaToUpdate = await em.findOneOrFail(persona, { id })
+    em.assign(personaToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'persona updated', data: personaToUpdate })
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+async function remove(req: Request, res: Response) {
+  try {
+    const id = req.params.id
+    const personaRef = em.getReference(persona, id)
+    await em.removeAndFlush(personaRef)
+  } catch (error: any) {
+    res.status(500).json({ message: error.message })
+  }
 }
 
 
-export const controler = {sanitizePersonaInput ,findAll,findOne,add, uppdate, remove};
+export  {sanitizePersonaInput ,findAll,findOne,add, update, remove};
 
 //export {sanitizePersonaInput ,findAll, findOne, repository as PersonasRepository}

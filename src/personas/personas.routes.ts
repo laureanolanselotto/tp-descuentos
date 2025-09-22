@@ -1,11 +1,11 @@
-import { Router } from "express";
-import  { controler } from "./personas.controler.js";
+import { Router } from 'express';
+import { sanitizePersonaInput, findAll, findOne, add, update, remove } from './personas.controler.js';
 
 export const PersonasRouter = Router();
 
-PersonasRouter.get("/", controler.findAll); // esto es para reusar el controlador de findAll
-PersonasRouter.get("/:id", controler.findOne ); // esto es para reusar el controlador de findAll
-PersonasRouter.post("/", controler.sanitizePersonaInput,controler.add); // crear una nueva persona
-PersonasRouter.put("/:id", controler.sanitizePersonaInput,controler.uppdate); // actualizar una persona existente
-PersonasRouter.patch("/:id", controler.sanitizePersonaInput,controler.uppdate); // actualizar una persona existente
-PersonasRouter.delete("/:id",controler.remove); // eliminar una persona
+PersonasRouter.get('/', findAll);
+PersonasRouter.get('/:id', findOne);
+PersonasRouter.post('/', sanitizePersonaInput, add);
+PersonasRouter.put('/:id', sanitizePersonaInput, update);
+PersonasRouter.patch('/:id', sanitizePersonaInput, update);
+PersonasRouter.delete('/:id', remove);
