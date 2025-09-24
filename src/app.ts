@@ -2,7 +2,7 @@
 import path from 'node:path';
 import 'reflect-metadata';
 import { fileURLToPath } from 'node:url';
-import { PersonasRouter } from "./personas/personas.Routes.js";
+import { PersonasRouter } from "./personas/personas.routes.js";
 import { itemRouter } from "./personas/itemRoutes.js";
 import { personasClassesRouter } from './personas/personasClass.routes.js';
 import { orm } from "./shared/db/orm.js";
