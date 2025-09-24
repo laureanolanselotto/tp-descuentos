@@ -1,35 +1,33 @@
 import { Request, Response, NextFunction } from 'express'
 import { persona } from './personas.entity.js'
 import { orm } from '../shared/db/orm.js'
+import { ObjectId } from '@mikro-orm/mongodb'
 
 const em = orm.em
 
 function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
-    req.body.sanitizedInput = {
-        name: req.body.name,
-        apellido: req.body.apellido,
-        email: req.body.email,
-        tel: req.body.tel,
-        dni: req.body.dni,
-        personaClass: req.body.personaClass,
-        items: req.body.items,
-    };
-    // Elimina los campos undefined
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-        if (req.body.sanitizedInput[key] === undefined) {
-            delete req.body.sanitizedInput[key];
-        }
-    });
-    next();
+  req.body.sanitizedInput = {
+    name: req.body.name,
+    apellido: req.body.apellido,
+    email: req.body.email,
+    tel: req.body.tel,
+    dni: req.body.dni,
+    personaClass: req.body.personaClass,
+    items: req.body.items,
+  }
+
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      delete req.body.sanitizedInput[key]
+    }
+  })
+
+  next()
 }
 
 async function findAll(req: Request, res: Response) {
   try {
-    const personas = await em.find(
-      persona,
-      {},
-      { populate: ['personaClass', 'items'] }
-    )
+    const personas = await em.find(persona, {}, { populate: ['personaClass', 'items'] })
     res.status(200).json({ message: 'found all personas', data: personas })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
@@ -39,11 +37,17 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = req.params.id
-    const personaFound = await em.findOneOrFail(
-      persona,
-      { id },
-      { populate: ['personaClass', 'items'] }
-    )
+    let personaFound
+    try {
+      personaFound = await em.findOneOrFail(persona, { id }, { populate: ['personaClass', 'items'] })
+    } catch (e) {
+      // try by ObjectId in _id
+      try {
+        personaFound = await em.findOneOrFail(persona, { _id: new ObjectId(id) }, { populate: ['personaClass', 'items'] })
+      } catch (err) {
+        throw err
+      }
+    }
     res.status(200).json({ message: 'found persona', data: personaFound })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
@@ -63,12 +67,15 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = req.params.id
-    const personaToUpdate = await em.findOneOrFail(persona, { id })
+    let personaToUpdate
+    try {
+      personaToUpdate = await em.findOneOrFail(persona, { id })
+    } catch (e) {
+      personaToUpdate = await em.findOneOrFail(persona, { _id: new ObjectId(id) })
+    }
     em.assign(personaToUpdate, req.body.sanitizedInput)
     await em.flush()
-    res
-      .status(200)
-      .json({ message: 'persona updated', data: personaToUpdate })
+    res.status(200).json({ message: 'persona updated', data: personaToUpdate })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -77,15 +84,17 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = req.params.id
-    const personaRef = em.getReference(persona, id)
-    await em.removeAndFlush(personaRef)
+    let personaToRemove
+    try {
+      personaToRemove = await em.findOneOrFail(persona, { id })
+    } catch (e) {
+      personaToRemove = await em.findOneOrFail(persona, { _id: new ObjectId(id) })
+    }
+    await em.removeAndFlush(personaToRemove)
+    res.status(200).send({ message: 'persona deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
 }
 
-
-export  {sanitizePersonaInput ,findAll,findOne,add, update, remove};
-
-//export {sanitizePersonaInput ,findAll, findOne, repository as PersonasRepository}
-
+export { sanitizePersonaInput, findAll, findOne, add, update, remove }

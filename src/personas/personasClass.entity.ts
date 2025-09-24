@@ -9,7 +9,7 @@ export class personaClass extends BaseEntity{
         apellido!: string
         
         @Property()
-        description!: string
+        description?: string
 //a partir de aca se trabaja relacione entre tablas con @ManyToOne , @OneToMany , @ManyToMany [en este caso es una relacion uno a muchos]
         @OneToMany(() => persona, (personas) => personas.personaClass, { // Cascade.ALL para que si se borra una personaClass se borren todos los person,Merge
      // Collection es una clase de mikro-orm que permite manejar las relaciones entre entidades

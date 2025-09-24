@@ -18,19 +18,19 @@ app.use((req, res, next) => {
 app.use('/api/persona/classes', personasClassesRouter)
 app.use('/api/personas', PersonasRouter)
 app.use('/api/items', itemRouter)
-const __filename = fileURLToPath(import.meta.url);
+/*const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const publicDir = path.join(__dirname, '../public');
+const publicDir = path.join(__dirname, '../public');*/
 
 /*app.use('/virtual-wallets', express.static(path.join(publicDir, 'virtual-wallets')));
 app.get(/^\/virtual-wallets(?:\/.*)?$/, (_req, res) => {
   res.sendFile(path.join(publicDir, 'virtual-wallets', 'index.html'));
 });
-
+*/
 app.use((_, res) => {
-  return res.status(404).send({ message: 'Resource not found' })
-})*/
-
+  res.status(404).send({ message: 'Resource not found' })
+  return
+})
 
 app.listen(3000, () => {
   console.log('Server is running on port http://localhost:3000');

@@ -18,10 +18,10 @@ async function findAll(req: Request, res: Response) {
 async function findOne(req: Request, res: Response) {
   try {
     const id = req.params.id
-    const personaClasses = await em.findOneOrFail(personaClass, { id })
+    const personaClassFound = await em.findOneOrFail(personaClass, { id })
     res
       .status(200)
-      .json({ message: 'found personas class', data: personaClass })
+      .json({ message: 'found personas class', data: personaClassFound })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -29,11 +29,11 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const personaClasses = em.create(personaClass, req.body)
+    const personaClassCreated = em.create(personaClass, req.body)
     await em.flush()
     res
       .status(201)
-      .json({ message: 'personas class created', data: personaClass })
+      .json({ message: 'personas class created', data: personaClassCreated })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -42,10 +42,12 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const id = req.params.id
-    const personaClasses = em.getReference(personaClass, id)
-    em.assign(personaClass, req.body)
+    const personaClassToUpdate = await em.findOneOrFail(personaClass, { id })
+    em.assign(personaClassToUpdate, req.body)
     await em.flush()
-    res.status(200).json({ message: 'personas class updated' })
+    res
+      .status(200)
+      .json({ message: 'personas class updated', data: personaClassToUpdate })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -54,8 +56,8 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = req.params.id
-    const personaClasses = em.getReference(personaClass, id)
-    await em.removeAndFlush(personaClass)
+    const personaClassToRemove = await em.findOneOrFail(personaClass, { id })
+    await em.removeAndFlush(personaClassToRemove)
     res.status(200).send({ message: 'personas class deleted' })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
