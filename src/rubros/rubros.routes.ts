@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { sanitizePersonaInput, findAll, findOne, add, update, remove } from '../personas/personas.controler.js';
+import { sanitizeRubroInput, findAll, findOne, add, update, remove } from './rubros.controler.js';
 
 export const RubrosRouter = Router();
 
 RubrosRouter.get('/', findAll);
 RubrosRouter.get('/:id', findOne);
-RubrosRouter.post('/', sanitizePersonaInput, add);
-RubrosRouter.put('/:id', sanitizePersonaInput, update);
-RubrosRouter.patch('/:id', sanitizePersonaInput, update);
+RubrosRouter.post('/', sanitizeRubroInput, add);
+RubrosRouter.put('/:id', sanitizeRubroInput, update);
+RubrosRouter.patch('/:id', sanitizeRubroInput, update);
 RubrosRouter.delete('/:id', remove);

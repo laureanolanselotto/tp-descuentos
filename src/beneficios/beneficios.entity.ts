@@ -1,31 +1,53 @@
-import { Cascade, Collection, Entity, ManyToMany, ManyToOne, Property,Rel } from "@mikro-orm/core";
+import { Entity, Property, ManyToOne, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
-import { Item } from "../personas/item.entity.js";
-import { personaClass } from "../personas/personasClass.entity.js";
+import { Wallet } from "../wallet/wallet.entity.js";
 
 @Entity()
-export class persona extends BaseEntity {
-  @ManyToOne(() => personaClass, { nullable: false })
-  personaClass!:Rel <personaClass>;
-
+export class Beneficio extends BaseEntity {
+  // Basic identifying/title fields
   @Property({ nullable: false })
   name!: string;
 
+  // Discount information
   @Property({ nullable: false })
-  apellido!: string;
+  discount!: number;
 
   @Property({ nullable: false })
-  email!: string;
+  discountType!: string; // e.g. 'cuota' | 'reintegro' | 'off'
+
+  // Icon representation: store a string identifier (e.g. icon name or class) instead of ReactNode
+  @Property({ nullable: true })
+  icon?: string;
 
   @Property({ nullable: false })
-  tel!: number;
+  category!: string;
 
-  @Property({ nullable: false })
-  dni!: number;
+  // wallet relation (see wallet entity)
 
-  @ManyToMany(() => Item, (item) => item.personas, {
-    cascade: [Cascade.ALL],
-    owner: true,
-  })
-  items = new Collection<Item>(this);
+  // Days available stored as JSON array of numbers (0-6 or custom mapping)
+  @Property({ type: 'json', nullable: true })
+  availableDays?: number[];
+
+  // Optional validity / date range / limit fields
+  @Property({ nullable: true })
+  validity?: string;
+
+  @Property({ nullable: true })
+  fecha_desde?: string;
+
+  @Property({ nullable: true })
+  fecha_hasta?: string;
+
+  @Property({ nullable: true })
+  limit?: string;
+
+  @Property({ nullable: true })
+  tope_reintegro?: number;
+
+  @Property({ nullable: true })
+  imageUrl?: string;
+
+  // Relation to Wallet (many beneficios belong to one wallet)
+  @ManyToOne(() => Wallet, { nullable: false })
+  wallet!: Rel<Wallet>;
 }

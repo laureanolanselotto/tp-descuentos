@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { sanitizePersonaInput, findAll, findOne, add, update, remove } from '../personas/personas.controler.js';
+import { sanitizeNotificacionInput, findAll, findOne, add, update, remove } from './notificacion.controler.js';
 
 export const NotificacionRouter = Router();
 
 NotificacionRouter.get('/', findAll);
 NotificacionRouter.get('/:id', findOne);
-NotificacionRouter.post('/', sanitizePersonaInput, add);
-NotificacionRouter.put('/:id', sanitizePersonaInput, update);
-NotificacionRouter.patch('/:id', sanitizePersonaInput, update);
+NotificacionRouter.post('/', sanitizeNotificacionInput, add);
+NotificacionRouter.put('/:id', sanitizeNotificacionInput, update);
+NotificacionRouter.patch('/:id', sanitizeNotificacionInput, update);
 NotificacionRouter.delete('/:id', remove);

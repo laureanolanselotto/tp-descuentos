@@ -9,11 +9,12 @@ Content-Type: application/json
 {
     "name": "Tralalero tralala",
     "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
+    "personaClass": "68d0b3e6fc9576467f753933",
+    "items": [" 68cf79ce11d051e27c6c74ca"," 68d0be2c5489767a772fac02"],
     "email": "laureanolanselotto@gmail.com",
     "tel": 2477309919,
-    "dni": 12345678
+    "dni": 12345678,
+    "direccion": "Calle Falsa 123"
 }
 
 ### ID
@@ -32,7 +33,7 @@ Content-Type: application/json
     "items": [" 68cf79ce11d051e27c6c74ca"],
     "email": "tralalerito@gmail.com",
     "tel": 2477309919,
-    "dni": 12345678
+    "direccion": "Calle Falsa 123"
 }
 
 ### POST a character

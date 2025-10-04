@@ -1,3 +1,53 @@
+### GET all beneficios
+GET http://localhost:3000/api/beneficios
+
+### Create a beneficio
+# @name createBeneficio
+POST http://localhost:3000/api/beneficios
+Content-Type: application/json
+
+{
+  "name": "Descuento Café Matutino",
+  "discount": 20,
+  "discountType": "reintegro",
+  "icon": "coffee",
+  "category": "Alimentos",
+  "walletId": "wallet_abc123",
+  "availableDays": [1,2,3,4,5],
+  "validity": "Válido durante septiembre",
+  "fecha_desde": "2025-09-01",
+  "fecha_hasta": "2025-09-30",
+  "limit": "Sin límite",
+  "tope_reintegro": 500,
+  "imageUrl": "https://example.com/images/coffee.png"
+}
+
+### Capture created ID
+@beneficioId = {{createBeneficio.response.body.data.id}}
+
+### GET one beneficio
+GET http://localhost:3000/api/beneficios/{{beneficioId}}
+
+### Update beneficio (PUT)
+PUT http://localhost:3000/api/beneficios/{{beneficioId}}
+Content-Type: application/json
+
+{
+  "name": "Descuento Café Tarde",
+  "discount": 15,
+  "discountType": "reintegro",
+  "icon": "coffee",
+  "category": "Alimentos",
+  "walletId": "wallet_abc123",
+  "availableDays": [1,2,3,4,5,6],
+  "fecha_hasta": "2025-10-15",
+  "tope_reintegro": 600
+}
+
+### DELETE beneficio
+DELETE http://localhost:3000/api/beneficios/{{beneficioId}}
+
+### GET all beneficios (after delete)
 GET http://localhost:3000/api/beneficios
 
 
@@ -20,7 +70,7 @@ Content-Type: application/json
 @id = {{createVader.response.body.data.id}}
 
 ### GET one beneficio
-http://localhost:3000/api/beneficios/{{id}}
+GET http://localhost:3000/api/beneficios/{{id}}
 
 ### PUT a beneficio
 PUT http://localhost:3000/api/beneficios/{{id}}

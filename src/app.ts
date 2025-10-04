@@ -3,10 +3,12 @@ import path from 'node:path';
 import 'reflect-metadata';
 import { fileURLToPath } from 'node:url';
 import { PersonasRouter } from "./personas/personas.routes.js";
-import { itemRouter } from "./personas/itemRoutes.js";
-import { personasClassesRouter } from './personas/personasClass.routes.js';
+import { itemRouter } from "./mikrorm.pruebas.videos/itemRoutes.js";
+import { personasClassesRouter } from './mikrorm.pruebas.videos/personasClass.routes.js';
+import { BeneficiosRouter } from './beneficios/beneficios.routes.js';
 import { orm } from "./shared/db/orm.js";
 import { RequestContext } from '@mikro-orm/core';
+import { WalletRouter } from "./wallet/wallet.routes.js";
 
 const app = express();
 app.use(express.json());
@@ -18,6 +20,8 @@ app.use((req, res, next) => {
 app.use('/api/persona/classes', personasClassesRouter)
 app.use('/api/personas', PersonasRouter)
 app.use('/api/items', itemRouter)
+app.use('/api/beneficios', BeneficiosRouter)
+app.use('/api/wallets', WalletRouter)
 /*const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicDir = path.join(__dirname, '../public');*/
@@ -25,8 +29,8 @@ const publicDir = path.join(__dirname, '../public');*/
 /*app.use('/virtual-wallets', express.static(path.join(publicDir, 'virtual-wallets')));
 app.get(/^\/virtual-wallets(?:\/.*)?$/, (_req, res) => {
   res.sendFile(path.join(publicDir, 'virtual-wallets', 'index.html'));
-});
-*/
+});*/
+
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' })
   return

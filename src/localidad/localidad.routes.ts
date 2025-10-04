@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { sanitizePersonaInput, findAll, findOne, add, update, remove } from '../personas/personas.controler.js';
+import { sanitizeLocalidadInput, findAll, findOne, add, update, remove } from './localidad.controler.js';
 
 export const LocalidadRouter = Router();
 
 LocalidadRouter.get('/', findAll);
 LocalidadRouter.get('/:id', findOne);
-LocalidadRouter.post('/', sanitizePersonaInput, add);
-LocalidadRouter.put('/:id', sanitizePersonaInput, update);
-LocalidadRouter.patch('/:id', sanitizePersonaInput, update);
+LocalidadRouter.post('/', sanitizeLocalidadInput, add);
+LocalidadRouter.put('/:id', sanitizeLocalidadInput, update);
+LocalidadRouter.patch('/:id', sanitizeLocalidadInput, update);
 LocalidadRouter.delete('/:id', remove);

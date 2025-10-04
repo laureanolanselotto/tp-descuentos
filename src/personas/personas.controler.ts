@@ -14,6 +14,7 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     dni: req.body.dni,
     personaClass: req.body.personaClass,
     items: req.body.items,
+    direccion: req.body.direccion,
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -21,6 +22,10 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
       delete req.body.sanitizedInput[key]
     }
   })
+
+  // debug: show sanitized input to help track missing fields
+  console.debug('[sanitizePersonaInput] sanitizedInput:', req.body.sanitizedInput)
+  console.debug('[sanitizePersonaInput] raw body keys:', Object.keys(req.body))
 
   next()
 }

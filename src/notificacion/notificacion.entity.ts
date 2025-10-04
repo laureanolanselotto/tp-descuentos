@@ -1,13 +1,8 @@
-import { Cascade, Collection, Entity, ManyToMany, ManyToOne, Property,Rel } from "@mikro-orm/core";
+import { Entity, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
-import { Item } from "../personas/item.entity.js";
-import { personaClass } from "../personas/personasClass.entity.js";
 
 @Entity()
-export class persona extends BaseEntity {
-  @ManyToOne(() => personaClass, { nullable: false })
-  personaClass!:Rel <personaClass>;
-
+export class Notificacion extends BaseEntity {
   @Property({ nullable: false })
   name!: string;
 
@@ -23,9 +18,9 @@ export class persona extends BaseEntity {
   @Property({ nullable: false })
   dni!: number;
 
-  @ManyToMany(() => Item, (item) => item.personas, {
-    cascade: [Cascade.ALL],
-    owner: true,
-  })
-  items = new Collection<Item>(this);
+  @Property({ nullable: true })
+  personaClass?: string;
+
+  @Property({ type: "json", nullable: true })
+  items?: string[];
 }

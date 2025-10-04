@@ -1,81 +1,104 @@
-GET http://localhost:3000/api/wallet
+### NOTA: El controlador necesita actualizarse para usar 'interes_anual' en lugar de 'tope_reintegro'
+### El sanitizer actual espera 'tope_reintegro' pero la entidad tiene 'interes_anual'
 
+### Get all wallets
+GET http://localhost:3000/api/wallets
 
-### POST a wallet
-# @name createVader
-POST http://localhost:3000/api/wallet
+### Create a wallet (usando campos del sanitizer actual)
+# @name createWallet
+POST http://localhost:3000/api/wallets
 Content-Type: application/json
 
 {
-    "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+  "name": "MercadoPago",
+  "discount": "20%",
+  "fechaDesde": "2025-01-01",
+  "fechaHasta": "2025-12-31",
+  "category": "fintech",
+  "availableDays": [1,2,3,4,5,6],
+  "discountType": "reintegro",
+  "tope_reintegro": 12,
+  "imageUrl": "https://example.com/mercadopago.png"
 }
 
-### ID
-@id = {{createVader.response.body.data.id}}
+### Capture wallet id
+@walletId = {{createWallet.response.body.data.id}}
 
-### GET one wallet
-http://localhost:3000/api/wallet/{{id}}
+### Get one wallet
+GET http://localhost:3000/api/wallets/{{walletId}}
 
-### PUT a wallet
-PUT http://localhost:3000/api/wallet/{{id}}
+### Update wallet
+PUT http://localhost:3000/api/wallets/{{walletId}}
 Content-Type: application/json
 
 {
-"name": "lirili larila",
-    "apellido": "gay",
-    "items": [" 68cf79ce11d051e27c6c74ca"],
-    "email": "tralalerito@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+  "name": "MercadoPago Premium",
+  "discount": "25%",
+  "tope_reintegro": 15,
+  "category": "premium-fintech",
+  "imageUrl": "https://example.com/mercadopago-premium.png"
 }
 
-### POST a wallet
-POST http://localhost:3000/api/wallet
+### Create second wallet for testing
+# @name createWallet2
+POST http://localhost:3000/api/wallets
 Content-Type: application/json
 
 {
-   "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+  "name": "Ualá",
+  "discount": "15%",
+  "fechaDesde": "2025-02-01",
+  "fechaHasta": "2025-11-30",
+  "category": "digital-wallet",
+  "availableDays": [1,2,3,4,5],
+  "discountType": "cuotas",
+  "tope_reintegro": 8
 }
 
-### POST a wallet
-# @name createCharacterToDelete
-POST http://localhost:3000/api/wallet
+### Delete second wallet
+@walletId2 = {{createWallet2.response.body.data.id}}
+DELETE http://localhost:3000/api/wallets/{{walletId2}}
+
+### Create wallet for comprehensive testing
+# @name createWalletComprehensive
+POST http://localhost:3000/api/wallets
 Content-Type: application/json
 
 {
-    "name": "tun tun sajur",
-    "apellido": "no",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+  "name": "Brubank",
+  "discount": "10%",
+  "fechaDesde": "2025-03-01",
+  "fechaHasta": "2025-10-31",
+  "category": "banco-digital",
+  "availableDays": [2,3,4,5,6],
+  "discountType": "descuento",
+  "tope_reintegro": 6,
+  "imageUrl": "https://example.com/brubank.png"
 }
-### DELETE a wallet
-@idToDelete = {{createCharacterToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/wallet/{{idToDelete}}
 
-### PATCH a wallet
-PATCH http://localhost:3000/api/wallet/{{idToDelete}}
+### Capture comprehensive wallet ID
+@comprehensiveWalletId = {{createWalletComprehensive.response.body.data.id}}
+
+### Get the comprehensive wallet
+GET http://localhost:3000/api/wallets/{{comprehensiveWalletId}}
+
+### Update the comprehensive wallet
+PUT http://localhost:3000/api/wallets/{{comprehensiveWalletId}}
 Content-Type: application/json
 
 {
-  "dni": 6,
-  "personaClass":"6531d4aedc98243fffe841e5",
-  "items": ["6531d4f9dc98243fffe841e7"]
+  "name": "Brubank Premium",
+  "discount": "15%",
+  "tope_reintegro": 10,
+  "category": "banco-digital-premium",
+  "discountType": "reintegro"
 }
 
-### DELETE a wallet
-DELETE http://localhost:3000/api/wallet/{{idToDelete}}
+### Delete all test wallets
+DELETE http://localhost:3000/api/wallets/{{comprehensiveWalletId}}
+
+###
+DELETE http://localhost:3000/api/wallets/{{walletId}}
+
+### Get all wallets again to verify all deletions
+GET http://localhost:3000/api/wallets
