@@ -15,7 +15,6 @@ Content-Type: application/json
     "name": "MercadoPago",
     "descripcion": "Billetera digital para pagos y transferencias",
     "interes_anual": 12,
-    "discount": "20%"
 }
 
 ###

@@ -17,7 +17,7 @@ Content-Type: application/json
     "discountType": "reintegro",
     "icon": "coffee",
     "category": "Alimentos",
-    "walletId": "68e18dfd646f6244dd9f0d22",
+    "walletId": "68e2c0760528221174d29bf2",
     "availableDays": [1,2,3,4,5],
     "validity": "Válido durante todo septiembre",
     "fecha_desde": "2025-09-01",
@@ -25,7 +25,7 @@ Content-Type: application/json
     "limit": "Máximo 1 vez por día",
     "tope_reintegro": 500,
     "imageUrl": "https://example.com/images/coffee.png",
-    "wallet": "68e18dfd646f6244dd9f0d22"
+    "wallet": "68e2c0760528221174d29bf2"
 }
 
 ###
