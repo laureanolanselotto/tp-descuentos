@@ -7,13 +7,9 @@ const em = orm.em;
 
 function sanitizeLocalidadInput(req: Request, _res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    name: req.body.name,
-    apellido: req.body.apellido,
-    email: req.body.email,
-    tel: req.body.tel,
-    dni: req.body.dni,
-    personaClass: req.body.personaClass,
-    items: req.body.items,
+    coordenadas: req.body.coordenadas,
+    calles: req.body.calles,
+    numero_calle: req.body.numero_calle,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

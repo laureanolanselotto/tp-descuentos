@@ -7,6 +7,10 @@ import { BeneficiosRouter } from './beneficios/beneficios.routes.js';
 import { orm } from "./shared/db/orm.js";
 import { RequestContext } from '@mikro-orm/core';
 import { WalletRouter } from "./wallet/wallet.routes.js";
+import { MikroORM } from "@mikro-orm/core";
+import { NotificacionRouter } from "./notificacion/notificacion.routes.js";
+import { RubrosRouter } from "./rubros/rubros.routes.js";
+import { LocalidadRouter } from "./localidad/localidad.routes.js";
 
 const app = express();
 app.use(express.json());
@@ -18,6 +22,9 @@ app.use((req, res, next) => {
 app.use('/api/personas', PersonasRouter)
 app.use('/api/beneficios', BeneficiosRouter)
 app.use('/api/wallets', WalletRouter)
+app.use('/api/notificaciones', NotificacionRouter)
+app.use('/api/rubros', RubrosRouter)
+app.use('/api/localidades', LocalidadRouter)
 /*const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicDir = path.join(__dirname, '../public');*/

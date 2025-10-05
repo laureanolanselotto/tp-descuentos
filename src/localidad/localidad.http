@@ -1,57 +1,46 @@
-GET http://localhost:3000/api/localidad
+GET http://localhost:3000/api/localidades
 
 
 ### POST a localidad
-# @name createVader
-POST http://localhost:3000/api/localidad
+# @name createLocalidad1
+POST http://localhost:3000/api/localidades
 Content-Type: application/json
 
 {
-    "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "coordenadas": "-34.6118,-58.3960",
+    "calles": "Av. Corrientes y Callao",
+    "numero_calle": 1234
 }
 
 ### ID
-@id = {{createVader.response.body.data.id}}
+@id = {{createLocalidad1.response.body.data.id}}
 
 ### GET one localidad
-http://localhost:3000/api/localidad/{{id}}
+http://localhost:3000/api/localidades/{{id}}
 
 ### PUT a localidad
-PUT http://localhost:3000/api/localidad/{{id}}
+PUT http://localhost:3000/api/localidades/{{id}}
 Content-Type: application/json
 
 {
-"name": "lirili larila",
-    "apellido": "gay",
-    "items": [" 68cf79ce11d051e27c6c74ca"],
-    "email": "tralalerito@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "coordenadas": "-34.6037,-58.3816",
+    "calles": "Av. 9 de Julio y Rivadavia",
+    "numero_calle": 5678
 }
 
-### POST a localidad
-POST http://localhost:3000/api/localidad
+### POST otra localidad
+POST http://localhost:3000/api/localidades
 Content-Type: application/json
 
 {
-   "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "coordenadas": "-34.5875,-58.3974",
+    "calles": "Av. Santa Fe y Pueyrredón",
+    "numero_calle": 9012
 }
 
 ### POST a localidad
 # @name createCharacterToDelete
-POST http://localhost:3000/api/localidad
+POST http://localhost:3000/api/localidades
 Content-Type: application/json
 
 {
@@ -65,10 +54,10 @@ Content-Type: application/json
 }
 ### DELETE a localidad
 @idToDelete = {{createCharacterToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/localidad/{{idToDelete}}
+DELETE http://localhost:3000/api/localidades/{{idToDelete}}
 
 ### PATCH a localidad
-PATCH http://localhost:3000/api/localidad/{{idToDelete}}
+PATCH http://localhost:3000/api/localidades/{{idToDelete}}
 Content-Type: application/json
 
 {
@@ -78,4 +67,4 @@ Content-Type: application/json
 }
 
 ### DELETE a localidad
-DELETE http://localhost:3000/api/localidad/{{idToDelete}}
+DELETE http://localhost:3000/api/localidades/{{idToDelete}}

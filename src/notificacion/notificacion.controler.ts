@@ -7,13 +7,11 @@ const em = orm.em;
 
 function sanitizeNotificacionInput(req: Request, _res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    name: req.body.name,
-    apellido: req.body.apellido,
-    email: req.body.email,
-    tel: req.body.tel,
-    dni: req.body.dni,
-    personaClass: req.body.personaClass,
-    items: req.body.items,
+    promocion: req.body.promocion,
+    porcentaje_promocion: req.body.porcentaje_promocion,
+    dias_disponibles: req.body.dias_disponibles,
+    tipo_promocion: req.body.tipo_promocion,
+    max_interes: req.body.max_interes,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

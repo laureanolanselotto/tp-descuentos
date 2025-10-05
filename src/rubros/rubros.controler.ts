@@ -7,13 +7,8 @@ const em = orm.em;
 
 function sanitizeRubroInput(req: Request, _res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    name: req.body.name,
-    apellido: req.body.apellido,
-    email: req.body.email,
-    tel: req.body.tel,
-    dni: req.body.dni,
-    personaClass: req.body.personaClass,
-    items: req.body.items,
+    nombre: req.body.nombre,
+    descripcion: req.body.descripcion,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {

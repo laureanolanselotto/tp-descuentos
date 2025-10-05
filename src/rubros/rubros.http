@@ -2,22 +2,17 @@ GET http://localhost:3000/api/rubros
 
 
 ### POST a rubro
-# @name createVader
+# @name createRubro1
 POST http://localhost:3000/api/rubros
 Content-Type: application/json
 
 {
-    "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "nombre": "Gastronomía",
+    "descripcion": "Restaurantes, bares y lugares de comida"
 }
 
 ### ID
-@id = {{createVader.response.body.data.id}}
+@id = {{createRubro1.response.body.data.id}}
 
 ### GET one rubro
 http://localhost:3000/api/rubros/{{id}}
@@ -27,26 +22,17 @@ PUT http://localhost:3000/api/rubros/{{id}}
 Content-Type: application/json
 
 {
-"name": "lirili larila",
-    "apellido": "gay",
-    "items": [" 68cf79ce11d051e27c6c74ca"],
-    "email": "tralalerito@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "nombre": "Entretenimiento",
+    "descripcion": "Cines, teatros, eventos y espectáculos"
 }
 
-### POST a rubro
+### POST otro rubro
 POST http://localhost:3000/api/rubros
 Content-Type: application/json
 
 {
-   "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "nombre": "Salud",
+    "descripcion": "Farmacias, clínicas y servicios médicos"
 }
 
 ### POST a rubro

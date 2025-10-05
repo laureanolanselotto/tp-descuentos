@@ -1,81 +1,74 @@
-GET http://localhost:3000/api/notificacion
+GET http://localhost:3000/api/notificaciones
 
 
 ### POST a notificacion
-# @name createVader
-POST http://localhost:3000/api/notificacion
+# @name createNotificacion1
+POST http://localhost:3000/api/notificaciones
 Content-Type: application/json
 
 {
-    "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "promocion": "Descuento Black Friday",
+    "porcentaje_promocion": 25,
+    "dias_disponibles": [1, 2, 3, 4, 5],
+    "tipo_promocion": "porcentaje",
+    "max_interes": 15
 }
 
 ### ID
-@id = {{createVader.response.body.data.id}}
+@id = {{createNotificacion1.response.body.data.id}}
 
 ### GET one notificacion
-http://localhost:3000/api/notificacion/{{id}}
+http://localhost:3000/api/notificaciones/{{id}}
 
 ### PUT a notificacion
-PUT http://localhost:3000/api/notificacion/{{id}}
+PUT http://localhost:3000/api/notificaciones/{{id}}
 Content-Type: application/json
 
 {
-"name": "lirili larila",
-    "apellido": "gay",
-    "items": [" 68cf79ce11d051e27c6c74ca"],
-    "email": "tralalerito@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "promocion": "Cyber Monday Super Oferta",
+    "porcentaje_promocion": 30,
+    "dias_disponibles": [1, 2, 3, 4, 5, 6, 7],
+    "tipo_promocion": "descuento",
+    "max_interes": 20
 }
 
-### POST a notificacion
-POST http://localhost:3000/api/notificacion
+### POST otra notificacion
+POST http://localhost:3000/api/notificaciones
 Content-Type: application/json
 
 {
-   "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "promocion": "Descuento Fin de Semana",
+    "porcentaje_promocion": 15,
+    "dias_disponibles": [6, 7],
+    "tipo_promocion": "reintegro",
+    "max_interes": 10
 }
 
-### POST a notificacion
-# @name createCharacterToDelete
-POST http://localhost:3000/api/notificacion
+### POST a notificacion para eliminar
+# @name createNotificacionToDelete
+POST http://localhost:3000/api/notificaciones
 Content-Type: application/json
 
 {
-    "name": "tun tun sajur",
-    "apellido": "no",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "promocion": "Promo Temporal",
+    "porcentaje_promocion": 5,
+    "dias_disponibles": [1, 3, 5],
+    "tipo_promocion": "cashback",
+    "max_interes": 8
 }
+
 ### DELETE a notificacion
-@idToDelete = {{createCharacterToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/notificacion/{{idToDelete}}
+@idToDelete = {{createNotificacionToDelete.response.body.data.id}}
+DELETE http://localhost:3000/api/notificaciones/{{idToDelete}}
 
 ### PATCH a notificacion
-PATCH http://localhost:3000/api/notificacion/{{idToDelete}}
+PATCH http://localhost:3000/api/notificaciones/{{id}}
 Content-Type: application/json
 
 {
-  "dni": 6,
-  "personaClass":"6531d4aedc98243fffe841e5",
-  "items": ["6531d4f9dc98243fffe841e7"]
+    "porcentaje_promocion": 35,
+    "max_interes": 25
 }
 
 ### DELETE a notificacion
-DELETE http://localhost:3000/api/notificacion/{{idToDelete}}
+DELETE http://localhost:3000/api/notificaciones/{{idToDelete}}
