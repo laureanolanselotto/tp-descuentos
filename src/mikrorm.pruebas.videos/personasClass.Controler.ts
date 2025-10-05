@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+/*import { Request, Response } from 'express'
 import { orm } from '../shared/db/orm.js'
 import { personaClass } from './personasClass.entity.js'
 
@@ -64,4 +64,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { findAll, findOne, add, update, remove }
+export { findAll, findOne, add, update, remove }*/

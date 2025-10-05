@@ -2,20 +2,18 @@ import { Request, Response, NextFunction } from 'express';
 import { Wallet } from './wallet.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { ObjectId } from '@mikro-orm/mongodb';
+import { Beneficio } from '../beneficios/beneficios.entity.js';
 
 const em = orm.em;
 
 function sanitizeWalletInput(req: Request, _res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
-    discount: req.body.discount,
-    fechaDesde: req.body.fechaDesde,
-    fechaHasta: req.body.fechaHasta,
-    category: req.body.category,
-    availableDays: req.body.availableDays,
-    discountType: req.body.discountType,
-    tope_reintegro: req.body.tope_reintegro,
-    imageUrl: req.body.imageUrl,};
+    descripcion: req.body.descripcion,
+    interes_anual: req.body.interes_anual,
+    beneficios: req.body.beneficios,
+    personas: req.body.personas,
+  };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
@@ -28,8 +26,8 @@ function sanitizeWalletInput(req: Request, _res: Response, next: NextFunction) {
 
 async function findAll(_req: Request, res: Response) {
   try {
-  const wallets = await em.find(Wallet, {}, { populate: ['beneficios'] });
-  res.status(200).json({ message: 'found all wallets', data: wallets });
+  const wallets = await em.find(Wallet, {}, { populate: ['beneficios', 'personas'] });
+    res.status(200).json({ message: 'found all wallets', data: wallets });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -40,14 +38,14 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id;
     let walletFound;
     try {
-  walletFound = await em.findOneOrFail(Wallet, { id }, { populate: ['beneficios'] });
+  walletFound = await em.findOneOrFail(Wallet, { id }, { populate: ['beneficios', 'personas'] });
     } catch (e) {
-      try{
-  walletFound = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) }, { populate: ['beneficios'] });
+      try {
+  walletFound = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) }, { populate: ['beneficios', 'personas'] });
       } catch (err) {
         throw err;
+      }
     }
-  }
     res.status(200).json({ message: 'found wallet', data: walletFound });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

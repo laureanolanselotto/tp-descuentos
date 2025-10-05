@@ -9,44 +9,17 @@ export class Wallet extends BaseEntity {
   name!: string;
 
   @Property({nullable: false})
-  discount!: string;
-
-  @Property({nullable: false})
-  fechaDesde!: string;
-
-  @Property({nullable: false})
-  fechaHasta!: string;
-
-  @Property({nullable: false})
-  category!: string;
-
-  @Property({nullable: false})
-  availableDays!: number[];
-
+  descripcion!: string;
   @Property({ nullable: true })
   interes_anual?: number;
 
-  // Link to the owning persona (many wallets can belong to one persona)
-  @ManyToOne(() => persona, { nullable: true })
-  persona?: Rel<persona>;
+  // relacion con personas de muchos a muchos con wallet
+  @ManyToMany(() => persona, (p) => p.wallets)
+  personas = new Collection<persona>(this);
 
-    @OneToMany(() => Beneficio, beneficio => beneficio.wallet)
-  beneficios = new Collection<Beneficio>(this);
-
-
-}
- /* @OneToMany(() => persona, (personas) => personas.personaClass, {
+  // relacion uno a muchos con beneficios (un wallet tiene muchos beneficios)
+@OneToMany(() => Beneficio, (beneficio) => beneficio.wallet, {
     cascade: [Cascade.ALL],
   })
-  characters = new Collection<persona>(this);*/
-
-  /* @ManyToMany(() => persona, (p) => p.items)
-  personas = new Collection<Persona>(this);//esta es una relacion muchos a muchos*/
-
-/*  @OneToMany(() => Beneficio, beneficio => beneficio.wallet)
-  beneficios = new Collection<Beneficio>(this); //esta es una relacion uno a muchos*/
-  /* @ManyToMany(() => Item, (item) => item.personas, {
-      cascade: [Cascade.ALL],
-      owner: true,
-    })
-    items = new Collection<Item>(this);*/ 
+  beneficios = new Collection<Beneficio>(this);
+}

@@ -1,104 +1,165 @@
-### NOTA: El controlador necesita actualizarse para usar 'interes_anual' en lugar de 'tope_reintegro'
-### El sanitizer actual espera 'tope_reintegro' pero la entidad tiene 'interes_anual'
+### Variables base para testing wallets
+@baseUrl = http://localhost:3000/api/wallets
 
-### Get all wallets
-GET http://localhost:3000/api/wallets
-
-### Create a wallet (usando campos del sanitizer actual)
-# @name createWallet
-POST http://localhost:3000/api/wallets
-Content-Type: application/json
-
-{
-  "name": "MercadoPago",
-  "discount": "20%",
-  "fechaDesde": "2025-01-01",
-  "fechaHasta": "2025-12-31",
-  "category": "fintech",
-  "availableDays": [1,2,3,4,5,6],
-  "discountType": "reintegro",
-  "tope_reintegro": 12,
-  "imageUrl": "https://example.com/mercadopago.png"
-}
-
-### Capture wallet id
-@walletId = {{createWallet.response.body.data.id}}
-
-### Get one wallet
-GET http://localhost:3000/api/wallets/{{walletId}}
-
-### Update wallet
-PUT http://localhost:3000/api/wallets/{{walletId}}
-Content-Type: application/json
-
-{
-  "name": "MercadoPago Premium",
-  "discount": "25%",
-  "tope_reintegro": 15,
-  "category": "premium-fintech",
-  "imageUrl": "https://example.com/mercadopago-premium.png"
-}
-
-### Create second wallet for testing
-# @name createWallet2
-POST http://localhost:3000/api/wallets
-Content-Type: application/json
-
-{
-  "name": "Ualá",
-  "discount": "15%",
-  "fechaDesde": "2025-02-01",
-  "fechaHasta": "2025-11-30",
-  "category": "digital-wallet",
-  "availableDays": [1,2,3,4,5],
-  "discountType": "cuotas",
-  "tope_reintegro": 8
-}
-
-### Delete second wallet
-@walletId2 = {{createWallet2.response.body.data.id}}
-DELETE http://localhost:3000/api/wallets/{{walletId2}}
-
-### Create wallet for comprehensive testing
-# @name createWalletComprehensive
-POST http://localhost:3000/api/wallets
-Content-Type: application/json
-
-{
-  "name": "Brubank",
-  "discount": "10%",
-  "fechaDesde": "2025-03-01",
-  "fechaHasta": "2025-10-31",
-  "category": "banco-digital",
-  "availableDays": [2,3,4,5,6],
-  "discountType": "descuento",
-  "tope_reintegro": 6,
-  "imageUrl": "https://example.com/brubank.png"
-}
-
-### Capture comprehensive wallet ID
-@comprehensiveWalletId = {{createWalletComprehensive.response.body.data.id}}
-
-### Get the comprehensive wallet
-GET http://localhost:3000/api/wallets/{{comprehensiveWalletId}}
-
-### Update the comprehensive wallet
-PUT http://localhost:3000/api/wallets/{{comprehensiveWalletId}}
-Content-Type: application/json
-
-{
-  "name": "Brubank Premium",
-  "discount": "15%",
-  "tope_reintegro": 10,
-  "category": "banco-digital-premium",
-  "discountType": "reintegro"
-}
-
-### Delete all test wallets
-DELETE http://localhost:3000/api/wallets/{{comprehensiveWalletId}}
+### 1. GET all wallets
+GET {{baseUrl}}
 
 ###
-DELETE http://localhost:3000/api/wallets/{{walletId}}
 
-### Get all wallets again to verify all deletions
-GET http://localhost:3000/api/wallets
+### 2. POST - Crear una nueva wallet
+# @name createWallet1
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "name": "MercadoPago",
+    "descripcion": "Billetera digital para pagos y transferencias",
+    "interes_anual": 12,
+    "discount": "20%"
+}
+
+###
+
+### 3. Capturar ID de la wallet creada
+@walletId1 = {{createWallet1.response.body.data.id}}
+
+### 4. GET - Obtener wallet por ID
+GET {{baseUrl}}/{{walletId1}}
+
+###
+
+### 5. PUT - Actualizar wallet completa
+PUT {{baseUrl}}/{{walletId1}}
+Content-Type: application/json
+
+{
+    "name": "MercadoPago Premium",
+    "descripcion": "Billetera digital premium con beneficios exclusivos",
+    "discount": "25%",
+    "interes_anual": 15.0
+}
+
+###
+
+### 6. POST - Crear segunda wallet para testing
+# @name createWallet2
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "name": "Ualá",
+    "descripcion": "Tarjeta prepaga y billetera digital",
+    "personas": ["2131"],
+    "beneficios": ["123"],
+    "discount": "15%",
+    "interes_anual": 8.76
+}
+
+###
+
+### 7. Capturar ID de la segunda wallet
+@walletId2 = {{createWallet2.response.body.data.id}}
+
+### 8. PATCH - Actualización parcial
+PATCH {{baseUrl}}/{{walletId2}}
+Content-Type: application/json
+
+{
+    "discount": "17%",
+    "interes_anual": 10.0,
+    "descripcion": "Tarjeta prepaga y billetera digital con nuevos beneficios"
+}
+
+###
+
+### 9. POST - Crear wallet con datos mínimos (sin interes_anual)
+# @name createWalletMinima
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "name": "Brubank",
+    "descripcion": "Banco 100% digital",
+    "discount": "10%",
+    "interes_anual": 12
+}
+
+###
+
+### 10. Capturar ID wallet mínima
+@walletIdMinima = {{createWalletMinima.response.body.data.id}}
+
+### 11. GET - Verificar wallet mínima
+GET {{baseUrl}}/{{walletIdMinima}}
+
+###
+
+### 12. POST - Crear wallet con datos completos
+# @name createWalletCompleta
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "name": "Naranja X",
+    "descripcion": "Súper app financiera con múltiples servicios",
+    "discount": "18%",
+    "interes_anual": 18.5
+}
+
+###
+
+### 13. Capturar ID wallet completa
+@walletIdCompleta = {{createWalletCompleta.response.body.data.id}}
+
+### 14. GET - Verificar todas las wallets creadas
+GET {{baseUrl}}
+
+###
+
+### 15. PUT - Test de actualización con todos los campos
+PUT {{baseUrl}}/{{walletIdCompleta}}
+Content-Type: application/json
+
+{
+    "name": "Naranja X Premium",
+    "descripcion": "Súper app financiera premium con beneficios exclusivos",
+    "discount": "22%",
+    "interes_anual": 22.0
+}
+
+###
+
+### 16. DELETE - Eliminar wallet de prueba
+DELETE {{baseUrl}}/{{walletIdMinima}}
+
+###
+
+### 17. GET - Verificar eliminación (debería dar error 500)
+GET {{baseUrl}}/{{walletIdMinima}}
+
+###
+
+### 18. GET - Estado final de todas las wallets
+GET {{baseUrl}}
+
+###
+
+### 19. DELETE - Limpiar datos de prueba
+DELETE {{baseUrl}}/{{walletId1}}
+
+###
+
+### 20. DELETE - Limpiar más datos de prueba  
+DELETE {{baseUrl}}/{{walletId2}}
+
+###
+
+### 21. DELETE - Limpiar última wallet
+DELETE {{baseUrl}}/{{walletIdCompleta}}
+
+###
+
+### 22. GET - Verificar limpieza final
+GET {{baseUrl}}
+
+###

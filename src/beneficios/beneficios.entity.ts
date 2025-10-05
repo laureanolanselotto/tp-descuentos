@@ -1,4 +1,4 @@
-import { Entity, Property, ManyToOne, Rel } from "@mikro-orm/core";
+import { Entity, Property, ManyToOne, Rel, t,OneToMany, Cascade,Collection } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Wallet } from "../wallet/wallet.entity.js";
 
@@ -9,7 +9,7 @@ export class Beneficio extends BaseEntity {
   name!: string;
 
   // Discount information
-  @Property({ nullable: false })
+  @Property({ nullable: true })
   discount!: number;
 
   @Property({ nullable: false })
@@ -25,21 +25,21 @@ export class Beneficio extends BaseEntity {
   // wallet relation (see wallet entity)
 
   // Days available stored as JSON array of numbers (0-6 or custom mapping)
-  @Property({ type: 'json', nullable: true })
-  availableDays?: number[];
+  @Property({ type: 'json', nullable: false })
+  availableDays!: number[];
 
   // Optional validity / date range / limit fields
-  @Property({ nullable: true })
-  validity?: string;
+  @Property({ nullable: false })
+  validity!: string;
 
-  @Property({ nullable: true })
-  fecha_desde?: string;
+  @Property({ nullable: false })
+  fecha_desde!: string;
 
-  @Property({ nullable: true })
-  fecha_hasta?: string;
+  @Property({ nullable: false })
+  fecha_hasta!: string;
 
-  @Property({ nullable: true })
-  limit?: string;
+  @Property({ nullable: false })
+  limit!: string;
 
   @Property({ nullable: true })
   tope_reintegro?: number;

@@ -3,8 +3,6 @@ import path from 'node:path';
 import 'reflect-metadata';
 import { fileURLToPath } from 'node:url';
 import { PersonasRouter } from "./personas/personas.routes.js";
-import { itemRouter } from "./mikrorm.pruebas.videos/itemRoutes.js";
-import { personasClassesRouter } from './mikrorm.pruebas.videos/personasClass.routes.js';
 import { BeneficiosRouter } from './beneficios/beneficios.routes.js';
 import { orm } from "./shared/db/orm.js";
 import { RequestContext } from '@mikro-orm/core';
@@ -17,9 +15,7 @@ app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
 
-app.use('/api/persona/classes', personasClassesRouter)
 app.use('/api/personas', PersonasRouter)
-app.use('/api/items', itemRouter)
 app.use('/api/beneficios', BeneficiosRouter)
 app.use('/api/wallets', WalletRouter)
 /*const __filename = fileURLToPath(import.meta.url);

@@ -1,4 +1,4 @@
-import { Collection, Entity, ManyToMany, Property } from "@mikro-orm/core";
+/*import { Collection, Entity, ManyToMany, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { persona } from "../personas/personas.entity.js";
 
@@ -13,3 +13,4 @@ export class Item extends BaseEntity {
   @ManyToMany(() => persona, (p) => p.items)
   personas = new Collection<persona>(this);
 }
+*/

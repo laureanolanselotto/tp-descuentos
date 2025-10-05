@@ -1,4 +1,4 @@
-import { Router } from 'express'
+/*import { Router } from 'express'
 import {
   findAll,
   findOne,
@@ -13,4 +13,4 @@ personasClassesRouter.get('/', findAll)
 personasClassesRouter.get('/:id', findOne)
 personasClassesRouter.post('/', add)
 personasClassesRouter.put('/:id', update)
-personasClassesRouter.delete('/:id', remove)
+personasClassesRouter.delete('/:id', remove)*/

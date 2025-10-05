@@ -1,131 +1,213 @@
-### GET all beneficios
-GET http://localhost:3000/api/beneficios
+### Variables base para testing beneficios
+@baseUrl = http://localhost:3000/api/beneficios
 
-### Create a beneficio
-# @name createBeneficio
-POST http://localhost:3000/api/beneficios
+### 1. GET all beneficios
+GET {{baseUrl}}
+
+###
+
+### 2. POST - Crear un nuevo beneficio con wallet existente
+# @name createBeneficio1
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-  "name": "Descuento Café Matutino",
-  "discount": 20,
-  "discountType": "reintegro",
-  "icon": "coffee",
-  "category": "Alimentos",
-  "walletId": "wallet_abc123",
-  "availableDays": [1,2,3,4,5],
-  "validity": "Válido durante septiembre",
-  "fecha_desde": "2025-09-01",
-  "fecha_hasta": "2025-09-30",
-  "limit": "Sin límite",
-  "tope_reintegro": 500,
-  "imageUrl": "https://example.com/images/coffee.png"
+    "name": "Descuento Café Matutino",
+    "discount": 20,
+    "discountType": "reintegro",
+    "icon": "coffee",
+    "category": "Alimentos",
+    "walletId": "68e18dfd646f6244dd9f0d22",
+    "availableDays": [1,2,3,4,5],
+    "validity": "Válido durante todo septiembre",
+    "fecha_desde": "2025-09-01",
+    "fecha_hasta": "2025-09-30",
+    "limit": "Máximo 1 vez por día",
+    "tope_reintegro": 500,
+    "imageUrl": "https://example.com/images/coffee.png",
+    "wallet": "68e18dfd646f6244dd9f0d22"
 }
 
-### Capture created ID
-@beneficioId = {{createBeneficio.response.body.data.id}}
+###
 
-### GET one beneficio
-GET http://localhost:3000/api/beneficios/{{beneficioId}}
+### 3. Capturar ID del beneficio creado
+@beneficioId1 = {{createBeneficio1.response.body.data.id}}
 
-### Update beneficio (PUT)
-PUT http://localhost:3000/api/beneficios/{{beneficioId}}
+### 4. GET - Obtener beneficio por ID
+GET {{baseUrl}}/{{beneficioId1}}
+
+###
+
+### 5. PUT - Actualizar beneficio completo
+PUT {{baseUrl}}/{{beneficioId1}}
 Content-Type: application/json
 
 {
-  "name": "Descuento Café Tarde",
-  "discount": 15,
-  "discountType": "reintegro",
-  "icon": "coffee",
-  "category": "Alimentos",
-  "walletId": "wallet_abc123",
-  "availableDays": [1,2,3,4,5,6],
-  "fecha_hasta": "2025-10-15",
-  "tope_reintegro": 600
+    "name": "Descuento Café Premium",
+    "discount": 25,
+    "discountType": "reintegro",
+    "icon": "coffee-premium",
+    "category": "Alimentos Premium",
+    "walletId": "673f123456789012345678a1",
+    "availableDays": [1,2,3,4,5,6],
+    "validity": "Válido durante octubre",
+    "fecha_desde": "2025-10-01",
+    "fecha_hasta": "2025-10-31",
+    "limit": "Máximo 2 veces por día",
+    "tope_reintegro": 750,
+    "imageUrl": "https://example.com/images/coffee-premium.png"
 }
 
-### DELETE beneficio
-DELETE http://localhost:3000/api/beneficios/{{beneficioId}}
+###
 
-### GET all beneficios (after delete)
-GET http://localhost:3000/api/beneficios
-
-
-### POST a beneficio
-# @name createVader
-POST http://localhost:3000/api/beneficios
+### 6. POST - Crear segundo beneficio para testing
+# @name createBeneficio2
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "name": "Cashback Supermercado",
+    "discount": 15,
+    "discountType": "reintegro",
+    "icon": "shopping-cart",
+    "category": "Supermercados",
+    "walletId": "673f123456789012345678a2",
+    "availableDays": [0,1,2,3,4,5,6],
+    "validity": "Válido todos los días",
+    "fecha_desde": "2025-01-01",
+    "fecha_hasta": "2025-12-31",
+    "limit": "Sin límite",
+    "tope_reintegro": 1000
 }
 
-### ID
-@id = {{createVader.response.body.data.id}}
+###
 
-### GET one beneficio
-GET http://localhost:3000/api/beneficios/{{id}}
+### 7. Capturar ID del segundo beneficio
+@beneficioId2 = {{createBeneficio2.response.body.data.id}}
 
-### PUT a beneficio
-PUT http://localhost:3000/api/beneficios/{{id}}
+### 8. PATCH - Actualización parcial
+PATCH {{baseUrl}}/{{beneficioId2}}
 Content-Type: application/json
 
 {
-"name": "lirili larila",
-    "apellido": "gay",
-    "items": [" 68cf79ce11d051e27c6c74ca"],
-    "email": "tralalerito@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "discount": 18,
+    "tope_reintegro": 1200,
+    "validity": "Válido todos los días con aumento"
 }
 
-### POST a beneficio
-POST http://localhost:3000/api/beneficios
+###
+
+### 9. POST - Crear beneficio con datos mínimos
+# @name createBeneficioMinimo
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-   "name": "Tralalero tralala",
-    "apellido": "kuka",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "name": "Descuento Básico",
+    "discount": 10,
+    "discountType": "off",
+    "category": "General",
+    "walletId": "673f123456789012345678a3",
+    "availableDays": [1,2,3,4,5],
+    "validity": "Válido solo días hábiles",
+    "fecha_desde": "2025-11-01",
+    "fecha_hasta": "2025-11-30",
+    "limit": "Una vez por semana"
 }
 
-### POST a beneficio
-# @name createCharacterToDelete
-POST http://localhost:3000/api/beneficios
+###
+
+### 10. Capturar ID beneficio mínimo
+@beneficioIdMinimo = {{createBeneficioMinimo.response.body.data.id}}
+
+### 11. GET - Verificar beneficio mínimo
+GET {{baseUrl}}/{{beneficioIdMinimo}}
+
+###
+
+### 12. POST - Crear beneficio de cuotas
+# @name createBeneficioCuotas
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "tun tun sajur",
-    "apellido": "no",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "name": "Cuotas sin Interés Electro",
+    "discount": 0,
+    "discountType": "cuota",
+    "icon": "credit-card",
+    "category": "Electrónicos",
+    "walletId": "673f123456789012345678a4",
+    "availableDays": [1,2,3,4,5,6],
+    "validity": "12 cuotas sin interés",
+    "fecha_desde": "2025-12-01",
+    "fecha_hasta": "2025-12-31",
+    "limit": "Compras mayores a $50.000",
+    "imageUrl": "https://example.com/images/electronics.png"
 }
-### DELETE a beneficio
-@idToDelete = {{createCharacterToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/beneficios/{{idToDelete}}
 
-### PATCH a beneficio
-PATCH http://localhost:3000/api/beneficios/{{idToDelete}}
+###
+
+### 13. Capturar ID beneficio cuotas
+@beneficioIdCuotas = {{createBeneficioCuotas.response.body.data.id}}
+
+### 14. GET - Verificar todos los beneficios creados
+GET {{baseUrl}}
+
+###
+
+### 15. PUT - Test con beneficio de transporte
+PUT {{baseUrl}}/{{beneficioIdCuotas}}
 Content-Type: application/json
 
 {
-  "dni": 6,
-  "personaClass":"6531d4aedc98243fffe841e5",
-  "items": ["6531d4f9dc98243fffe841e7"]
+    "name": "Descuento Transporte Público",
+    "discount": 30,
+    "discountType": "reintegro",
+    "icon": "bus",
+    "category": "Transporte",
+    "walletId": "673f123456789012345678a5",
+    "availableDays": [1,2,3,4,5],
+    "validity": "Solo días hábiles",
+    "fecha_desde": "2025-01-15",
+    "fecha_hasta": "2025-06-15",
+    "limit": "Máximo 4 viajes por día",
+    "tope_reintegro": 200,
+    "imageUrl": "https://example.com/images/transport.png"
 }
 
-### DELETE a beneficio
-DELETE http://localhost:3000/api/beneficios/{{idToDelete}}
+###
+
+### 16. DELETE - Eliminar beneficio de prueba
+DELETE {{baseUrl}}/{{beneficioIdMinimo}}
+
+###
+
+### 17. GET - Verificar eliminación (debería dar error 500)
+GET {{baseUrl}}/{{beneficioIdMinimo}}
+
+###
+
+### 18. GET - Estado final de todos los beneficios
+GET {{baseUrl}}
+
+###
+
+### 19. DELETE - Limpiar datos de prueba
+DELETE {{baseUrl}}/{{beneficioId1}}
+
+###
+
+### 20. DELETE - Limpiar más datos de prueba  
+DELETE {{baseUrl}}/{{beneficioId2}}
+
+###
+
+### 21. DELETE - Limpiar último beneficio
+DELETE {{baseUrl}}/{{beneficioIdCuotas}}
+
+###
+
+### 22. GET - Verificar limpieza final
+GET {{baseUrl}}
+
+###

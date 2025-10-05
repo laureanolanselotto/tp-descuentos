@@ -6,15 +6,15 @@ import { ObjectId } from '@mikro-orm/mongodb'
 const em = orm.em
 
 function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
+
   req.body.sanitizedInput = {
     name: req.body.name,
     apellido: req.body.apellido,
     email: req.body.email,
     tel: req.body.tel,
     dni: req.body.dni,
-    personaClass: req.body.personaClass,
-    items: req.body.items,
     direccion: req.body.direccion,
+    wallets: req.body.wallets
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -23,16 +23,13 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     }
   })
 
-  // debug: show sanitized input to help track missing fields
-  console.debug('[sanitizePersonaInput] sanitizedInput:', req.body.sanitizedInput)
-  console.debug('[sanitizePersonaInput] raw body keys:', Object.keys(req.body))
 
   next()
 }
 
 async function findAll(req: Request, res: Response) {
   try {
-    const personas = await em.find(persona, {}, { populate: ['personaClass', 'items'] })
+    const personas = await em.find(persona, {}, { populate: ['wallets'] })
     res.status(200).json({ message: 'found all personas', data: personas })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
@@ -44,11 +41,11 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id
     let personaFound
     try {
-      personaFound = await em.findOneOrFail(persona, { id }, { populate: ['personaClass', 'items'] })
+      personaFound = await em.findOneOrFail(persona, { id }, { populate: ['wallets'] })
     } catch (e) {
       // try by ObjectId in _id
       try {
-        personaFound = await em.findOneOrFail(persona, { _id: new ObjectId(id) }, { populate: ['personaClass', 'items'] })
+        personaFound = await em.findOneOrFail(persona, { _id: new ObjectId(id) }, { populate: ['wallets'] })
       } catch (err) {
         throw err
       }

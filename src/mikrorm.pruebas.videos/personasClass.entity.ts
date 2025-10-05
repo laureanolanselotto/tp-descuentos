@@ -1,4 +1,4 @@
-import { Cascade, Collection, Entity, OneToMany, Property } from "@mikro-orm/core";
+/*import { Cascade, Collection, Entity, OneToMany, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { persona } from "../personas/personas.entity.js";
 // relacion de uno a muchos
@@ -17,4 +17,4 @@ export class personaClass extends BaseEntity {
     cascade: [Cascade.ALL],
   })
   characters = new Collection<persona>(this);
-}
+}*/

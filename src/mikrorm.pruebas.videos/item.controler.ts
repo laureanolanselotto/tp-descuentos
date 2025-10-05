@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+/*import { Request, Response } from 'express'
 import { Item } from './item.entity.js'
 import { orm } from '../shared/db/orm.js'
 
@@ -57,4 +57,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { findAll, findOne, add, update, remove }
+export { findAll, findOne, add, update, remove }*/
