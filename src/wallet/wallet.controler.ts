@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { Wallet } from './wallet.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { ObjectId } from '@mikro-orm/mongodb';
-import { Beneficio } from '../beneficios/beneficios.entity.js';
 
 const em = orm.em;
 
