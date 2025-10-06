@@ -1,7 +1,8 @@
-import { Entity, Property, ManyToOne, Rel, t,OneToMany, Cascade,Collection } from "@mikro-orm/core";
+import { Entity, Property, ManyToOne, Rel, t,OneToMany, Cascade,Collection, ManyToMany } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Wallet } from "../wallet/wallet.entity.js";
 import { Rubro } from "../rubros/rubros.entity.js";
+import { Localidad } from "../localidad/localidad.entity.js";
 
 @Entity()
 export class Beneficio extends BaseEntity {
@@ -54,4 +55,11 @@ export class Beneficio extends BaseEntity {
 
   @ManyToOne(() => Rubro, { nullable: false })
   rubro!: Rel<Rubro>;
+
+  // Un beneficio puede aplicar en muchas provincias (localidades)
+  @ManyToMany(() => Localidad, (localidad) => localidad.beneficios, {
+    cascade: [Cascade.ALL],
+    owner: true,
+  })
+  localidades = new Collection<Localidad>(this);
 }

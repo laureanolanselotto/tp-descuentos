@@ -1,14 +1,23 @@
-import { Entity, Property } from "@mikro-orm/core";
+import { Entity, Property, OneToMany, ManyToMany, Cascade, Collection } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
+import { Ciudad } from "../ciudad/ciudad.entity.js";
+import { Beneficio } from "../beneficios/beneficios.entity.js";
 
 @Entity()
-export class localidad extends BaseEntity {
+export class Localidad extends BaseEntity {
   @Property({ nullable: false })
-  coordenadas!: string;
+  nombre_localidad!: string;
 
-  @Property({ nullable: false })
-  calles!: string;
+  @Property({ nullable: false, default: "Argentina" })
+  pais!: string;
 
-  @Property({ nullable: false })
-  numero_calle!: number;
+  // Una provincia (localidad) puede tener muchas ciudades
+  @OneToMany(() => Ciudad, (ciudad) => ciudad.localidad, {
+    cascade: [Cascade.ALL],
+  })
+  ciudades = new Collection<Ciudad>(this);
+
+  // Una provincia puede estar asociada a muchos beneficios, y un beneficio puede aplicar en muchas provincias
+  @ManyToMany(() => Beneficio, (beneficio) => beneficio.localidades)
+  beneficios = new Collection<Beneficio>(this);
 }

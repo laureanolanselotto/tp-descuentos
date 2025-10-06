@@ -1,6 +1,7 @@
 import { Cascade, Collection, Entity, ManyToMany, ManyToOne, OneToMany, Property, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Wallet } from "../wallet/wallet.entity.js";
+import { Ciudad } from "../ciudad/ciudad.entity.js";
 @Entity()
 export class persona extends BaseEntity {
   @Property({ nullable: false })
@@ -26,6 +27,10 @@ export class persona extends BaseEntity {
     owner: true,
   })
   wallets = new Collection<Wallet>(this);
+
+  // relacion muchas personas pertenecen a una ciudad
+  @ManyToOne(() => Ciudad, { nullable: true })
+  ciudad?: Rel<Ciudad>;
 
 }
 

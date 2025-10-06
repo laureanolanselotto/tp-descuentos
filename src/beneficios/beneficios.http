@@ -1,4 +1,7 @@
 ### Variables base para testing beneficios
+### NOTA: Asegúrate de tener wallets, rubros y localidades creadas primero
+### Los beneficios requieren walletId y rubroId como obligatorios
+### Los beneficios pueden estar asociados a múltiples provincias (localidades) vía ManyToMany
 @baseUrl = http://localhost:3000/api/beneficios
 
 ### 1. GET all beneficios
@@ -6,7 +9,7 @@ GET {{baseUrl}}
 
 ###
 
-### 2. POST - Crear un nuevo beneficio con wallet existente
+### 2. POST - Crear un nuevo beneficio con wallet, rubro y localidades
 # @name createBeneficio1
 POST {{baseUrl}}
 Content-Type: application/json
@@ -19,6 +22,7 @@ Content-Type: application/json
     "category": "Alimentos",
     "walletId": "68e2c0760528221174d29bf2",
     "rubroId": "68e1e130f63328dc654c67b5",
+    "localidades": ["68e1e2a0f63328dc654c67c1", "68e1e2a0f63328dc654c67c2"],
     "availableDays": [1,2,3,4,5],
     "validity": "Válido durante todo septiembre",
     "fecha_desde": "2025-09-01",
@@ -38,7 +42,7 @@ GET {{baseUrl}}/{{beneficioId1}}
 
 ###
 
-### 5. PUT - Actualizar beneficio completo
+### 5. PUT - Actualizar beneficio completo con localidades
 PUT {{baseUrl}}/{{beneficioId1}}
 Content-Type: application/json
 
@@ -49,6 +53,8 @@ Content-Type: application/json
     "icon": "coffee-premium",
     "category": "Alimentos Premium",
     "walletId": "673f123456789012345678a1",
+    "rubroId": "68e1e130f63328dc654c67b5",
+    "localidades": ["68e1e2a0f63328dc654c67c1", "68e1e2a0f63328dc654c67c3"],
     "availableDays": [1,2,3,4,5,6],
     "validity": "Válido durante octubre",
     "fecha_desde": "2025-10-01",
@@ -60,7 +66,7 @@ Content-Type: application/json
 
 ###
 
-### 6. POST - Crear segundo beneficio para testing
+### 6. POST - Crear segundo beneficio para testing con localidades
 # @name createBeneficio2
 POST {{baseUrl}}
 Content-Type: application/json
@@ -72,6 +78,8 @@ Content-Type: application/json
     "icon": "shopping-cart",
     "category": "Supermercados",
     "walletId": "673f123456789012345678a2",
+    "rubroId": "68e1e130f63328dc654c67b6",
+    "localidades": ["68e1e2a0f63328dc654c67c1"],
     "availableDays": [0,1,2,3,4,5,6],
     "validity": "Válido todos los días",
     "fecha_desde": "2025-01-01",
@@ -108,6 +116,7 @@ Content-Type: application/json
     "discountType": "off",
     "category": "General",
     "walletId": "673f123456789012345678a3",
+    "rubroId": "68e1e130f63328dc654c67b7",
     "availableDays": [1,2,3,4,5],
     "validity": "Válido solo días hábiles",
     "fecha_desde": "2025-11-01",

@@ -11,7 +11,7 @@ import { MikroORM } from "@mikro-orm/core";
 import { NotificacionRouter } from "./notificacion/notificacion.routes.js";
 import { RubrosRouter } from "./rubros/rubros.routes.js";
 import { LocalidadRouter } from "./localidad/localidad.routes.js";
-
+import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 const app = express();
 app.use(express.json());
 
@@ -25,6 +25,7 @@ app.use('/api/wallets', WalletRouter)
 app.use('/api/notificaciones', NotificacionRouter)
 app.use('/api/rubros', RubrosRouter)
 app.use('/api/localidades', LocalidadRouter)
+app.use('/api/ciudades', CiudadRouter);
 /*const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicDir = path.join(__dirname, '../public');*/

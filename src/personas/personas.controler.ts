@@ -14,7 +14,8 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     tel: req.body.tel,
     dni: req.body.dni,
     direccion: req.body.direccion,
-    wallets: req.body.wallets
+    wallets: req.body.wallets,
+    Ciudad: req.body.ciudadId || req.body.ciudad
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -29,7 +30,7 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
 
 async function findAll(req: Request, res: Response) {
   try {
-    const personas = await em.find(persona, {}, { populate: ['wallets'] })
+    const personas = await em.find(persona, {}, { populate: ['wallets', 'ciudad'] })
     res.status(200).json({ message: 'found all personas', data: personas })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
@@ -41,11 +42,11 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id
     let personaFound
     try {
-      personaFound = await em.findOneOrFail(persona, { id }, { populate: ['wallets'] })
+      personaFound = await em.findOneOrFail(persona, { id }, { populate: ['wallets', 'ciudad'] })
     } catch (e) {
       // try by ObjectId in _id
       try {
-        personaFound = await em.findOneOrFail(persona, { _id: new ObjectId(id) }, { populate: ['wallets'] })
+        personaFound = await em.findOneOrFail(persona, { _id: new ObjectId(id) }, { populate: ['wallets', 'ciudad'] })
       } catch (err) {
         throw err
       }

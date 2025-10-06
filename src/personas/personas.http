@@ -1,6 +1,6 @@
 GET http://localhost:3000/api/personas
 
-
+// ciudad = 68e3391749cdc20f677c8ca3
 ### POST a character
 # @name createVader
 POST http://localhost:3000/api/personas
@@ -13,7 +13,8 @@ Content-Type: application/json
     "tel": "2477309919",
     "dni": "12345678",
     "direccion": "Calle narnia 123",
-    "wallets": ["68e2c0760528221174d29bf2","68e18dfd646f6244dd9f0d22"]
+    "wallets": ["68e2c0760528221174d29bf2","68e18dfd646f6244dd9f0d22"],
+    "ciudadId": ["68e3391749cdc20f677c8ca3"]
 }
 
 ### ID

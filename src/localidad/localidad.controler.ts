@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { localidad } from './localidad.entity.js';
+import { Localidad } from './localidad.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { ObjectId } from '@mikro-orm/mongodb';
 
@@ -7,9 +7,8 @@ const em = orm.em;
 
 function sanitizeLocalidadInput(req: Request, _res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
-    coordenadas: req.body.coordenadas,
-    calles: req.body.calles,
-    numero_calle: req.body.numero_calle,
+    nombre_localidad: req.body.nombre_localidad,
+    pais: req.body.pais,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -23,7 +22,7 @@ function sanitizeLocalidadInput(req: Request, _res: Response, next: NextFunction
 
 async function findAll(_req: Request, res: Response) {
   try {
-    const localidades = await em.find(localidad, {});
+    const localidades = await em.find(Localidad, {}, { populate: ['ciudades', 'beneficios'] });
     res.status(200).json({ message: 'found all localidades', data: localidades });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,9 +34,9 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id;
     let localidadFound;
     try {
-      localidadFound = await em.findOneOrFail(localidad, { id });
+      localidadFound = await em.findOneOrFail(Localidad, { id }, { populate: ['ciudades', 'beneficios'] });
     } catch (e) {
-      localidadFound = await em.findOneOrFail(localidad, { _id: new ObjectId(id) });
+      localidadFound = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) }, { populate: ['ciudades', 'beneficios'] });
     }
     res.status(200).json({ message: 'found localidad', data: localidadFound });
   } catch (error: any) {
@@ -47,7 +46,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const localidadCreated = em.create(localidad, req.body.sanitizedInput);
+    const localidadCreated = em.create(Localidad, req.body.sanitizedInput);
     await em.flush();
     res.status(201).json({ message: 'localidad created', data: localidadCreated });
   } catch (error: any) {
@@ -60,9 +59,9 @@ async function update(req: Request, res: Response) {
     const id = req.params.id;
     let localidadToUpdate;
     try {
-      localidadToUpdate = await em.findOneOrFail(localidad, { id });
+      localidadToUpdate = await em.findOneOrFail(Localidad, { id });
     } catch (e) {
-      localidadToUpdate = await em.findOneOrFail(localidad, { _id: new ObjectId(id) });
+      localidadToUpdate = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) });
     }
     em.assign(localidadToUpdate, req.body.sanitizedInput);
     await em.flush();
@@ -77,9 +76,9 @@ async function remove(req: Request, res: Response) {
     const id = req.params.id;
     let localidadToRemove;
     try {
-      localidadToRemove = await em.findOneOrFail(localidad, { id });
+      localidadToRemove = await em.findOneOrFail(Localidad, { id });
     } catch (e) {
-      localidadToRemove = await em.findOneOrFail(localidad, { _id: new ObjectId(id) });
+      localidadToRemove = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) });
     }
     await em.removeAndFlush(localidadToRemove);
     res.status(200).send({ message: 'localidad deleted' });

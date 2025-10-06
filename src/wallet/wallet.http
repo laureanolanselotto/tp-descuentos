@@ -79,7 +79,6 @@ Content-Type: application/json
 {
     "name": "Brubank",
     "descripcion": "Banco 100% digital",
-    "discount": "10%",
     "interes_anual": 12
 }
 
@@ -101,7 +100,6 @@ Content-Type: application/json
 {
     "name": "Naranja X",
     "descripcion": "Súper app financiera con múltiples servicios",
-    "discount": "18%",
     "interes_anual": 18.5
 }
 
@@ -122,43 +120,6 @@ Content-Type: application/json
 {
     "name": "Naranja X Premium",
     "descripcion": "Súper app financiera premium con beneficios exclusivos",
-    "discount": "22%",
     "interes_anual": 22.0
 }
 
-###
-
-### 16. DELETE - Eliminar wallet de prueba
-DELETE {{baseUrl}}/{{walletIdMinima}}
-
-###
-
-### 17. GET - Verificar eliminación (debería dar error 500)
-GET {{baseUrl}}/{{walletIdMinima}}
-
-###
-
-### 18. GET - Estado final de todas las wallets
-GET {{baseUrl}}
-
-###
-
-### 19. DELETE - Limpiar datos de prueba
-DELETE {{baseUrl}}/{{walletId1}}
-
-###
-
-### 20. DELETE - Limpiar más datos de prueba  
-DELETE {{baseUrl}}/{{walletId2}}
-
-###
-
-### 21. DELETE - Limpiar última wallet
-DELETE {{baseUrl}}/{{walletIdCompleta}}
-
-###
-
-### 22. GET - Verificar limpieza final
-GET {{baseUrl}}
-
-###

@@ -1,70 +1,148 @@
-GET http://localhost:3000/api/localidades
+### Variables base para testing localidades (provincias)
+@baseUrl = http://localhost:3000/api/localidades
 
+### 1. GET all localidades
+GET {{baseUrl}}
 
-### POST a localidad
+###
+
+### 2. POST - Crear una nueva localidad (provincia)
 # @name createLocalidad1
-POST http://localhost:3000/api/localidades
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "coordenadas": "-34.6118,-58.3960",
-    "calles": "Av. Corrientes y Callao",
-    "numero_calle": 1234
+    "nombre_localidad": "Buenos Aires",
+    "pais": "Argentina"
 }
 
-### ID
-@id = {{createLocalidad1.response.body.data.id}}
+###
 
-### GET one localidad
-http://localhost:3000/api/localidades/{{id}}
+### 3. Capturar ID de la localidad creada
+@localidadId1 = {{createLocalidad1.response.body.data.id}}
 
-### PUT a localidad
-PUT http://localhost:3000/api/localidades/{{id}}
+### 4. GET - Obtener localidad por ID
+GET {{baseUrl}}/{{localidadId1}}
+
+###
+
+### 5. PUT - Actualizar localidad completa
+PUT {{baseUrl}}/{{localidadId1}}
 Content-Type: application/json
 
 {
-    "coordenadas": "-34.6037,-58.3816",
-    "calles": "Av. 9 de Julio y Rivadavia",
-    "numero_calle": 5678
+    "nombre_localidad": "Provincia de Buenos Aires",
+    "pais": "Argentina"
 }
 
-### POST otra localidad
-POST http://localhost:3000/api/localidades
+###
+
+### 6. POST - Crear segunda localidad para testing
+# @name createLocalidad2
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "coordenadas": "-34.5875,-58.3974",
-    "calles": "Av. Santa Fe y Pueyrredón",
-    "numero_calle": 9012
+    "nombre_localidad": "Córdoba",
+    "pais": "Argentina"
 }
 
-### POST a localidad
-# @name createCharacterToDelete
-POST http://localhost:3000/api/localidades
+###
+
+### 7. Capturar ID de la segunda localidad
+@localidadId2 = {{createLocalidad2.response.body.data.id}}
+
+### 8. PATCH - Actualización parcial
+PATCH {{baseUrl}}/{{localidadId2}}
 Content-Type: application/json
 
 {
-    "name": "tun tun sajur",
-    "apellido": "no",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
+    "nombre_localidad": "Provincia de Córdoba"
 }
-### DELETE a localidad
-@idToDelete = {{createCharacterToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/localidades/{{idToDelete}}
 
-### PATCH a localidad
-PATCH http://localhost:3000/api/localidades/{{idToDelete}}
+###
+
+### 9. POST - Crear localidad con país diferente
+# @name createLocalidadUruguay
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-  "dni": 6,
-  "personaClass":"6531d4aedc98243fffe841e5",
-  "items": ["6531d4f9dc98243fffe841e7"]
+    "nombre_localidad": "Montevideo",
+    "pais": "Uruguay"
 }
 
-### DELETE a localidad
-DELETE http://localhost:3000/api/localidades/{{idToDelete}}
+###
+
+### 10. Capturar ID localidad Uruguay
+@localidadIdUruguay = {{createLocalidadUruguay.response.body.data.id}}
+
+### 11. GET - Verificar localidad Uruguay
+GET {{baseUrl}}/{{localidadIdUruguay}}
+
+###
+
+### 12. POST - Crear localidad solo con nombre (pais por defecto)
+# @name createLocalidadMinima
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre_localidad": "Santa Fe"
+}
+
+###
+
+### 13. Capturar ID localidad mínima
+@localidadIdMinima = {{createLocalidadMinima.response.body.data.id}}
+
+### 14. GET - Verificar todas las localidades creadas
+GET {{baseUrl}}
+
+###
+
+### 15. PUT - Test de actualización con todos los campos
+PUT {{baseUrl}}/{{localidadIdMinima}}
+Content-Type: application/json
+
+{
+    "nombre_localidad": "Provincia de Santa Fe",
+    "pais": "Argentina"
+}
+
+###
+
+### 16. DELETE - Eliminar localidad de prueba
+DELETE {{baseUrl}}/{{localidadIdUruguay}}
+
+###
+
+### 17. GET - Verificar eliminación (debería dar error 500)
+GET {{baseUrl}}/{{localidadIdUruguay}}
+
+###
+
+### 18. GET - Estado final de todas las localidades
+GET {{baseUrl}}
+
+###
+
+### 19. DELETE - Limpiar datos de prueba
+DELETE {{baseUrl}}/{{localidadId1}}
+
+###
+
+### 20. DELETE - Limpiar más datos de prueba  
+DELETE {{baseUrl}}/{{localidadId2}}
+
+###
+
+### 21. DELETE - Limpiar última localidad
+DELETE {{baseUrl}}/{{localidadIdMinima}}
+
+###
+
+### 22. GET - Verificar limpieza final
+GET {{baseUrl}}
+
+###
