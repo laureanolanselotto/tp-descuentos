@@ -12,20 +12,20 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Descuento Café Matutino",
+    "name": "Descuento Café con merca",
     "discount": 20,
     "discountType": "reintegro",
     "icon": "coffee",
     "category": "Alimentos",
     "walletId": "68e2c0760528221174d29bf2",
+    "rubroId": "68e1e130f63328dc654c67b5",
     "availableDays": [1,2,3,4,5],
     "validity": "Válido durante todo septiembre",
     "fecha_desde": "2025-09-01",
     "fecha_hasta": "2025-09-30",
     "limit": "Máximo 1 vez por día",
     "tope_reintegro": 500,
-    "imageUrl": "https://example.com/images/coffee.png",
-    "wallet": "68e2c0760528221174d29bf2"
+    "imageUrl": "https://example.com/images/coffee.png"
 }
 
 ###

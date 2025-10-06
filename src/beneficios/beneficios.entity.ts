@@ -1,6 +1,7 @@
 import { Entity, Property, ManyToOne, Rel, t,OneToMany, Cascade,Collection } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Wallet } from "../wallet/wallet.entity.js";
+import { Rubro } from "../rubros/rubros.entity.js";
 
 @Entity()
 export class Beneficio extends BaseEntity {
@@ -50,4 +51,7 @@ export class Beneficio extends BaseEntity {
   // Relation to Wallet (many beneficios belong to one wallet)
   @ManyToOne(() => Wallet, { nullable: false })
   wallet!: Rel<Wallet>;
+
+  @ManyToOne(() => Rubro, { nullable: false })
+  rubro!: Rel<Rubro>;
 }

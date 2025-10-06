@@ -26,6 +26,10 @@ Content-Type: application/json
     "descripcion": "Cines, teatros, eventos y espectáculos"
 }
 
+## DELETE a rubro
+
+DELETE http://localhost:3000/api/rubros/{{id}}
+
 ### POST otro rubro
 POST http://localhost:3000/api/rubros
 Content-Type: application/json
@@ -35,33 +39,3 @@ Content-Type: application/json
     "descripcion": "Farmacias, clínicas y servicios médicos"
 }
 
-### POST a rubro
-# @name createCharacterToDelete
-POST http://localhost:3000/api/rubros
-Content-Type: application/json
-
-{
-    "name": "tun tun sajur",
-    "apellido": "no",
-    "personaClass": "68d0b3e6fc9576467f753938",
-    "items": [" 68cf79ce11d051e27c6c74ca"," 68cf79f111d051e27c6c74cb"],
-    "email": "laureanolanselotto@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678
-}
-### DELETE a rubro
-@idToDelete = {{createCharacterToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/rubros/{{idToDelete}}
-
-### PATCH a rubro
-PATCH http://localhost:3000/api/rubros/{{idToDelete}}
-Content-Type: application/json
-
-{
-  "dni": 6,
-  "personaClass":"6531d4aedc98243fffe841e5",
-  "items": ["6531d4f9dc98243fffe841e7"]
-}
-
-### DELETE a rubro
-DELETE http://localhost:3000/api/rubros/{{idToDelete}}

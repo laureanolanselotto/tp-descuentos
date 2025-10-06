@@ -23,7 +23,7 @@ Content-Type: application/json
 @walletId1 = {{createWallet1.response.body.data.id}}
 
 ### 4. GET - Obtener wallet por ID
-GET {{baseUrl}}/{{walletId1}}
+GET {{baseUrl}}/68e18dfd646f6244dd9f0d22
 
 ###
 

@@ -22,7 +22,7 @@ function sanitizeRubroInput(req: Request, _res: Response, next: NextFunction) {
 
 async function findAll(_req: Request, res: Response) {
   try {
-    const rubros = await em.find(Rubro, {});
+    const rubros = await em.find(Rubro, {}, { populate: ['beneficios'] });
     res.status(200).json({ message: 'found all rubros', data: rubros });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -34,9 +34,9 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id;
     let rubroFound;
     try {
-      rubroFound = await em.findOneOrFail(Rubro, { id });
+      rubroFound = await em.findOneOrFail(Rubro, { id }, { populate: ['beneficios'] });
     } catch (e) {
-      rubroFound = await em.findOneOrFail(Rubro, { _id: new ObjectId(id) });
+      rubroFound = await em.findOneOrFail(Rubro, { _id: new ObjectId(id) }, { populate: ['beneficios'] });
     }
     res.status(200).json({ message: 'found rubro', data: rubroFound });
   } catch (error: any) {
