@@ -63,14 +63,29 @@ async function add(req: Request, res: Response) {
       return;
     }
 
-    // Crear el payload con referencias
+    // Buscar la localidad usando ObjectId
+    const localidadId = req.body.sanitizedInput.localidadId;
+    const localidadFound = await em.findOne(Localidad, { _id: new ObjectId(localidadId) });
+    
+    if (!localidadFound) {
+      res.status(400).json({ message: 'Localidad not found with provided localidadId' });
+      return;
+    }
+
+    // Crear el payload con la entidad encontrada
     const payload = { ...req.body.sanitizedInput };
-    payload.localidad = em.getReference(Localidad, req.body.sanitizedInput.localidadId);
+    payload.localidad = localidadFound;
     delete payload.localidadId;
 
     const ciudadCreated = em.create(Ciudad, payload);
     await em.flush();
-    res.status(201).json({ message: 'ciudad created', data: ciudadCreated });
+    
+    // Recargar con relaciones pobladas
+    const ciudadWithRelations = await em.findOne(Ciudad, { _id: ciudadCreated._id }, { 
+      populate: ['localidad', 'personas'] 
+    });
+    
+    res.status(201).json({ message: 'ciudad created', data: ciudadWithRelations });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -82,23 +97,37 @@ async function update(req: Request, res: Response) {
     const id = req.params.id;
     let ciudadToUpdate;
     try {
-      ciudadToUpdate = await em.findOneOrFail(Ciudad, { id });
+      ciudadToUpdate = await em.findOneOrFail(Ciudad, { id }, { populate: ['localidad'] });
     } catch (e) {
-      ciudadToUpdate = await em.findOneOrFail(Ciudad, { _id: new ObjectId(id) });
+      ciudadToUpdate = await em.findOneOrFail(Ciudad, { _id: new ObjectId(id) }, { populate: ['localidad'] });
     }
 
     // Crear el payload para la actualización
     const payload = { ...req.body.sanitizedInput };
     
-    // Si localidadId está presente, crear la referencia
+    // Si localidadId está presente, buscar la localidad usando ObjectId
     if (req.body.sanitizedInput.localidadId) {
-      payload.localidad = em.getReference(Localidad, req.body.sanitizedInput.localidadId);
+      const localidadId = req.body.sanitizedInput.localidadId;
+      const localidadFound = await em.findOne(Localidad, { _id: new ObjectId(localidadId) });
+      
+      if (!localidadFound) {
+        res.status(400).json({ message: 'Localidad not found with provided localidadId' });
+        return;
+      }
+      
+      payload.localidad = localidadFound;
       delete payload.localidadId;
     }
 
     em.assign(ciudadToUpdate, payload);
     await em.flush();
-    res.status(200).json({ message: 'ciudad updated', data: ciudadToUpdate });
+    
+    // Recargar con relaciones pobladas
+    const ciudadUpdated = await em.findOne(Ciudad, { _id: ciudadToUpdate._id }, { 
+      populate: ['localidad', 'personas'] 
+    });
+    
+    res.status(200).json({ message: 'ciudad updated', data: ciudadUpdated });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
