@@ -2,7 +2,7 @@ import { Entity, Property, OneToMany, ManyToMany, Cascade, Collection } from "@m
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Ciudad } from "../ciudad/ciudad.entity.js";
 import { Beneficio } from "../beneficios/beneficios.entity.js";
-
+import { persona } from "../personas/personas.entity.js";
 @Entity()
 export class Localidad extends BaseEntity {
   @Property({ nullable: false })
@@ -17,6 +17,10 @@ export class Localidad extends BaseEntity {
   })
   ciudades = new Collection<Ciudad>(this);
 
+  @OneToMany(() => persona, (persona) => persona.localidad, {
+    cascade: [Cascade.ALL],
+  })
+  personas = new Collection<persona>(this);
   // Una provincia puede estar asociada a muchos beneficios, y un beneficio puede aplicar en muchas provincias
   @ManyToMany(() => Beneficio, (beneficio) => beneficio.localidades)
   beneficios = new Collection<Beneficio>(this);

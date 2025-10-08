@@ -1,74 +1,154 @@
-GET http://localhost:3000/api/notificaciones
+### Variables base para testing notificaciones
+@baseUrl = http://localhost:3000/api/notificaciones
 
+### 1. GET all notificaciones
+GET {{baseUrl}}
 
-### POST a notificacion
+###
+
+### 2. POST - Crear primera notificación con persona y wallets
 # @name createNotificacion1
-POST http://localhost:3000/api/notificaciones
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "promocion": "Descuento Black Friday",
-    "porcentaje_promocion": 25,
-    "dias_disponibles": [1, 2, 3, 4, 5],
-    "tipo_promocion": "porcentaje",
-    "max_interes": 15
+    "min_descuento": 15,
+    "tipos_beneficio": ["descuento", "cashback"],
+    "medio_envio": "laureanolanselotto1998@gmail.com",
+    "activo": true,
+    "fecha_ultima_notificacion": "2024-10-01T12:00:00.000Z",
+    "persona": "68e48c21ed6d35261b61151a",
+    "wallets": ["68e30fe48b855f2967c68e9e","68e18dfd646f6244dd9f0d22"]
 }
 
-### ID
-@id = {{createNotificacion1.response.body.data.id}}
+###
 
-### GET one notificacion
-http://localhost:3000/api/notificaciones/{{id}}
+### 3. Capturar ID de la notificación creada
+@notificacionId1 = {{createNotificacion1.response.body.data.id}}
 
-### PUT a notificacion
-PUT http://localhost:3000/api/notificaciones/{{id}}
+### 4. GET - Obtener notificación por ID
+GET {{baseUrl}}/{{notificacionId1}}
+
+###
+
+### 5. PUT - Actualizar notificación completa
+PUT {{baseUrl}}/{{notificacionId1}}
 Content-Type: application/json
 
 {
-    "promocion": "Cyber Monday Super Oferta",
-    "porcentaje_promocion": 30,
-    "dias_disponibles": [1, 2, 3, 4, 5, 6, 7],
-    "tipo_promocion": "descuento",
-    "max_interes": 20
+    "min_descuento": 20,
+    "tipos_beneficio": ["descuento", "cashback", "2x1"],
+    "medio_envio": "email",
+    "activo": true,
+    "fecha_ultima_notificacion": "2024-01-15T10:30:00.000Z",
+    "persona": "REEMPLAZAR_CON_ID_PERSONA",
+    "wallets": ["REEMPLAZAR_CON_ID_WALLET"]
 }
 
-### POST otra notificacion
-POST http://localhost:3000/api/notificaciones
+###
+
+### 6. POST - Crear segunda notificación con múltiples wallets
+# @name createNotificacion2
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "promocion": "Descuento Fin de Semana",
-    "porcentaje_promocion": 15,
-    "dias_disponibles": [6, 7],
-    "tipo_promocion": "reintegro",
-    "max_interes": 10
+    "min_descuento": 10,
+    "tipos_beneficio": ["descuento"],
+    "medio_envio": "sms",
+    "activo": false,
+    "persona": "REEMPLAZAR_CON_ID_PERSONA",
+    "wallets": ["REEMPLAZAR_CON_ID_WALLET_1", "REEMPLAZAR_CON_ID_WALLET_2"]
 }
 
-### POST a notificacion para eliminar
-# @name createNotificacionToDelete
-POST http://localhost:3000/api/notificaciones
+###
+
+### 7. Capturar ID de la segunda notificación
+@notificacionId2 = {{createNotificacion2.response.body.data.id}}
+
+### 8. PATCH - Actualización parcial (activar notificación)
+PATCH {{baseUrl}}/{{notificacionId2}}
 Content-Type: application/json
 
 {
-    "promocion": "Promo Temporal",
-    "porcentaje_promocion": 5,
-    "dias_disponibles": [1, 3, 5],
-    "tipo_promocion": "cashback",
-    "max_interes": 8
+    "activo": true,
+    "min_descuento": 12
 }
 
-### DELETE a notificacion
-@idToDelete = {{createNotificacionToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/notificaciones/{{idToDelete}}
+###
 
-### PATCH a notificacion
-PATCH http://localhost:3000/api/notificaciones/{{id}}
+### 9. POST - Crear notificación con datos mínimos
+# @name createNotificacionMinima
+POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "porcentaje_promocion": 35,
-    "max_interes": 25
+    "min_descuento": 5,
+    "tipos_beneficio": ["descuento"],
+    "persona": "REEMPLAZAR_CON_ID_PERSONA"
 }
 
-### DELETE a notificacion
-DELETE http://localhost:3000/api/notificaciones/{{idToDelete}}
+###
+
+### 10. Capturar ID notificación mínima
+@notificacionIdMinima = {{createNotificacionMinima.response.body.data.id}}
+
+### 11. GET - Verificar notificación mínima
+GET {{baseUrl}}/{{notificacionIdMinima}}
+
+###
+
+### 12. POST - Crear notificación con todos los tipos de beneficio
+# @name createNotificacionCompleta
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "min_descuento": 25,
+    "tipos_beneficio": ["descuento", "cashback", "2x1", "regalo", "puntos"],
+    "medio_envio": "push",
+    "activo": true,
+    "persona": "REEMPLAZAR_CON_ID_PERSONA",
+    "wallets": ["REEMPLAZAR_CON_ID_WALLET"]
+}
+
+###
+
+### 13. Capturar ID notificación completa
+@notificacionIdCompleta = {{createNotificacionCompleta.response.body.data.id}}
+
+### 14. GET - Verificar todas las notificaciones creadas
+GET {{baseUrl}}
+
+###
+
+### 15. PUT - Test de actualización con cambio de persona
+PUT {{baseUrl}}/{{notificacionIdCompleta}}
+Content-Type: application/json
+
+{
+    "min_descuento": 30,
+    "tipos_beneficio": ["descuento", "cashback"],
+    "medio_envio": "email",
+    "activo": true,
+    "fecha_ultima_notificacion": "2024-10-07T14:00:00.000Z",
+    "persona": "REEMPLAZAR_CON_ID_PERSONA_2",
+    "wallets": ["REEMPLAZAR_CON_ID_WALLET"]
+}
+
+###
+
+### 16. DELETE - Eliminar primera notificación
+DELETE {{baseUrl}}/{{notificacionId1}}
+
+###
+
+### 17. DELETE - Eliminar segunda notificación
+DELETE {{baseUrl}}/{{notificacionId2}}
+
+###
+
+### 18. GET - Verificar notificaciones restantes después de eliminaciones
+GET {{baseUrl}}
+
+###

@@ -15,6 +15,7 @@ Content-Type: application/json
     "name": "MercadoPago",
     "descripcion": "Billetera digital para pagos y transferencias",
     "interes_anual": 12,
+    "notificaciones": ["1", "2"]
 }
 
 ###
@@ -22,8 +23,12 @@ Content-Type: application/json
 ### 3. Capturar ID de la wallet creada
 @walletId1 = {{createWallet1.response.body.data.id}}
 
+#Deleted
+
+DELETE {{baseUrl}}/{{walletId1}}
+
 ### 4. GET - Obtener wallet por ID
-GET {{baseUrl}}/68e18dfd646f6244dd9f0d22
+GET {{baseUrl}}/68e599b52802cc80e131a7d3
 
 ###
 
@@ -34,7 +39,6 @@ Content-Type: application/json
 {
     "name": "MercadoPago Premium",
     "descripcion": "Billetera digital premium con beneficios exclusivos",
-    "discount": "25%",
     "interes_anual": 15.0
 }
 
@@ -48,9 +52,6 @@ Content-Type: application/json
 {
     "name": "Ualá",
     "descripcion": "Tarjeta prepaga y billetera digital",
-    "personas": ["2131"],
-    "beneficios": ["123"],
-    "discount": "15%",
     "interes_anual": 8.76
 }
 

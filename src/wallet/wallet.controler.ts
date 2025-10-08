@@ -12,6 +12,7 @@ function sanitizeWalletInput(req: Request, _res: Response, next: NextFunction) {
     interes_anual: req.body.interes_anual,
     beneficios: req.body.beneficios,
     personas: req.body.personas,
+    notificaciones: req.body.notificaciones,
   };
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -25,7 +26,7 @@ function sanitizeWalletInput(req: Request, _res: Response, next: NextFunction) {
 
 async function findAll(_req: Request, res: Response) {
   try {
-  const wallets = await em.find(Wallet, {}, { populate: ['beneficios', 'personas'] });
+  const wallets = await em.find(Wallet, {}, { populate: ['beneficios', 'personas', 'notificaciones'] });
     res.status(200).json({ message: 'found all wallets', data: wallets });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -37,10 +38,10 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id;
     let walletFound;
     try {
-  walletFound = await em.findOneOrFail(Wallet, { id }, { populate: ['beneficios', 'personas'] });
+  walletFound = await em.findOneOrFail(Wallet, { id }, { populate: ['beneficios', 'personas', 'notificaciones'] });
     } catch (e) {
       try {
-  walletFound = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) }, { populate: ['beneficios', 'personas'] });
+  walletFound = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) }, { populate: ['beneficios', 'personas', 'notificaciones'] });
       } catch (err) {
         throw err;
       }
@@ -52,46 +53,38 @@ async function findOne(req: Request, res: Response) {
 }
 
 async function add(req: Request, res: Response) {
-  try {
-    const walletCreated = em.create(Wallet, req.body.sanitizedInput);
-    await em.flush();
-    res.status(201).json({ message: 'wallet created', data: walletCreated });
+   try {
+    const wallets = em.create(Wallet, req.body.sanitizedInput)
+    await em.flush()
+    res.status(201).json({ message: 'wallet created', data: wallets })
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
 }
 
 async function update(req: Request, res: Response) {
   try {
-    const id = req.params.id;
-    let walletToUpdate;
-    try {
-      walletToUpdate = await em.findOneOrFail(Wallet, { id });
-    } catch (e) {
-      walletToUpdate = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) });
-    }
-    em.assign(walletToUpdate, req.body.sanitizedInput);
-    await em.flush();
-    res.status(200).json({ message: 'wallet updated', data: walletToUpdate });
+    const id = req.params.id
+    const walletToUpdate = await em.findOneOrFail(Wallet, { id })
+    em.assign(walletToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'wallet updated', data: walletToUpdate })
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
 }
 
 async function remove(req: Request, res: Response) {
   try {
-    const id = req.params.id;
-    let walletToRemove;
-    try {
-      walletToRemove = await em.findOneOrFail(Wallet, { id });
-    } catch (e) {
-      walletToRemove = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) });
-    }
-    await em.removeAndFlush(walletToRemove);
-    res.status(200).send({ message: 'wallet deleted' });
+    const id = req.params.id
+    const wallet = em.getReference(Wallet, id)
+    await em.removeAndFlush(wallet)
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
 }
+
 
 export { sanitizeWalletInput, findAll, findOne, add, update, remove };

@@ -27,7 +27,7 @@ function sanitizeCiudadInput(req: Request, _res: Response, next: NextFunction) {
 // Obtener todas las ciudades con sus relaciones
 async function findAll(_req: Request, res: Response) {
   try {
-    const ciudades = await em.find(Ciudad, {}, { populate: ['localidad', 'personas'] });
+    const ciudades = await em.find(Ciudad, {}, { populate: ['localidad'] });
     res.status(200).json({ message: 'found all ciudades', data: ciudades });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -40,10 +40,10 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id;
     let ciudadFound;
     try {
-      ciudadFound = await em.findOneOrFail(Ciudad, { id }, { populate: ['localidad', 'personas'] });
+      ciudadFound = await em.findOneOrFail(Ciudad, { id }, { populate: ['localidad'] });
     } catch (e) {
       try {
-        ciudadFound = await em.findOneOrFail(Ciudad, { _id: new ObjectId(id) }, { populate: ['localidad', 'personas'] });
+        ciudadFound = await em.findOneOrFail(Ciudad, { _id: new ObjectId(id) }, { populate: ['localidad'] });
       } catch (err) {
         throw err;
       }
@@ -82,7 +82,7 @@ async function add(req: Request, res: Response) {
     
     // Recargar con relaciones pobladas
     const ciudadWithRelations = await em.findOne(Ciudad, { _id: ciudadCreated._id }, { 
-      populate: ['localidad', 'personas'] 
+      populate: ['localidad'] 
     });
     
     res.status(201).json({ message: 'ciudad created', data: ciudadWithRelations });
@@ -124,7 +124,7 @@ async function update(req: Request, res: Response) {
     
     // Recargar con relaciones pobladas
     const ciudadUpdated = await em.findOne(Ciudad, { _id: ciudadToUpdate._id }, { 
-      populate: ['localidad', 'personas'] 
+      populate: ['localidad'] 
     });
     
     res.status(200).json({ message: 'ciudad updated', data: ciudadUpdated });

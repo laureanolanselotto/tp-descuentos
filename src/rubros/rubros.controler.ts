@@ -48,7 +48,13 @@ async function add(req: Request, res: Response) {
   try {
     const rubroCreated = em.create(Rubro, req.body.sanitizedInput);
     await em.flush();
-    res.status(201).json({ message: 'rubro created', data: rubroCreated });
+    
+    // Recargar con relaciones pobladas
+    const rubroWithRelations = await em.findOne(Rubro, { _id: rubroCreated._id }, {
+      populate: ['beneficios']
+    });
+    
+    res.status(201).json({ message: 'rubro created', data: rubroWithRelations });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -59,13 +65,19 @@ async function update(req: Request, res: Response) {
     const id = req.params.id;
     let rubroToUpdate;
     try {
-      rubroToUpdate = await em.findOneOrFail(Rubro, { id });
+      rubroToUpdate = await em.findOneOrFail(Rubro, { id }, { populate: ['beneficios'] });
     } catch (e) {
-      rubroToUpdate = await em.findOneOrFail(Rubro, { _id: new ObjectId(id) });
+      rubroToUpdate = await em.findOneOrFail(Rubro, { _id: new ObjectId(id) }, { populate: ['beneficios'] });
     }
     em.assign(rubroToUpdate, req.body.sanitizedInput);
     await em.flush();
-    res.status(200).json({ message: 'rubro updated', data: rubroToUpdate });
+    
+    // Recargar con relaciones pobladas
+    const rubroUpdated = await em.findOne(Rubro, { _id: rubroToUpdate._id }, {
+      populate: ['beneficios']
+    });
+    
+    res.status(200).json({ message: 'rubro updated', data: rubroUpdated });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

@@ -26,14 +26,7 @@ app.use('/api/notificaciones', NotificacionRouter)
 app.use('/api/rubros', RubrosRouter)
 app.use('/api/localidades', LocalidadRouter)
 app.use('/api/ciudades', CiudadRouter);
-/*const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const publicDir = path.join(__dirname, '../public');*/
 
-/*app.use('/virtual-wallets', express.static(path.join(publicDir, 'virtual-wallets')));
-app.get(/^\/virtual-wallets(?:\/.*)?$/, (_req, res) => {
-  res.sendFile(path.join(publicDir, 'virtual-wallets', 'index.html'));
-});*/
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' })

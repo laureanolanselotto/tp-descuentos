@@ -2,6 +2,7 @@ import {  Cascade, Collection, Entity, ManyToMany, ManyToOne, OneToMany, Propert
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Beneficio } from "../beneficios/beneficios.entity.js";
 import { persona } from "../personas/personas.entity.js";
+import { Notificacion } from "../notificacion/notificacion.entity.js";
 
 @Entity()
 export class Wallet extends BaseEntity {
@@ -22,4 +23,8 @@ export class Wallet extends BaseEntity {
     cascade: [Cascade.ALL],
   })
   beneficios = new Collection<Beneficio>(this);
+
+  // relacion muchos a muchos con notificaciones
+  @ManyToMany(() => Notificacion, (notificacion) => notificacion.wallets)
+  notificaciones = new Collection<Notificacion>(this);
 }

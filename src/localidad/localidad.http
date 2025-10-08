@@ -12,12 +12,12 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "nombre_localidad": "Buenos Aires",
+    "nombre_localidad": "Rosario",
     "pais": "Argentina"
 }
 
 ###
-
+DELETE {{baseUrl}}/{{localidadId1}} 
 ### 3. Capturar ID de la localidad creada
 @localidadId1 = {{createLocalidad1.response.body.data.id}}
 

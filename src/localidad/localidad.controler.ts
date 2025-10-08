@@ -22,7 +22,7 @@ function sanitizeLocalidadInput(req: Request, _res: Response, next: NextFunction
 
 async function findAll(_req: Request, res: Response) {
   try {
-    const localidades = await em.find(Localidad, {}, { populate: ['ciudades', 'beneficios'] });
+    const localidades = await em.find(Localidad, {}, { populate: ['ciudades', 'beneficios','personas'] });
     res.status(200).json({ message: 'found all localidades', data: localidades });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -34,9 +34,9 @@ async function findOne(req: Request, res: Response) {
     const id = req.params.id;
     let localidadFound;
     try {
-      localidadFound = await em.findOneOrFail(Localidad, { id }, { populate: ['ciudades', 'beneficios'] });
+      localidadFound = await em.findOneOrFail(Localidad, { id }, { populate: ['ciudades', 'beneficios','personas'] });
     } catch (e) {
-      localidadFound = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) }, { populate: ['ciudades', 'beneficios'] });
+      localidadFound = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) }, { populate: ['ciudades', 'beneficios','personas'] });
     }
     res.status(200).json({ message: 'found localidad', data: localidadFound });
   } catch (error: any) {
@@ -48,13 +48,7 @@ async function add(req: Request, res: Response) {
   try {
     const localidadCreated = em.create(Localidad, req.body.sanitizedInput);
     await em.flush();
-    
-    // Recargar la localidad con las relaciones pobladas
-    const localidadWithRelations = await em.findOne(Localidad, { _id: localidadCreated._id }, { 
-      populate: ['ciudades', 'beneficios'] 
-    });
-    
-    res.status(201).json({ message: 'localidad created', data: localidadWithRelations });
+    res.status(201).json({ message: 'localidad created', data: localidadCreated });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -62,28 +56,17 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = req.params.id;
-    let localidadToUpdate;
-    try {
-      localidadToUpdate = await em.findOneOrFail(Localidad, { id }, { populate: ['ciudades', 'beneficios'] });
-    } catch (e) {
-      localidadToUpdate = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) }, { populate: ['ciudades', 'beneficios'] });
-    }
-    
-    em.assign(localidadToUpdate, req.body.sanitizedInput);
-    await em.flush();
-    
-    // Recargar con relaciones pobladas
-    const localidadUpdated = await em.findOne(Localidad, { _id: localidadToUpdate._id }, { 
-      populate: ['ciudades', 'beneficios'] 
-    });
-    
-    res.status(200).json({ message: 'localidad updated', data: localidadUpdated });
+    const id = req.params.id
+    const localidadToUpdate = await em.findOneOrFail(Localidad, { id })
+    em.assign(localidadToUpdate, req.body.sanitizedInput)
+    await em.flush()
+    res
+      .status(200)
+      .json({ message: 'localidad updated', data: localidadToUpdate })
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message })
   }
 }
-
 async function remove(req: Request, res: Response) {
   try {
     const id = req.params.id;

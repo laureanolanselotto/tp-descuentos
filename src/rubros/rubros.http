@@ -15,7 +15,7 @@ Content-Type: application/json
 @id = {{createRubro1.response.body.data.id}}
 
 ### GET one rubro
-http://localhost:3000/api/rubros/{{id}}
+GET  http://localhost:3000/api/rubros/68e1e130f63328dc654c67b5
 
 ### PUT a rubro
 PUT http://localhost:3000/api/rubros/{{id}}

@@ -1,7 +1,8 @@
 import { Cascade, Collection, Entity, ManyToMany, ManyToOne, OneToMany, Property, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Wallet } from "../wallet/wallet.entity.js";
-import { Ciudad } from "../ciudad/ciudad.entity.js";
+import { Notificacion } from "../notificacion/notificacion.entity.js";
+import { Localidad } from "../localidad/localidad.entity.js";
 @Entity()
 export class persona extends BaseEntity {
   @Property({ nullable: false })
@@ -28,9 +29,16 @@ export class persona extends BaseEntity {
   })
   wallets = new Collection<Wallet>(this);
 
-  // relacion muchas personas pertenecen a una ciudad
-  @ManyToOne(() => Ciudad, { nullable: true })
-  ciudad?: Rel<Ciudad>;
+  // relacion muchas personas pertenecen a una localidad
+  @ManyToOne(() => Localidad, { nullable: true })
+  localidad?: Rel<Localidad>;
+  
+  // relacion una persona puede tener muchas notificaciones
+  @OneToMany(() => Notificacion, (notificacion) => notificacion.persona, {
+    cascade: [Cascade.ALL],
+    
+  })
+  notificaciones = new Collection<Notificacion>(this);
 
 }
 
