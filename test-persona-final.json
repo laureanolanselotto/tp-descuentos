@@ -1,9 +1,0 @@
-{
-  "name": "Final Test User",
-  "apellido": "Final",
-  "email": "finaltest@test.com",
-  "tel": 555666777,
-  "dni": 99887766,
-  "direccion": "Final Test Address",
-  "wallets": ["68e18dfd646f6244dd9f0d22", "68e2c0760528221174d29bf2"]
-}

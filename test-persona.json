@@ -1,8 +1,0 @@
-{
-  "nombres": "Juan Carlos",
-  "apellidos": "Perez",
-  "email": "juan@example.com",
-  "telefono": "1234567890",
-  "ubicacion": "Buenos Aires",
-  "wallets": ["68e18d8f646f6244dd9f0d21"]
-}

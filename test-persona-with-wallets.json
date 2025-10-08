@@ -1,9 +1,0 @@
-{
-  "name": "Test User",
-  "apellido": "Test",
-  "email": "testuser@test.com",
-  "tel": 123456789,
-  "dni": 87654321,
-  "direccion": "Test Address",
-  "wallets": ["68e18dfd646f6244dd9f0d22", "68e2c0760528221174d29bf2"]
-}
