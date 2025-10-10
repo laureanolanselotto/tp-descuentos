@@ -14,8 +14,7 @@ Content-Type: application/json
     "dni": "12345678",
     "direccion": "Calle narnia 123",
     "wallets": [ "68e48baded6d35261b611518","68e5b6e003cec7b6df2b5e1c"],
-    "ciudadId": "68e3391749cdc20f677c8ca3",
-    "localidadId": "68e5b58603cec7b6df2b5e19"
+    "localidad": "68e5b58603cec7b6df2b5e19"
 }
 
 ### ID

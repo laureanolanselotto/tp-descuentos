@@ -36,7 +36,6 @@ export class persona extends BaseEntity {
   // relacion una persona puede tener muchas notificaciones
   @OneToMany(() => Notificacion, (notificacion) => notificacion.persona, {
     cascade: [Cascade.ALL],
-    
   })
   notificaciones = new Collection<Notificacion>(this);
 

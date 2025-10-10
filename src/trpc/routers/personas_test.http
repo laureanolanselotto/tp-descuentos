@@ -36,15 +36,15 @@ GET {{baseUrl}}/persona.getById?input={"json":{"id":"68e5b71103cec7b6df2b5e1d"}}
 GET {{baseUrl}}/persona.getById?input={"json":{"id":"68e671628141a3ff6f14e782"}}
 
 ###
-# 5. Actualizar persona existente (POST)
-POST {{baseUrl}}/persona.update
+# 5. Actualizar persona existente (POST - tRPC solo permite POST para mutations)
+PUT  {{baseUrl}}/persona.update
 Content-Type: application/json
 
 {
   "json": {
-    "id": "68e6766654d1d6b433ae175a",
+    "id": "68e6799f54d1d6b433ae175e",
     "data": {
-      "name": "Test ACTUALIZADO",
+      "name": "Test ACTUALIZADO con POST",
       "apellido": "Router MODIFICADO",
       "email": "test.updated@email.com"
     }
@@ -52,8 +52,23 @@ Content-Type: application/json
 }
 
 ###
+# 5b. Segundo update (PATCH style - solo algunos campos)
+PATCH {{baseUrl}}/persona.update
+Content-Type: application/json
+
+{
+  "json": {
+    "id": "68e6787054d1d6b433ae175d",
+    "data": {
+      "name": "PATCH Style Update",
+      "direccion": "Nueva direccion PATCH"
+    }
+  }
+}
+
+###
 # 6. Eliminar persona (POST)
-POST {{baseUrl}}/persona.delete
+DELETE  {{baseUrl}}/persona.delete
 Content-Type: application/json
 
 {

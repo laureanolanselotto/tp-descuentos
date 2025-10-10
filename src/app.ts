@@ -1,52 +1,42 @@
-﻿import express from "express";
+import express from "express";
 import 'reflect-metadata';
+import { PersonasRouter } from "./personas/personas.routes.js";
+import { BeneficiosRouter } from './beneficios/beneficios.routes.js';
 import { orm } from "./shared/db/orm.js";
 import { RequestContext } from '@mikro-orm/core';
-import { createExpressMiddleware } from '@trpc/server/adapters/express';
-import { appRouter } from './trpc/index.js';
-import { createContext } from './trpc/trpc.js';
+import { WalletRouter } from "./wallet/wallet.routes.js";
 import { NotificacionRouter } from "./notificacion/notificacion.routes.js";
-import cors from 'cors';
+import { RubrosRouter } from "./rubros/rubros.routes.js";
+import { LocalidadRouter } from "./localidad/localidad.routes.js";
+import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 const app = express();
-
-// Middlewares básicos
 app.use(express.json());
-app.use(cors());
 
-// Middleware para MikroORM context
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
 
-// tRPC middleware - reemplaza todas las rutas REST
-app.use(
-  '/trpc',
-  createExpressMiddleware({
-    router: appRouter,
-    createContext,
-    onError: ({ path, error }) => {
-      console.error(`❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`);
-    },
-  })
-);
+app.use('/api/personas', PersonasRouter)
+app.use('/api/beneficios', BeneficiosRouter)
+app.use('/api/wallets', WalletRouter)
+app.use('/api/notificaciones', NotificacionRouter)
+app.use('/api/rubros', RubrosRouter)
+app.use('/api/localidades', LocalidadRouter)
+app.use('/api/ciudades', CiudadRouter);
+/*const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.join(__dirname, '../public');*/
 
-// Mantener solo Notificaciones como REST (mientras no se migre)
-app.use('/api/notificaciones', NotificacionRouter);
+/*app.use('/virtual-wallets', express.static(path.join(publicDir, 'virtual-wallets')));
+app.get(/^\/virtual-wallets(?:\/.*)?$/, (_req, res) => {
+  res.sendFile(path.join(publicDir, 'virtual-wallets', 'index.html'));
+});*/
 
-// Health check endpoint
-app.get('/health', (_, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// 404 handler
 app.use((_, res) => {
-  res.status(404).send({ 
-    message: 'Resource not found. Use /trpc for API endpoints or /health for health check' 
-  });
-});
+  res.status(404).send({ message: 'Resource not found' })
+  return
+})
 
 app.listen(3000, () => {
-  console.log('🚀 Server is running on port http://localhost:3000');
-  console.log('📡 tRPC endpoint: http://localhost:3000/trpc');
-  console.log('🏥 Health check: http://localhost:3000/health');
+  console.log('Server is running on port http://localhost:3000');
 });

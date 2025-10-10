@@ -160,7 +160,7 @@ Content-Type: application/json
 @beneficioIdCuotas = {{createBeneficioCuotas.response.body.data.id}}
 
 ### 14. GET - Verificar todos los beneficios creados
-GET {{baseUrl}}
+GET {{baseUrl}}/{{beneficioId1}}
 
 ###
 

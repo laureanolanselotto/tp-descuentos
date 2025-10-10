@@ -3,8 +3,8 @@
 
 ### Variables para IDs de ejemplo - reemplazar con IDs reales de tu DB
 @localidadRosarioId = 68e5b58603cec7b6df2b5e19
-@walletMercadoPagoId = 68e48baded6d35261b611518
-@walletUalaId = 68e5b6e003cec7b6df2b5e1c
+@walletMercadoPagoId = 68e5b6e003cec7b6df2b5e1c
+@walletUalaId = 68e48baded6d35261b611518
 @testPersonaId = 68e6766654d1d6b433ae175a
 
 ###
@@ -26,7 +26,7 @@ Content-Type: application/json
     "tel": "1123456789",
     "dni": "23456789",
     "direccion": "Av. Corrientes 1234",
-    "localidadId": "{{localidadBuenosAiresId}}",
+    "localidadId": "{{localidadRosarioId}}",
     "wallets": ["{{walletMercadoPagoId}}", "{{walletUalaId}}"]
   }
 }
@@ -46,7 +46,6 @@ Content-Type: application/json
 GET {{baseUrl}}/persona.getById
 Content-Type: application/json
 
-{
 ###
 # Test adicional - obtener persona específica con relaciones
 GET {{baseUrl}}/persona.getById?input={"json":"68e5b71103cec7b6df2b5e1d"}
