@@ -17,6 +17,7 @@ export const updateWalletSchema = createWalletSchema.partial();
 export const createPersonaSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   apellido: z.string().min(1, 'Apellido is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
   email: z.string().email('Must be a valid email'),
   tel: z.string().min(1, 'Phone is required'), // Cambiado de number a string
   dni: z.string().min(1, 'DNI is required'),   // Cambiado de number a string

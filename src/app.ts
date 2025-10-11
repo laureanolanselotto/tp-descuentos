@@ -9,6 +9,8 @@ import { NotificacionRouter } from "./notificacion/notificacion.routes.js";
 import { RubrosRouter } from "./rubros/rubros.routes.js";
 import { LocalidadRouter } from "./localidad/localidad.routes.js";
 import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
+import { AuthRouter } from "./APIS/auth.routes.js";
+
 const app = express();
 app.use(express.json());
 
@@ -16,6 +18,7 @@ app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
 
+app.use('/api/auth', AuthRouter)
 app.use('/api/personas', PersonasRouter)
 app.use('/api/beneficios', BeneficiosRouter)
 app.use('/api/wallets', WalletRouter)

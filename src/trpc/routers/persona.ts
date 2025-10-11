@@ -4,6 +4,7 @@ import { router, publicProcedure } from '../trpc.js';
 import { persona } from '../../personas/personas.entity.js';
 import { createPersonaSchema, updatePersonaSchema, idSchema } from '../schemas.js';
 import { ObjectId } from '@mikro-orm/mongodb';
+import bcrypt from 'bcryptjs';
 
 // Función utilitaria simplificada basada en el controlador
 async function findByIdOrObjectId(em: any, id: string) {
@@ -55,9 +56,13 @@ export const personaRouter = router({
     .input(createPersonaSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        // Hash del password
+        const hashedPassword = await bcrypt.hash(input.password, 10);
+        
         // Preparar datos como en el controlador con conversión de tipos
         const personaData = {
           ...input,
+          password: hashedPassword,
           tel: parseInt(input.tel),
           dni: parseInt(input.dni)
         };
@@ -117,6 +122,55 @@ export const personaRouter = router({
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Persona not found'
+        });
+      }
+    }),
+
+  // LOGIN persona
+  login: publicProcedure
+    .input(z.object({
+      email: z.string().email('Must be a valid email'),
+      password: z.string().min(1, 'Password is required')
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        // Buscar persona por email - incluir password explícitamente
+        const personaFound = await ctx.em.findOne(persona, { email: input.email }, { 
+          populate: ['wallets', 'localidad'],
+          fields: ['*', 'password'] // Incluir explícitamente el campo password que está hidden
+        });
+
+        if (!personaFound) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Credenciales inválidas'
+          });
+        }
+
+        // Verificar contraseña
+        const isPasswordValid = await bcrypt.compare(input.password, personaFound.password);
+        
+        if (!isPasswordValid) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Credenciales inválidas'
+          });
+        }
+
+        // Login exitoso - remover password de la respuesta
+        const { password: _, ...personaData } = personaFound;
+        return {
+          message: 'Login exitoso',
+          data: personaData
+        };
+
+      } catch (error: any) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: error.message
         });
       }
     }),

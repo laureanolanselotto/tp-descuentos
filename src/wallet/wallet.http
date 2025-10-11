@@ -12,12 +12,10 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "MercadoPago",
-    "descripcion": "Billetera digital para pagos y transferencias",
-    "interes_anual": 12,
-    "notificaciones": ["1", "2"]
+    "name": "Ualá",
+    "descripcion": "Tarjeta prepaga y billetera digital",
+    "interes_anual": 8.76
 }
-
 ###
 
 ### 3. Capturar ID de la wallet creada
@@ -65,7 +63,7 @@ PATCH {{baseUrl}}/{{walletId2}}
 Content-Type: application/json
 
 {
-    "discount": "17%",
+    "name": "mercado pago",
     "interes_anual": 10.0,
     "descripcion": "Tarjeta prepaga y billetera digital con nuevos beneficios"
 }

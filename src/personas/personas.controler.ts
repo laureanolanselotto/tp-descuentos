@@ -2,15 +2,15 @@ import { Request, Response ,NextFunction} from 'express'
 import { persona } from './personas.entity.js'
 import { orm } from '../shared/db/orm.js'
 import { ObjectId } from '@mikro-orm/mongodb'
+import bcrypt from 'bcryptjs';
 
 const em = orm.em
 
 
 function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
-
-
   req.body.sanitizedInput = {
     name: req.body.name,
+    password: req.body.password, // Lo hashearemos en add/update
     apellido: req.body.apellido,
     email: req.body.email,
     tel: req.body.tel,
@@ -27,14 +27,17 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     }
   })
 
-
   next()
 }
 
 async function findAll(req: Request, res: Response) {
   try {
     const personas = await em.find(persona, {}, { populate: ['wallets', 'localidad','notificaciones'] })
-    res.status(200).json({ message: 'found all personas', data: personas })
+    
+    // Remover password de todas las personas
+    const personasWithoutPassword = personas.map(({ password: _, ...persona }) => persona);
+    
+    res.status(200).json({ message: 'found all personas', data: personasWithoutPassword })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -54,7 +57,11 @@ async function findOne(req: Request, res: Response) {
         throw err
       }
     }
-    res.status(200).json({ message: 'found persona', data: personaFound })
+    
+    // Remover password de la respuesta
+    const { password: _, ...personaData } = personaFound;
+    
+    res.status(200).json({ message: 'found persona', data: personaData })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
@@ -62,25 +69,34 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
    try {
-     const input = { ...req.body.sanitizedInput }
+     const input = { ...req.body.sanitizedInput }// cuerpo de la request
+     
+     // Hash del password si está presente
+     if (input.password) {
+       input.password = await bcrypt.hash(input.password, 10);
+     }
      
      // Convertir IDs de wallets y localidad a ObjectId
-     if (input.wallets && Array.isArray(input.wallets)) {
-       input.wallets = input.wallets.map((walletId: string) => new ObjectId(walletId))
+     if (input.wallets && Array.isArray(input.wallets)) { // pregunto si existe e es un array
+       input.wallets = input.wallets.map((walletId: string) => new ObjectId(walletId))// lo mapeo a ObjectId
      }
      if (input.localidad) {
-       input.localidad = new ObjectId(input.localidad)
+       input.localidad = new ObjectId(input.localidad)// mas de lo mismo
      }
      
-     const personaCreated = em.create(persona, input);
-     await em.flush();
+     const personaCreated = em.create(persona, input);// creo la persona usando el input modificado y con los strings de 
+     // wallets y localidad convertidos a ObjectId porque  asi funcionan las relaciones en la base de datos 
+     await em.flush();// vacio el bus
      
      // Recargar con relaciones pobladas
-     const personaWithRelations = await em.findOne(persona, { _id: personaCreated._id }, {
+     const personaWithRelations = await em.findOne(persona, { _id: personaCreated._id }, {// busco la persona que acabo de crear
        populate: ['wallets', 'localidad']
      })
 
-     res.status(201).json({ message: 'persona created', data: personaWithRelations });
+     // Remover password de la respuesta
+     const { password: _, ...personaData } = personaWithRelations || {};
+     
+     res.status(201).json({ message: 'persona created', data: personaData });// devuelvo la persona con las relaciones pobladas
    } catch (error: any) {
      res.status(500).json({ message: error.message });
    }
@@ -89,6 +105,11 @@ async function update(req: Request, res: Response) {
   try {
     const id = req.params.id
     const input = { ...req.body.sanitizedInput }
+    
+    // Hash del password si está presente
+    if (input.password != undefined) {
+      input.password = await bcrypt.hash(input.password, 10);
+    }
     
     // Convertir IDs de wallets y localidad a ObjectId
     if (input.wallets && Array.isArray(input.wallets)) {
@@ -101,9 +122,13 @@ async function update(req: Request, res: Response) {
     const personaToUpdate = await em.findOneOrFail(persona, { id })
     em.assign(personaToUpdate, input)
     await em.flush()
+    
+    // Remover password de la respuesta
+    const { password: _, ...personaData } = personaToUpdate;
+    
     res
       .status(200)
-      .json({ message: 'persona updated', data: personaToUpdate })
+      .json({ message: 'persona updated', data: personaData })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
