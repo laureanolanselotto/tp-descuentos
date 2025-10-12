@@ -14,3 +14,4 @@ export async function createAccessToken(payload: { id: string | number }): Promi
     });
   });
 }
+export {TOKEN_SECRET}

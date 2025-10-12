@@ -7,10 +7,10 @@ POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "laureano tralala",
-    "apellido": "lanselotto",
-    "password": "123456",
-    "email": "laureanolanselotto@gmail.com",
+    "name": "liri lira la",
+    "apellido": "tralala",
+    "password": "1234",
+    "email": "brainrot@gmail.com",
     "tel": 2477309919,
     "dni": 12345678,
     "direccion": "Calle narnia 123",
@@ -23,8 +23,17 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "laureanolanselotto@gmail.com",
-  "password": "123456"
+  "email": "brainrot@gmail.com",
+  "password": "1234"
+}
+
+### prueba de logout
+POST http://localhost:3000/api/auth/logout
+Content-Type: application/json
+
+{
+  "email": "brainrot@gmail.com",
+  "password": "1234"
 }
 
 ### Login con JWT Token (Nueva ruta de auth)

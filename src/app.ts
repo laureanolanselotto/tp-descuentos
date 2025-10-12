@@ -10,9 +10,10 @@ import { RubrosRouter } from "./rubros/rubros.routes.js";
 import { LocalidadRouter } from "./localidad/localidad.routes.js";
 import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 import { AuthRouter } from "./APIS/auth.routes.js";
-
+import cookieParser from "cookie-parser";
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
