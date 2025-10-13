@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    open: "/virtual-wallets/",
+    open: "/virtual-benefits/",
   },
   plugins: [
     react(),
@@ -19,9 +19,9 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: "/virtual-wallets/", // 👈 asegura que los assets carguen desde /virtual-wallets/
+  base: "/virtual-benefits/", // 👈 asegura que los assets carguen desde /virtual-benefits/
   build: {
-    outDir: "../public/virtual-wallets", // 👈 el build se genera en el backend
+    outDir: "../public/virtual-benefits", // 👈 el build se genera en el backend
     emptyOutDir: true,
   },
 }))
