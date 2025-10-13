@@ -20,7 +20,7 @@ Content-Type: application/json
     "discountType": "reintegro",
     "icon": "coffee",
     "category": "Alimentos",
-    "walletId": "68e48baded6d35261b611518",
+    "walletId": "68eab25062b60a2c5bddfe9a",
     "rubroId": "68e2d4911283f2746bd4c80e",
     "localidades": ["68e5b58603cec7b6df2b5e19"],
     "availableDays": [1,2,3,4,5],

@@ -20,8 +20,6 @@ export class persona extends BaseEntity {
   @Property({ nullable: false })
   tel!: number;
 
-  @Property({ nullable: false })
-  dni!: number;
 
   @Property({ nullable: true })
   direccion?: string;

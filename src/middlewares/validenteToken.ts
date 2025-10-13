@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { TOKEN_SECRET } from '../APIS/jwd.js';
 import jwt from 'jsonwebtoken';
 
+
+
 // Extender el tipo Request para incluir decoded
 declare global {
   namespace Express {

@@ -7,24 +7,24 @@ POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "liri lira la",
+    "name": "laureano",
     "apellido": "tralala",
-    "password": "1234",
-    "email": "brainrot@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345678,
+    "password": "123456",
+    "email": "nose@nose.com",
+    "tel": "2477309913",
     "direccion": "Calle narnia 123",
     "wallets": [ "68eab25062b60a2c5bddfe9a","68eab27b62b60a2c5bddfe9b"],
     "localidad": "68e5b58603cec7b6df2b5e19"
 }
-
+### delete
+DELETE http://localhost:3000/api/personas/{{id}}
 ### Login con Auth Controller (Corregido)
 POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "brainrot@gmail.com",
-  "password": "1234"
+  "email": "nose@nose.com",
+  "password": "123456"
 }
 
 ### prueba de logout
@@ -89,12 +89,12 @@ POST http://localhost:3000/api/personas
 Content-Type: application/json
 
 {
-    "name": "Tralalero tralala",
+    "name": "123",
     "apellido": "kuka",
     "password": "123456",
     "email": "kuka@gmail.com",
-    "tel": 2477309919,
-    "dni": 12345679,
+    "tel": "24773099",
+    "dni": "12345678",
     "direccion": "Calle narnia 123",
     "wallets": ["68e18d8f646f6244dd9f0d21", "68e18e16646f6244dd9f0d23"]
 }

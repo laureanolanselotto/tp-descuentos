@@ -14,7 +14,6 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     apellido: req.body.apellido,
     email: req.body.email,
     tel: req.body.tel,
-    dni: req.body.dni,
     direccion: req.body.direccion,
     wallets: req.body.wallets,
     localidad: req.body.localidad,

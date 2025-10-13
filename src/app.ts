@@ -11,6 +11,7 @@ import { LocalidadRouter } from "./localidad/localidad.routes.js";
 import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 import { AuthRouter } from "./APIS/auth.routes.js";
 import cookieParser from "cookie-parser";
+
 const app = express();
 app.use(express.json());
 app.use(cookieParser());

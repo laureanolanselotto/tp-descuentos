@@ -60,21 +60,35 @@ export const personaRouter = router({
         const hashedPassword = await bcrypt.hash(input.password, 10);
         
         // Preparar datos como en el controlador con conversión de tipos
-        const personaData = {
-          ...input,
+        const personaData: any = {
+          name: input.name,
+          apellido: input.apellido,
           password: hashedPassword,
-          tel: parseInt(input.tel),
-          dni: parseInt(input.dni)
+          email: input.email,
+          tel: parseInt(input.tel), // Convertir string a number
+          dni: input.dni,
+          direccion: input.direccion,
         };
-        // Remover campos que no son parte de la entidad base
-        delete (personaData as any).wallets;
-        delete (personaData as any).localidadId;
+
+        // Agregar localidad si existe
+        if (input.localidadId) {
+          personaData.localidad = new ObjectId(input.localidadId);
+        }
+
+        // Agregar wallets si existen
+        if (input.wallets && input.wallets.length > 0) {
+          personaData.wallets = input.wallets.map((id: string) => new ObjectId(id));
+        }
         
         const personaCreated = ctx.em.create(persona, personaData);
         await ctx.em.flush();
+        
+        // Remover password de la respuesta
+        const { password, ...personaWithoutPassword } = personaCreated;
+        
         return {
           message: 'persona created',
-          data: personaCreated
+          data: personaWithoutPassword
         };
       } catch (error: any) {
         throw new TRPCError({
@@ -93,11 +107,40 @@ export const personaRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         const personaToUpdate = await findByIdOrObjectId(ctx.em, input.id);
-        ctx.em.assign(personaToUpdate, input.data);
+        
+        // Convertir tipos si están presentes
+        const updateData: any = { ...input.data };
+        
+        // Convertir tel a number si existe
+        if (updateData.tel) {
+          updateData.tel = parseInt(updateData.tel);
+        }
+        
+        // Hash password si se está actualizando
+        if (updateData.password) {
+          updateData.password = await bcrypt.hash(updateData.password, 10);
+        }
+        
+        // Convertir localidadId a ObjectId si existe
+        if (updateData.localidadId) {
+          updateData.localidad = new ObjectId(updateData.localidadId);
+          delete updateData.localidadId;
+        }
+        
+        // Convertir wallets a ObjectId array si existen
+        if (updateData.wallets && updateData.wallets.length > 0) {
+          updateData.wallets = updateData.wallets.map((id: string) => new ObjectId(id));
+        }
+        
+        ctx.em.assign(personaToUpdate, updateData);
         await ctx.em.flush();
+        
+        // Remover password de la respuesta
+        const { password, ...personaWithoutPassword } = personaToUpdate;
+        
         return {
           message: 'persona updated',
-          data: personaToUpdate
+          data: personaWithoutPassword
         };
       } catch (error: any) {
         throw new TRPCError({
