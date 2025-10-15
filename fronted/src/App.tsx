@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Signup from "./pages/Signup";
+import RegisterPage from "./pages/RegisterPage";
 import AccountPage from "./pages/Account";
 import Login from "./pages/Login";
 
@@ -19,7 +19,7 @@ const App = () => (
       <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/registro" element={<RegisterPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/account" element={<AccountPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -11,8 +11,34 @@ import { LocalidadRouter } from "./localidad/localidad.routes.js";
 import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 import { AuthRouter } from "./APIS/auth.routes.js";
 import cookieParser from "cookie-parser";
-
+import cors from "cors";
 const app = express();
+
+// Configuración de CORS para permitir múltiples orígenes
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'http://192.168.1.2:8080',
+  'http://192.168.1.2:8081'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir peticiones sin origin (como desde Postman o apps móviles)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Permite enviar cookies
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 

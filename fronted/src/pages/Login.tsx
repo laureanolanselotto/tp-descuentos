@@ -66,7 +66,7 @@ const Login = ({ onLogin }: LoginProps) => {
           <button
             type="button"
             className="font-bold text-[#0066ff] transition-colors duration-300 hover:text-[#005ce6] hover:underline bg-transparent border-0 p-0 m-0 cursor-pointer"
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/registro')}
           >
             No tienes una cuenta?
           </button>

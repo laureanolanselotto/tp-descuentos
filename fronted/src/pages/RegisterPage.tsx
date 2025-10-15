@@ -1,0 +1,94 @@
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { registroSchema } from "../../../src/schema/personas.validator";
+import { registerPersona } from "../api/personas";
+
+// Extendemos el schema del backend para agregar confirmPassword
+const registerSchema = registroSchema.extend({
+  confirmPassword: z.string().min(6, "Confirma tu contraseña")
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Las contraseñas no coinciden",
+  path: ["confirmPassword"]
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;
+
+function RegisterPage() {
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema)
+  });
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#313131] bg-[radial-gradient(rgba(255,255,255,0.171)_2px,transparent_0)] [background-size:30px_30px] animate-[move_4s_linear_infinite] text-white/70">
+      <style>{`
+        @keyframes move {
+          0% { background-position: 0 0; }
+          100% { background-position: 40px 40px; }
+        }
+        @keyframes pulse {
+          from { transform: scale(0.9); opacity: 1; }
+          to { transform: scale(1.8); opacity: 0; }
+        }
+      `}</style>
+      <form className="form flex flex-col gap-2 max-w-[500px] w-full p-8 rounded-2xl bg-[#1a1a1a] relative" onSubmit={handleSubmit(async (values) => { console.log(values);
+        const res = await registerPersona(values);
+        console.log(res); })}>
+        
+        <p className="title text-[28px] font-semibold flex items-center pl-8 text-[#00bfff] relative mb-1">
+          Registrarse
+          <span className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#00bfff] before:content-[''] before:absolute before:w-4 before:h-4 before:rounded-full before:bg-[#00bfff] after:content-[''] after:absolute after:w-4 after:h-4 after:rounded-full after:bg-[#00bfff] after:animate-pulse"></span>
+        </p>
+        <p className="message text-[15px] mt-[-10px] mb-2">Una app para manejar tus billeteras virtuales</p>
+        <div className="flex gap-4 w-full">
+          <label className="flex-1 relative">
+            <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="text" {...register("name")} />
+            <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Nombre</span>
+            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
+          </label>
+          <label className="flex-1 relative">
+            <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="text" {...register("apellido")} />
+            <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Apellido</span>
+            {errors.apellido && <p className="text-red-400 text-xs mt-1">{errors.apellido.message}</p>}
+          </label>
+        </div>
+        <label className="relative">
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="tel" {...register("tel")} />
+          <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Teléfono</span>
+          {errors.tel && <p className="text-red-400 text-xs mt-1">{errors.tel.message}</p>}
+        </label>
+        <label className="relative">
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="email" {...register("email")} />
+          <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Email</span>
+          {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+        </label>
+        <label className="relative">
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="text" {...register("direccion")} />
+          <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Dirección</span>
+          {errors.direccion && <p className="text-red-400 text-xs mt-1">{errors.direccion.message}</p>}
+        </label>
+        <label className="relative">
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="text" {...register("localidadId")} />
+          <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Localidad ID</span>
+          {errors.localidadId && <p className="text-red-400 text-xs mt-1">{errors.localidadId.message}</p>}
+        </label>
+        <label className="relative">
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="password" {...register("password")} />
+          <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Contraseña</span>
+          {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>}
+        </label>
+        <label className="relative">
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="password" {...register("confirmPassword")} />
+          <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Confirmar Contraseña</span>
+          {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword.message}</p>}
+        </label>
+        {/* {error && <div className="text-red-400 text-sm text-center mb-2">{error}</div>} */}
+        <button type="submit" className="submit border-0 py-2 rounded-lg text-white text-lg bg-[#00bfff] hover:bg-[#00c3ff96] transition-colors">Registrarse</button>
+  <p className="signin text-center text-[#00bfff] mt-2"><a href="/login" className="hover:underline">Ya tienes una cuenta?</a></p>
+      </form>
+    </div>
+  );
+}
+
+export default RegisterPage;
+
+// --- referencias de codigo que se uso para hacer los cambios ---
