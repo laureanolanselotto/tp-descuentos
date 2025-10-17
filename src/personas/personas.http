@@ -10,10 +10,10 @@ Content-Type: application/json
     "name": "laureano",
     "apellido": "tralala",
     "password": "123456",
-    "email": "13@ose.com",
+    "email": "1123@ose.com",
     "tel": "2477309913",
     "direccion": "Calle narnia 123",
-    "wallets": [ "68f17ebceddc0603facf7bbb","68f17ebfeddc0603facf7bbc"],
+    "wallets": [ "68f196974411f78ae5f2be68","68f196a04411f78ae5f2be69"],
     "localidad": "68e5b58603cec7b6df2b5e19"
 }
 
@@ -23,7 +23,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/personas/{{id}}
 
 ### delete
-DELETE http://localhost:3000/api/personas/68f18b9bca1cf2d3d2033b7d
+DELETE http://localhost:3000/api/personas/{{id}}
 ### Login con Auth Controller (Corregido)
 POST http://localhost:3000/api/auth/login
 Content-Type: application/json

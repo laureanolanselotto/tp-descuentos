@@ -22,18 +22,28 @@ function RegisterPage() {
   });
   
   const nav = useNavigate();
-  const { signup, isAuthenticated } = usePersonaAuth(); // obtenemos la función signup del contexto
-  
+  const { signup, isAuthenticated, errors: RegisterErros, clearErrors } = usePersonaAuth();
+
   useEffect(() => {
     if (isAuthenticated) nav("/login");
   }, [isAuthenticated, nav]);
 
-  const onSubmit = handleSubmit(async (values) => { // llamamos a signup al enviar el formulario
-    await signup(values); //llamamos a signup al enviar el formulario
+  // Auto-cerrar errores después de 5 segundos
+  useEffect(() => {
+    if (RegisterErros.length > 0) {
+      const timer = setTimeout(() => {
+        clearErrors();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [RegisterErros, clearErrors]);
+
+  const onSubmit = handleSubmit(async (values) => {
+    await signup(values);
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#313131] bg-[radial-gradient(rgba(255,255,255,0.171)_2px,transparent_0)] [background-size:30px_30px] animate-[move_4s_linear_infinite] text-white/70">
+    <div className="min-h-screen flex items-center justify-center bg-[#313131] bg-[radial-gradient(rgba(255,255,255,0.171)_2px,transparent_0)] [background-size:30px_30px] animate-[move_4s_linear_infinite] text-white/70 relative">
       <style>{`
         @keyframes move {
           0% { background-position: 0 0; }
@@ -43,7 +53,35 @@ function RegisterPage() {
           from { transform: scale(0.9); opacity: 1; }
           to { transform: scale(1.8); opacity: 0; }
         }
+        @keyframes slideDown {
+          from { 
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
       `}</style>
+      
+      {/* Alerta flotante encima del formulario */}
+      {RegisterErros.length > 0 && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-20 max-w-[500px] w-full px-4" style={{ animation: 'slideDown 0.13s normal-out' }}>
+          {RegisterErros.map((error, i) => (
+            <div key={i} className="bg-red-500 p-4 text-white mb-2 rounded-lg shadow-lg flex items-center justify-between">
+              <span className="flex-1">{error}</span>
+              <button 
+                onClick={clearErrors}
+                className="ml-4 text-white hover:text-gray-200 font-bold text-xl"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      
       <form className="form flex flex-col gap-2 max-w-[500px] w-full p-8 rounded-2xl bg-[#1a1a1a] relative" onSubmit={onSubmit}>
         
         <p className="title text-[28px] font-semibold flex items-center pl-8 text-[#00bfff] relative mb-1">
@@ -93,9 +131,8 @@ function RegisterPage() {
           <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Confirmar Contraseña</span>
           {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword.message}</p>}
         </label>
-        {/* {error && <div className="text-red-400 text-sm text-center mb-2">{error}</div>} */}
         <button type="submit" className="submit border-0 py-2 rounded-lg text-white text-lg bg-[#00bfff] hover:bg-[#00c3ff96] transition-colors">Registrarse</button>
-  <p className="signin text-center text-[#00bfff] mt-2"><a href="/login" className="hover:underline">Ya tienes una cuenta?</a></p>
+  <p className="signin text-center text-[#00bfff] mt-2"><button onClick={() => nav('/login')}>Ya tienes una cuenta?</button></p>
       </form>
     </div>
   );

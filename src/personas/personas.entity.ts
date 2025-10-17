@@ -25,7 +25,7 @@ export class persona extends BaseEntity {
   direccion?: string;
 
   @ManyToMany(() => Wallet, (wallet) => wallet.personas, {
-    cascade: [Cascade.ALL],
+    cascade: [Cascade.PERSIST], // Solo persiste, NO elimina las wallets al borrar persona
     owner: true,
   })
   wallets = new Collection<Wallet>(this);

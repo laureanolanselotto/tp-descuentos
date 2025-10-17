@@ -68,7 +68,7 @@ async function add(req: Request, res: Response) {
     // Verificar si el email ya existe
     const emailExists = await checkEmailExists(req.body.sanitizedInput.email);
     if (emailExists) {
-      res.status(400).json({ message: 'User already exists' });
+      res.status(400).json({ message: 'the email is already in use by another user' });
       return;
     }
 
