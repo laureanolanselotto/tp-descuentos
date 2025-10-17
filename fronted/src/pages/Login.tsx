@@ -12,16 +12,22 @@ interface LoginProps {
   onLogin?: (user: { name: string; email: string }) => void;
 }
 
-function Login(){
+function Login({ onLogin }: LoginProps = {}){
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema)
   });
-  const { signin, isAuthenticated, errors: LoginErrors, clearErrors } = usePersonaAuth();
+  const { signin, isAuthenticated, persona, errors: LoginErrors, clearErrors } = usePersonaAuth();
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/");
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) {
+      // Llamar a onLogin si está disponible (compatibilidad con uso anterior)
+      if (onLogin && persona) {
+        onLogin({ name: persona.name, email: persona.email });
+      }
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, navigate, onLogin, persona]);
 
   const onSubmit = handleSubmit(async (data) => {
     await signin(data as { email: string; password: string });
@@ -54,9 +60,10 @@ function Login(){
               <span className="flex-1">{error}</span>
               <button 
                 onClick={clearErrors}
-                className="ml-4 text-white hover:text-gray-200 font-bold text-xl"
+                className="ml-4 text-white hover:text-gray-200 font-bold text-xl leading-none"
+                aria-label="Cerrar"
               >
-                ×
+                &times;
               </button>
             </div>
           ))}

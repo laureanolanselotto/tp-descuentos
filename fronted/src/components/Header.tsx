@@ -20,6 +20,7 @@ function ThemeToggle() {
 }
 
 interface HeaderProps {
+  userName?: string;
   selectedWallet: string | undefined;
   selectedWallets: string[];
   onUpdateSelectedWallets: (ids: string[]) => void;
@@ -34,7 +35,7 @@ const walletNames: Record<string, string> = {
   ualá: "Ualá"
 };
 
-const Header = ({ selectedWallet, selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
+const Header = ({ userName, selectedWallet, selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 type DiscountType = "all" | "En cuotas" | "Reintegro" | "Sin tope";
 
@@ -14,6 +15,7 @@ const DISCOUNT_TYPES: { id: DiscountType; label: string }[] = [
 ];
 
 export interface NotificationsPrefs {
+  enabled: boolean;
   minDiscount: number;
   types: DiscountType[]; // multiple allowed, can include "all"
   wallets: string[]; // subset of availableWallets
@@ -29,11 +31,12 @@ interface NotificationsModalProps {
 const STORAGE_KEY = "notifications-prefs";
 
 const NotificationsModal = ({ isOpen, onClose, onSave, availableWallets }: NotificationsModalProps) => {
+  const [enabled, setEnabled] = useState<boolean>(true);
   const [minDiscount, setMinDiscount] = useState<number>(0);
   const [selectedTypes, setSelectedTypes] = useState<DiscountType[]>(["all"]);
   const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
 
-  const ensureSubset = (arr: string[]) => arr.filter((id) => availableWallets.includes(id));
+  const ensureSubset = useCallback((arr: string[]) => arr.filter((id) => availableWallets.includes(id)), [availableWallets]);
 
   // Load stored prefs when opening
   useEffect(() => {
@@ -42,25 +45,28 @@ const NotificationsModal = ({ isOpen, onClose, onSave, availableWallets }: Notif
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as NotificationsPrefs;
+        setEnabled(parsed.enabled ?? true);
         setMinDiscount(parsed.minDiscount ?? 0);
         setSelectedTypes(parsed.types && parsed.types.length ? parsed.types : ["all"]);
         setSelectedWallets(ensureSubset(parsed.wallets || availableWallets));
       } else {
+        setEnabled(true);
         setMinDiscount(0);
         setSelectedTypes(["all"]);
         setSelectedWallets(availableWallets);
       }
     } catch {
+      setEnabled(true);
       setMinDiscount(0);
       setSelectedTypes(["all"]);
       setSelectedWallets(availableWallets);
     }
-  }, [isOpen, availableWallets]);
+  }, [isOpen, availableWallets, ensureSubset]);
 
   // If the available wallets change while open, enforce subset
   useEffect(() => {
     setSelectedWallets((prev) => ensureSubset(prev));
-  }, [availableWallets]);
+  }, [availableWallets, ensureSubset]);
 
   const handleToggleType = (id: DiscountType) => {
     setSelectedTypes((prev) => {
@@ -87,6 +93,7 @@ const NotificationsModal = ({ isOpen, onClose, onSave, availableWallets }: Notif
 
   const handleSave = () => {
     const prefs: NotificationsPrefs = {
+      enabled,
       minDiscount,
       types: selectedTypes,
       wallets: ensureSubset(selectedWallets.length ? selectedWallets : availableWallets),
@@ -104,8 +111,23 @@ const NotificationsModal = ({ isOpen, onClose, onSave, availableWallets }: Notif
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Enable/Disable notifications toggle */}
+          <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-muted/30">
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium">Recibir notificaciones</span>
+              <span className="text-xs text-muted-foreground">
+                {enabled ? "Recibirás alertas de nuevos beneficios" : "No recibirás notificaciones"}
+              </span>
+            </div>
+            <Switch
+              checked={enabled}
+              onCheckedChange={setEnabled}
+              aria-label="Activar o desactivar notificaciones"
+            />
+          </div>
+
           {/* Min discount range */}
-          <div>
+          <div className={!enabled ? "opacity-50 pointer-events-none" : ""}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Mínimo descuento (%)</span>
               <span className="text-sm font-medium">{minDiscount}%</span>
@@ -120,7 +142,7 @@ const NotificationsModal = ({ isOpen, onClose, onSave, availableWallets }: Notif
           </div>
 
           {/* Benefit types */}
-          <div>
+          <div className={!enabled ? "opacity-50 pointer-events-none" : ""}>
             <div className="mb-2 text-sm text-muted-foreground">Tipo de beneficio</div>
             <div className="grid grid-cols-2 gap-2">
               {DISCOUNT_TYPES.map((t) => (
@@ -136,7 +158,7 @@ const NotificationsModal = ({ isOpen, onClose, onSave, availableWallets }: Notif
           </div>
 
           {/* Wallets multi-select */}
-          <div>
+          <div className={!enabled ? "opacity-50 pointer-events-none" : ""}>
             <div className="mb-2 text-sm text-muted-foreground">Billeteras</div>
             <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
               {formattedWallets.map((w) => (

@@ -63,9 +63,10 @@ function RegisterPage() {
               <span className="flex-1">{error}</span>
               <button 
                 onClick={clearErrors}
-                className="ml-4 text-white hover:text-gray-200 font-bold text-xl"
+                className="ml-4 text-white hover:text-gray-200 font-bold text-xl leading-none"
+                aria-label="Cerrar"
               >
-                ×
+                &times;
               </button>
             </div>
           ))}
@@ -107,7 +108,7 @@ function RegisterPage() {
           {errors.direccion && <p className="text-red-400 text-xs mt-1">{errors.direccion.message}</p>}
         </label>
         <label className="relative">
-          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="text" {...register("localidadId")} />
+          <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="select" {...register("localidadId")} />
           <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Localidad ID</span>
           {errors.localidadId && <p className="text-red-400 text-xs mt-1">{errors.localidadId.message}</p>}
         </label>

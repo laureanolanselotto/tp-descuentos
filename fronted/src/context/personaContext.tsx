@@ -11,6 +11,7 @@ interface PersonaContextType {
     persona: RegisterPersonaData | null;
     signup: (user: RegisterPersonaData) => Promise<void>;
     signin: (user: { email: string; password: string }) => Promise<void>;
+    logout: () => void;
     isAuthenticated: boolean;
     errors: string[];
     clearErrors: () => void;
@@ -89,6 +90,12 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const logout = () => {
+        setPersona(null);
+        setIsAuthenticated(false);
+        setErrors([]);
+    };
+
     useEffect(() => {
       if (errors.length > 0) {
         const timer = setTimeout(() => {
@@ -102,6 +109,7 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
             persona,
             signup,
             signin,
+            logout,
             isAuthenticated,
             errors,
             clearErrors

@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import WalletSelectionModal from "@/components/WalletSelectionModal";
-import Login from "./Login";
 import Header from "@/components/Header";
 import CategoryFilter from "@/components/CategoryFilter";
 import BenefitsGrid from "@/components/BenefitsGrid";
@@ -9,6 +8,7 @@ import BenefitDetail from "@/components/BenefitDetail";
 import WeeklyCalendar from "@/components/WeeklyCalendar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InterestWalletsList from "@/components/InterestWalletsList";
+import { usePersonaAuth } from "@/context/personaContext";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -19,7 +19,7 @@ import {
 
 const Index = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const { persona, isAuthenticated, logout } = usePersonaAuth();
   const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDiscountType, setSelectedDiscountType] = useState<string>("all");
@@ -27,6 +27,18 @@ const Index = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedBenefit, setSelectedBenefit] = useState<any>(null);
   const [walletFilter, setWalletFilter] = useState<string | null>(null);
+
+  // Redirigir a /login si no está autenticado
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Mientras se redirige, no renderizar nada
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const handleWalletsSelect = (walletIds: string[]) => {
     setSelectedWallets(walletIds);
@@ -50,9 +62,6 @@ const Index = () => {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
   };
-
-  // Mostrar login desde Login.tsx cuando no hay user
-  if (!user) return <Login onLogin={(u) => setUser(u)} />;
 
   // Mostrar selección de billeteras si no se han seleccionado aún
   if (showModal || selectedWallets.length === 0) {
@@ -81,11 +90,12 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header 
+        userName={persona?.name || "Usuario"}
         selectedWallet={selectedWallets[0]}
         selectedWallets={selectedWallets}
         onUpdateSelectedWallets={setSelectedWallets}
         onBackToWalletSelection={handleBackToWalletSelection}
-        onLogout={() => setUser(null)}
+        onLogout={logout}
       />
       <div className="max-w-7xl mx-auto p-6 space-y-8">
 
