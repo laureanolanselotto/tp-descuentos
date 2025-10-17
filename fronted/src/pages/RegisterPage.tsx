@@ -50,7 +50,26 @@ function RegisterPage() {
   }, []);
 
   const onSubmit = handleSubmit(async (values) => {
-    await signup(values);
+    // limpiar localidadId vacío
+    const cleanedValues = { ...values } as any;
+    if (!cleanedValues.localidadId || String(cleanedValues.localidadId).trim() === '') {
+      delete cleanedValues.localidadId;
+    } else {
+      // Si el valor no parece ser un ObjectId (24 chars), intentar mapear desde el texto mostrado
+      const val = String(cleanedValues.localidadId);
+      if (val.length !== 24) {
+        // posible formato "Nombre - País" -> buscar en localidades
+        const matched = localidades.find(l => `${l.nombre_localidad} - ${l.pais}` === val || l.nombre_localidad === val);
+        if (matched && (matched._id || matched.id)) {
+          cleanedValues.localidadId = matched._id || matched.id;
+        } else {
+          // si no se encuentra, eliminar para evitar errores en backend
+          delete cleanedValues.localidadId;
+        }
+      }
+    }
+
+    await signup(cleanedValues);
   });
 
   return (
@@ -138,9 +157,8 @@ function RegisterPage() {
               {...register("localidadId")}
               disabled={loadingLocalidades}
               aria-label="Seleccionar localidad"
-              defaultValue=""
             >
-              <option value="" disabled selected className="bg-[#333] text-gray-400">
+              <option value="" disabled className="bg-[#333] text-gray-400">
                 Selecciona una localidad
               </option>
               {localidades.map((localidad) => (

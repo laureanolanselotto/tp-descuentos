@@ -5,7 +5,7 @@ const walletImage = (file: string): string =>
   `${import.meta.env.BASE_URL}wallets/iconos-billeteras/${file}`;
 
 export const wallets = [
-  { id: "mercadopago", name: "Mercado Pago", icon: <WalletIcon className="w-6 h-6" />, image: walletImage("mercado-pago-logo-0-1-2048x2048.png"), color: "from-black-500 to-black-500", interes: 45.2 },
+  { id: "mercadopago", name: "Mercado Pago", icon: <WalletIcon className="w-6 h-6" />, image: walletImage("public/wallets/iconos-billeteras/mercado-pago-logo-0-1-2048x2048.png"), color: "from-black-500 to-black-500", interes: 45.2 },
   { id: "banco galicia", name: "Banco Galicia", icon: <CreditCard className="w-6 h-6" />, image: walletImage("banco-galicia-logo.svg"), color: "from-red-500 to-red-600", interes: 38.5 },
   { id: "pagofacil", name: "Pago Facil", icon: <Smartphone className="w-6 h-6" />, color: "from-green-500 to-green-600", interes: 41.0 },
   { id: "uala", name: "Uala", icon: <CreditCard className="w-6 h-6" />, color: "from-purple-500 to-purple-600", interes: 47.8 },

@@ -38,10 +38,9 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
     };
     
     const signup = async (user: RegisterPersonaData) => {
-        try { 
+        try {
             setErrors([]); // Limpiar errores previos
             const res = await registerPersona(user);
-            console.log(res.data);
             setPersona(res.data);
             setIsAuthenticated(true);
         } catch (error) {

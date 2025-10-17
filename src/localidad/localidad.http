@@ -27,7 +27,7 @@ GET {{baseUrl}}/{{localidadId1}}
 ###
 
 ### 5. PUT - Actualizar localidad completa
-PUT {{baseUrl}}/{{localidadId1}}
+POST  {{baseUrl}}
 Content-Type: application/json
 
 {

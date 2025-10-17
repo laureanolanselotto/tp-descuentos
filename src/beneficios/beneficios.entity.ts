@@ -21,10 +21,6 @@ export class Beneficio extends BaseEntity {
   @Property({ nullable: true })
   icon?: string;
 
-  @Property({ nullable: false })
-  category!: string;
-
-  // wallet relation (see wallet entity)
 
   // Days available stored as JSON array of numbers (0-6 or custom mapping)
   @Property({ type: 'json', nullable: false })

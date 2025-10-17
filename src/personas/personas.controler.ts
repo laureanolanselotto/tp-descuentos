@@ -17,7 +17,7 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     tel: req.body.tel,
     direccion: req.body.direccion,
     wallets: req.body.wallets,
-    localidad: req.body.localidad,
+    localidad: req.body.localidadId || req.body.localidad, // Soportar ambos nombres
     notificaciones: req.body.notificaciones
   }
 
@@ -83,7 +83,8 @@ async function add(req: Request, res: Response) {
     if (input.wallets && Array.isArray(input.wallets)) { // pregunto si existe e es un array
       input.wallets = input.wallets.map((walletId: string) => new ObjectId(walletId)); // lo mapeo a ObjectId
     }
-    if (input.localidad) {
+    // Validar localidadId antes de convertir
+    if (input.localidad && typeof input.localidad === 'string' && input.localidad.length === 24) {
       input.localidad = new ObjectId(input.localidad); // mas de lo mismo
     }
 
@@ -113,7 +114,7 @@ async function update(req: Request, res: Response) {
     if (input.wallets && Array.isArray(input.wallets)) {
       input.wallets = input.wallets.map((walletId: string) => new ObjectId(walletId))
     }
-    if (input.localidad) {
+    if (input.localidad && typeof input.localidad === 'string' && input.localidad.length === 24) {
       input.localidad = new ObjectId(input.localidad)
     }
     

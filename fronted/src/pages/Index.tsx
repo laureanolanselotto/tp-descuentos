@@ -105,7 +105,7 @@ const Index = () => {
             <div className="w-[800px] h-[300px] bg-muted rounded-xl overflow-hidden flex items-center justify-center">
               {/* Aquí puedes colocar tu imagen: <img src="/ruta/imagen.jpg" alt="Banner" className="w-full h-full object-cover rounded-xl" /> */}
               <img
-                src={`${import.meta.env.BASE_URL}wallets/git/Tito_Calder_n_Bailando.gif`}
+                src={`${import.meta.env.BASE_URL}public/git/Tito_Calder_n_Bailando.gif`}
                 alt="Banner"
                 className="w-full h-full object-contain rounded-xl"
               />
