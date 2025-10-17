@@ -10,20 +10,26 @@ Content-Type: application/json
     "name": "laureano",
     "apellido": "tralala",
     "password": "123456",
-    "email": "nose@nose.com",
+    "email": "13@ose.com",
     "tel": "2477309913",
     "direccion": "Calle narnia 123",
-    "wallets": [ "68eab25062b60a2c5bddfe9a","68eab27b62b60a2c5bddfe9b"],
+    "wallets": [ "68f17ebceddc0603facf7bbb","68f17ebfeddc0603facf7bbc"],
     "localidad": "68e5b58603cec7b6df2b5e19"
 }
+
+### get the id
+@Id = {{ createVader.response.body.data.id }}
+### GET one character
+GET http://localhost:3000/api/personas/{{id}}
+
 ### delete
-DELETE http://localhost:3000/api/personas/{{id}}
+DELETE http://localhost:3000/api/personas/68f18b9bca1cf2d3d2033b7d
 ### Login con Auth Controller (Corregido)
 POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "nose@nose.com",
+  "email": "asdad4@ose.com",
   "password": "123456"
 }
 

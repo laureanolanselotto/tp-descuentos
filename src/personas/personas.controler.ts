@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 const em = orm.em
 
 
+
 function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
@@ -56,50 +57,48 @@ async function findOne(req: Request, res: Response) {
         throw err
       }
     }
-    
-    // Remover password de la respuesta
-    const { password: _, ...personaData } = personaFound;
-    
-    res.status(200).json({ message: 'found persona', data: personaData })
+    res.status(200).json({ message: 'found persona', data: personaFound })
   } catch (error: any) {
     res.status(500).json({ message: error.message })
   }
 }
 
 async function add(req: Request, res: Response) {
-   try {
-     const input = { ...req.body.sanitizedInput }// cuerpo de la request
-     
-     // Hash del password si está presente
-     if (input.password) {
-       input.password = await bcrypt.hash(input.password, 10);
-     }
-     
-     // Convertir IDs de wallets y localidad a ObjectId
-     if (input.wallets && Array.isArray(input.wallets)) { // pregunto si existe e es un array
-       input.wallets = input.wallets.map((walletId: string) => new ObjectId(walletId))// lo mapeo a ObjectId
-     }
-     if (input.localidad) {
-       input.localidad = new ObjectId(input.localidad)// mas de lo mismo
-     }
-     
-     const personaCreated = em.create(persona, input);// creo la persona usando el input modificado y con los strings de 
-     // wallets y localidad convertidos a ObjectId porque  asi funcionan las relaciones en la base de datos 
-     await em.flush();// vacio el bus
-     
-     // Recargar con relaciones pobladas
-     const personaWithRelations = await em.findOne(persona, { _id: personaCreated._id }, {// busco la persona que acabo de crear
-       populate: ['wallets', 'localidad']
-     })
+  try {
+    // Verificar si el email ya existe
+    const emailExists = await checkEmailExists(req.body.sanitizedInput.email);
+    if (emailExists) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
+    }
 
-     // Remover password de la respuesta
-     const { password: _, ...personaData } = personaWithRelations || {};
-     
-     res.status(201).json({ message: 'persona created', data: personaData });// devuelvo la persona con las relaciones pobladas
-   } catch (error: any) {
-     res.status(500).json({ message: error.message });
-   }
- }
+    const input = { ...req.body.sanitizedInput }; // cuerpo de la request
+
+    // Hash del password si está presente
+    if (input.password) {
+      input.password = await bcrypt.hash(input.password, 10);
+    }
+
+    // Convertir IDs de wallets y localidad a ObjectId
+    if (input.wallets && Array.isArray(input.wallets)) { // pregunto si existe e es un array
+      input.wallets = input.wallets.map((walletId: string) => new ObjectId(walletId)); // lo mapeo a ObjectId
+    }
+    if (input.localidad) {
+      input.localidad = new ObjectId(input.localidad); // mas de lo mismo
+    }
+
+    const personaCreated = em.create(persona, input); // creo la persona usando el input modificado y con los strings de 
+    // wallets y localidad convertidos a ObjectId porque asi funcionan las relaciones en la base de datos 
+    await em.flush(); // vacio el bus
+
+ 
+
+    res.status(201).json({ message: 'persona created', data: personaCreated }); // devuelvo la persona con las relaciones pobladas
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 async function update(req: Request, res: Response) {
   try {
     const id = req.params.id
@@ -148,5 +147,9 @@ async function remove(req: Request, res: Response) {
     res.status(500).json({ message: error.message })
   }
 }
-
+// Función para verificar si el email ya existe
+async function checkEmailExists(email: string): Promise<boolean> {
+  const personaFound = await em.findOne(persona, { email });
+  return personaFound !== null;
+}
 export {sanitizePersonaInput, findAll, findOne, add, update, remove }

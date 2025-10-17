@@ -48,7 +48,7 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Ualá",
+    "name": "mercado pago",
     "descripcion": "Tarjeta prepaga y billetera digital",
     "interes_anual": 8.76
 }

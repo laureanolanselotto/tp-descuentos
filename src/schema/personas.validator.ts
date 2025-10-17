@@ -1,6 +1,6 @@
 import { z } from "zod";
 const registroSchema = z.object({
-    name: z.string({required_error: 'Name is required'}).min(5, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
+    name: z.string({required_error: 'Name is required'}).min(1, 'Name must be at least 5 characters').max(50, 'Name must be at most 50 characters'),
     apellido: z.string({required_error: 'Apellido is required'}).min(5, 'Apellido must be at least 5 characters').max(50, 'Apellido must be at most 50 characters'),
     password: z.string({required_error: 'Password is required'}).min(6, 'Password must be at least 6 characters').max(20, 'Password must be at most 20 characters'),
     email: z.string({required_error: 'Email is required'}).email('Must be a valid email'),

@@ -2,7 +2,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { registroSchema } from "../../../src/schema/personas.validator";
-import { registerPersona } from "../api/personas";
+import { usePersonaAuth } from "../context/personaContext";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Extendemos el schema del backend para agregar confirmPassword
 const registerSchema = registroSchema.extend({
@@ -18,6 +20,18 @@ function RegisterPage() {
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema)
   });
+  
+  const nav = useNavigate();
+  const { signup, isAuthenticated } = usePersonaAuth(); // obtenemos la función signup del contexto
+  
+  useEffect(() => {
+    if (isAuthenticated) nav("/login");
+  }, [isAuthenticated, nav]);
+
+  const onSubmit = handleSubmit(async (values) => { // llamamos a signup al enviar el formulario
+    await signup(values); //llamamos a signup al enviar el formulario
+  });
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#313131] bg-[radial-gradient(rgba(255,255,255,0.171)_2px,transparent_0)] [background-size:30px_30px] animate-[move_4s_linear_infinite] text-white/70">
       <style>{`
@@ -30,9 +44,7 @@ function RegisterPage() {
           to { transform: scale(1.8); opacity: 0; }
         }
       `}</style>
-      <form className="form flex flex-col gap-2 max-w-[500px] w-full p-8 rounded-2xl bg-[#1a1a1a] relative" onSubmit={handleSubmit(async (values) => { console.log(values);
-        const res = await registerPersona(values);
-        console.log(res); })}>
+      <form className="form flex flex-col gap-2 max-w-[500px] w-full p-8 rounded-2xl bg-[#1a1a1a] relative" onSubmit={onSubmit}>
         
         <p className="title text-[28px] font-semibold flex items-center pl-8 text-[#00bfff] relative mb-1">
           Registrarse
