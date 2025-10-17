@@ -1,55 +1,89 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { usePersonaAuth } from "../context/personaContext";
+import { useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "../../../src/schema/personas.validator";
+import { z } from "zod";
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginProps {
   onLogin?: (user: { name: string; email: string }) => void;
 }
 
-const Login = ({ onLogin }: LoginProps) => {
+function Login(){
   const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors }, } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema)
+  });
+  const { signin, isAuthenticated, errors: LoginErrors, clearErrors } = usePersonaAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
-    if (email && password) {
-      const user = { name: email.split('@')[0], email };
-      if (onLogin) onLogin(user);
-      // keep navigation for direct access
-      navigate('/');
-    }
-  };
+  useEffect(() => {
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated, navigate]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    await signin(data as { email: string; password: string });
+  });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#313131] bg-[radial-gradient(rgba(255,255,255,0.171)_2px,transparent_0)] [background-size:30px_30px] animate-[move_4s_linear_infinite]">
+    <div className="min-h-screen flex items-center justify-center bg-[#313131] bg-[radial-gradient(rgba(255,255,255,0.171)_2px,transparent_0)] [background-size:30px_30px] animate-[move_4s_linear_infinite] relative">
       <style>{`
         @keyframes move {
           0% { background-position: 0 0; }
           100% { background-position: 40px 40px; }
         }
+        @keyframes slideDown {
+          from { 
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
       `}</style>
+      
+      {/* Alerta flotante encima del formulario */}
+      {LoginErrors.length > 0 && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-[500px] w-full px-4" style={{ animation: 'slideDown 0.3s ease-out' }}>
+          {LoginErrors.map((error, i) => (
+            <div key={i} className="bg-red-500 p-4 text-white mb-2 rounded-lg shadow-lg flex items-center justify-between">
+              <span className="flex-1">{error}</span>
+              <button 
+                onClick={clearErrors}
+                className="ml-4 text-white hover:text-gray-200 font-bold text-xl"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      
       <div className="form-box max-w-[300px] bg-[#f1f7fe] overflow-hidden rounded-2xl text-[#010101]">
         <form
-          className="form flex flex-col relative p-8 pt-8 pb-6 gap-4 text-center"
-          onSubmit={handleSubmit}
+          className="form flex flex-col relative p-8 pt-8 pb-6 gap-4 text-center"  onSubmit={onSubmit}
         >
           <span className="title font-bold text-[1.6rem]">Ingresa</span>
           <span className="subtitle text-base text-[#666]">Mejorá tu manejo de billeteras virtuales</span>
           <div className="form-container overflow-hidden rounded-lg bg-white my-4 mb-2 w-full">
             <input
               type="email"
-              name="email"
+              {...register("email")}
               className="input bg-none border-0 outline-0 h-10 w-full border-b border-[#eee] text-sm px-4 py-2"
               placeholder="Email"
-              required
             />
+            {errors.email && <p className="text-red-400 text-xs mt-1 px-2">{errors.email.message}</p>}
             <input
               type="password"
-              name="password"
+              {...register("password")}
               className="input bg-none border-0 outline-0 h-10 w-full border-b border-[#eee] text-sm px-4 py-2"
               placeholder="Password"
-              required
             />
+            {errors.password && <p className="text-red-400 text-xs mt-1 px-2">{errors.password.message}</p>}
           </div>
           <button type="submit" className="bg-[#0e3570] text-white border-0 rounded-full py-2 px-4 text-base font-semibold cursor-pointer transition-colors duration-300 hover:bg-[#005ce6] w-full">Ingresar</button>
           <button type="button" className="button max-w-xs flex items-center justify-center py-2 px-6 text-sm font-bold uppercase rounded-lg border border-black/25 gap-3 bg-white text-[#413f3f] transition-all duration-300 hover:scale-[1.02]">
@@ -63,17 +97,16 @@ const Login = ({ onLogin }: LoginProps) => {
           </button>
         </form>
         <div className="form-section p-4 text-sm bg-[#e0ecfb] shadow-[0_-1px_0_0_rgba(0,0,0,0.08)]">
-          <button
-            type="button"
-            className="font-bold text-[#0066ff] transition-colors duration-300 hover:text-[#005ce6] hover:underline bg-transparent border-0 p-0 m-0 cursor-pointer"
-            onClick={() => navigate('/registro')}
+          <Link
+            to="/registro"
+            className="font-bold text-[#0066ff] transition-colors duration-300 hover:text-[#005ce6] hover:underline"
           >
             No tienes una cuenta?
-          </button>
+          </Link>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Login;

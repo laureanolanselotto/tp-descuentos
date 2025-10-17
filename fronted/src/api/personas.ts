@@ -9,5 +9,7 @@ type RegisterPersonaData = z.infer<typeof registroSchema>;
 
 // La ruta correcta es /api/personas/ (sin /register)
 const registerPersona = (user: RegisterPersonaData) => axios.post(`${API}/api/personas`, user);
+const loginRequest = (user: { email: string; password: string }) => axios.post(`${API}/api/auth/login`, user);
 
-export { registerPersona };
+export { registerPersona, loginRequest };
+

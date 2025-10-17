@@ -28,16 +28,6 @@ function RegisterPage() {
     if (isAuthenticated) nav("/login");
   }, [isAuthenticated, nav]);
 
-  // Auto-cerrar errores después de 5 segundos
-  useEffect(() => {
-    if (RegisterErros.length > 0) {
-      const timer = setTimeout(() => {
-        clearErrors();
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [RegisterErros, clearErrors]);
-
   const onSubmit = handleSubmit(async (values) => {
     await signup(values);
   });

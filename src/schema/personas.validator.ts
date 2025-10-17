@@ -12,7 +12,7 @@ const registroSchema = z.object({
 
 const loginSchema = z.object({
     email: z.string({required_error: 'Email is required'}).email('Must be a valid email'),
-    password: z.string({required_error: 'Password is required'}).min(1, 'Password is required')
+    password: z.string({required_error: 'Password is required'}).min(6, 'Password must be at least 6 characters').max(20, 'Password must be at most 20 characters')
 });
 
 export { registroSchema, loginSchema };// lo exporto al middleware de validacion
