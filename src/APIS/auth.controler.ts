@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { TOKEN_SECRET } from './jwd.js';
+import { decode } from 'punycode';
 
 const em = orm.em;
 
@@ -44,9 +45,9 @@ async function login(req: Request, res: Response ) {
     
     // Guardar token en cookie
     res.cookie('token', token, {
-      httpOnly: true,
-      secure: false, // cambiar a true en producción con HTTPS
-      sameSite: 'lax',
+      httpOnly: false, // Cambiado a false para permitir acceso desde el frontend
+      secure: true, 
+      sameSite: 'none',
       maxAge: 24 * 60 * 60 * 1000 // 1 día
     });
     
@@ -58,6 +59,8 @@ async function login(req: Request, res: Response ) {
         id: userFound._id,
         email: userFound.email,
         name: userFound.name,
+        apellido: userFound.apellido,
+        localidad: userFound.localidad,
         wallet: userFound.wallets
       }
     });
@@ -105,5 +108,28 @@ async function profile(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-export { login, logout, profile };
+
+
+async function verifyToken(req: Request, res: Response) {
+    const token = req.cookies.token 
+    if (!token) return res.status(401).json({ message: 'No autorizado' });
+
+    try {
+      const decoded = jwt.verify(token, TOKEN_SECRET) as any;
+      const userFound = await em.findOne(persona, { _id: new ObjectId(decoded.id) });
+      if (!userFound) {
+        return res.status(401).json({ message: 'Usuario no encontrado' });
+      }
+      return res.status(200).json({ 
+        message: 'Token válido', 
+        id: userFound.id,
+        name: userFound.name,
+        email: userFound.email,
+        localidad: userFound.localidad
+      });
+    } catch (err) {
+      return res.status(401).json({ message: 'Token inválido' });
+    }
+  }
+export { login, logout, profile, verifyToken };
 

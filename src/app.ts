@@ -20,7 +20,8 @@ const allowedOrigins = [
   'http://localhost:8080',
   'http://localhost:8081',
   'http://192.168.1.2:8080',
-  'http://192.168.1.2:8081'
+  'http://192.168.1.2:8081',
+  { Credentials: true }
 ];
 
 app.use(cors({

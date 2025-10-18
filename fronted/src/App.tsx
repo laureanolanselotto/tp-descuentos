@@ -9,6 +9,8 @@ import RegisterPage from "./pages/RegisterPage";
 import AccountPage from "./pages/Account";
 import Login from "./pages/Login";
 import { PersonaProvider } from "./context/personaContext";
+import ProtectedRoute from "./ProtectedRoute";
+import Hola from "./pages/Hola";
 
 const queryClient = new QueryClient();
 
@@ -20,12 +22,19 @@ const App = () => (
         <Sonner />
       <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
         <Routes>
-          <Route path="/" element={<Index />} />
           <Route path="/registro" element={<RegisterPage />} />
           <Route path="/login" element={<Login/>} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="*" element={<NotFound />} />
+          // Protected routes--------------------------------------------
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/HomePage" element={<Index />} />
+            <Route path="/hola" element={<Hola />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Routes>
+        
+        //---------------------------------------------------------------
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

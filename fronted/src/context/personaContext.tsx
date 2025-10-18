@@ -1,8 +1,10 @@
 import { createContext, useState, ReactNode, useContext ,useEffect} from "react";
-import { loginRequest, registerPersona } from "../api/personas";
-import { z } from "zod";
+import { loginRequest, registerPersona,verifyTokenRequest } from "../api/personas";
+import { string, z } from "zod";
 import { registroSchema } from "../../../src/schema/personas.validator";
 import { AxiosError } from "axios";
+import Cookies from 'js-cookie';
+import { set } from "date-fns";
 
 // Tipos del backend
 type RegisterPersonaData = z.infer<typeof registroSchema>;
@@ -15,6 +17,7 @@ interface PersonaContextType {
     isAuthenticated: boolean;
     errors: string[];
     clearErrors: () => void;
+    loading: boolean;
 }
 
 const PersonaContext = createContext<PersonaContextType | undefined>(undefined);
@@ -29,10 +32,11 @@ const usePersonaAuth = () => {
 }
 
 const PersonaProvider = ({ children }: { children: ReactNode }) => {
-    const [persona, setPersona] = useState<RegisterPersonaData | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [persona, setPersona] = useState<RegisterPersonaData | null>(null);// Estado de la persona autenticada
+    const [isAuthenticated, setIsAuthenticated] = useState(false);// Estado de autenticación
     const [errors, setErrors] = useState<string[]>([]); // Array de errores
-    
+    const [loading,setLoading]=useState(true);// Nuevo estado de carga
+
     const clearErrors = () => {
         setErrors([]);
     };
@@ -41,6 +45,7 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         try {
             setErrors([]); // Limpiar errores previos
             const res = await registerPersona(user);
+            user = res.data;
             setPersona(res.data);
             setIsAuthenticated(true);
         } catch (error) {
@@ -103,6 +108,36 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         return () => clearTimeout(timer);
       }
     }, [errors]);
+    
+    useEffect(() => {
+        async function checkLogin() {
+            const cookies = Cookies.get();
+        if (!cookies.token) {
+            setIsAuthenticated(false);
+            setLoading(false);
+            return setPersona(null);
+        }
+            try {
+                const res = await verifyTokenRequest();
+                if (!res.data) {
+                    setIsAuthenticated(false);
+                    setLoading(false);
+                    return;
+                }
+                setIsAuthenticated(true);
+                setPersona(res.data);
+                setLoading(false);
+
+        } catch (error) {
+            console.error("Error al verificar token:", error);
+            setIsAuthenticated(true);
+            setPersona(null);
+            setLoading(false);
+
+        }}
+        checkLogin();
+    },[]);
+
     return (
         <PersonaContext.Provider value={{
             persona,
@@ -111,7 +146,8 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
             logout,
             isAuthenticated,
             errors,
-            clearErrors
+            clearErrors,
+            loading,
         }}>
             {children}
         </PersonaContext.Provider>
