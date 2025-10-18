@@ -24,8 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/registro" element={<RegisterPage />} />
           <Route path="/login" element={<Login/>} />
-          // Protected routes--------------------------------------------
-
+          {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/HomePage" element={<Index />} />
             <Route path="/hola" element={<Hola />} />
@@ -33,8 +32,6 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
-        
-        //---------------------------------------------------------------
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

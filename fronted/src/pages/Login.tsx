@@ -19,16 +19,15 @@ function Login({ onLogin }: LoginProps = {}){
   });
   const { signin, isAuthenticated, persona, errors: LoginErrors, clearErrors } = usePersonaAuth();
 
-  // Navegación automática deshabilitada para permitir navegación manual
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     // Llamar a onLogin si está disponible (compatibilidad con uso anterior)
-  //     if (onLogin && persona) {
-  //       onLogin({ name: persona.name, email: persona.email });
-  //     }
-  //     navigate("/HomePage", { replace: true });
-  //   }
-  // }, [isAuthenticated, navigate, onLogin, persona]);
+ useEffect(() => {
+   if (isAuthenticated) {
+      // Llamar a onLogin si está disponible (compatibilidad con uso anterior)
+     if (onLogin && persona) {
+       onLogin({ name: persona.name, email: persona.email });
+     }
+     navigate("/HomePage", { replace: true });
+   }
+ }, [isAuthenticated, navigate, onLogin, persona]);
 
   const onSubmit = handleSubmit(async (data) => {
     await signin(data as { email: string; password: string });

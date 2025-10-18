@@ -111,26 +111,26 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
     
     useEffect(() => {
         async function checkLogin() {
-            const cookies = Cookies.get();
-        if (!cookies.token) {
-            setIsAuthenticated(false);
-            setLoading(false);
-            return setPersona(null);
+            const cookies = Cookies.get();// Obtener cookies
+        if (!cookies.token) {// COMPRUEBA SI NO HAY TOKEN
+            setIsAuthenticated(false);// NO ESTÁ AUTENTICADO
+            setLoading(false);// TERMINA DE CARGAR
+            return setPersona(null);// NO HAY PERSONA
         }
             try {
-                const res = await verifyTokenRequest();
-                if (!res.data) {
-                    setIsAuthenticated(false);
-                    setLoading(false);
+                const res = await verifyTokenRequest();// Verificar token en el backend
+                if (!res.data) {// si el backend no devuelve datos
+                    setIsAuthenticated(false);// NO ESTÁ AUTENTICADO
+                    setLoading(false);// TERMINA DE CARGAR
                     return;
-                }
-                setIsAuthenticated(true);
-                setPersona(res.data);
-                setLoading(false);
+                }// si devuelve datos
+                setIsAuthenticated(true);// ESTÁ AUTENTICADO
+                setPersona(res.data);// SETEA LA PERSONA
+                setLoading(false);// TERMINA DE CARGAR
 
-        } catch (error) {
-            console.error("Error al verificar token:", error);
-            setIsAuthenticated(true);
+        } catch (error) {// si hay error
+            console.error("Error al verificar token:", error);// mostrar error en consola
+            setIsAuthenticated(false);
             setPersona(null);
             setLoading(false);
 
