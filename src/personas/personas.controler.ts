@@ -27,6 +27,13 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     }
   })
 
+  if (req.body.sanitizedInput.tel !== undefined && req.body.sanitizedInput.tel !== null) {
+    const telValue = req.body.sanitizedInput.tel
+    if (typeof telValue === 'string' && telValue.trim().length > 0) {
+      req.body.sanitizedInput.tel = Number(telValue)
+    }
+  }
+
   next()
 }
 
@@ -104,6 +111,7 @@ async function update(req: Request, res: Response) {
   try {
     const id = req.params.id
     const input = { ...req.body.sanitizedInput }
+    console.log('Update persona request', { id, input })
     
     // Hash del password si está presente
     if (input.password != undefined) {
@@ -118,7 +126,13 @@ async function update(req: Request, res: Response) {
       input.localidad = new ObjectId(input.localidad)
     }
     
-    const personaToUpdate = await em.findOneOrFail(persona, { id })
+    let personaToUpdate
+    try {
+      personaToUpdate = await em.findOneOrFail(persona, { _id: new ObjectId(id) })
+    } catch (e) {
+      console.warn('Persona not found by _id, retrying with id', id)
+      personaToUpdate = await em.findOneOrFail(persona, { id })
+    }
     em.assign(personaToUpdate, input)
     await em.flush()
     

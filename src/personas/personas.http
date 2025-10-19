@@ -77,15 +77,16 @@ DELETE http://localhost:3000/api/personas/{{id}}
 GET http://localhost:3000/api/personas/{{id}}
 
 ### PUT a character
-PUT http://localhost:3000/api/personas/{{id}}
+PUT http://localhost:3000/api/personas/68f2b613c40a2685739556c1
 Content-Type: application/json
 
 {
     "name": "lirili larila",
-    "apellido": "gay",
+    "apellido": "tralalerito",
     "email": "tralalerito@gmail.com",
-    "tel": 2477309919,
-    "direccion": "Calle Falsa 123",
+    "tel": "123141551215",
+    "password": "123456",
+    "localidad": "68e3391749cdc20f677c8ca3",
     "wallets": ["68e18d8f646f6244dd9f0d21"]
 }
 
