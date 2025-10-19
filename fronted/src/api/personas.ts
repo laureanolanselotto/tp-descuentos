@@ -23,7 +23,10 @@ const getLocalidades = async (): Promise<Localidad[]> => {
   return response.data.data || [];
 };
 
+const modificarPersona = (id: string, updatedData: Partial<RegisterPersonaData>) => {
+  return instance.put(`/personas/${id}`, updatedData);
+};
 const verifyTokenRequest = () => instance.get(`/auth/verify-token`);
 
-export { registerPersona, loginRequest, getLocalidades, verifyTokenRequest };
+export { registerPersona, loginRequest, getLocalidades, verifyTokenRequest, modificarPersona };
 

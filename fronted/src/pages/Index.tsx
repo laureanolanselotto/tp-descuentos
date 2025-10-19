@@ -9,6 +9,7 @@ import WeeklyCalendar from "@/components/WeeklyCalendar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InterestWalletsList from "@/components/InterestWalletsList";
 import { usePersonaAuth } from "@/context/personaContext";
+import { getWallets } from "@/api/wallets";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,16 +18,64 @@ import {
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
 
+type WalletId = string | { $oid: string };
+
+interface WalletData {
+  _id: WalletId;
+  id?: WalletId;
+  name: string;
+  descripcion?: string;
+  interes_anual?: number;
+}
+
 const Index = () => {
   const navigate = useNavigate();
   const { persona, isAuthenticated, logout } = usePersonaAuth();
   const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
+  const [wallets, setWallets] = useState<WalletData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDiscountType, setSelectedDiscountType] = useState<string>("all");
   const [showModal, setShowModal] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedBenefit, setSelectedBenefit] = useState<any>(null);
   const [walletFilter, setWalletFilter] = useState<string | null>(null);
+
+  const normalizeWalletId = (value: WalletId | undefined): string => {
+    if (!value) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "object" && value !== null && "$oid" in value) {
+      const oidValue = value as { $oid?: unknown };
+      if (typeof oidValue.$oid === "string") {
+        return oidValue.$oid;
+      }
+    }
+    return String(value);
+  };
+
+  const getWalletLabel = (walletId: string): string => {
+    if (!walletId) return "";
+    const wallet = wallets.find(
+      (w) => normalizeWalletId(w._id) === walletId || normalizeWalletId(w.id) === walletId
+    );
+    if (wallet?.name) {
+      return wallet.name;
+    }
+    return walletId;
+  };
+
+  // Cargar wallets desde el backend
+  useEffect(() => {
+    const fetchWallets = async () => {
+      try {
+        const response = await getWallets();
+        const walletsData = response.data.data || response.data || [];
+        setWallets(walletsData);
+      } catch (err) {
+        console.error("Error al cargar wallets:", err);
+      }
+    };
+    fetchWallets();
+  }, []);
 
   // Redirigir a /login si no está autenticado
   useEffect(() => {
@@ -41,7 +90,8 @@ const Index = () => {
   }
 
   const handleWalletsSelect = (walletIds: string[]) => {
-    setSelectedWallets(walletIds);
+    const normalizedIds = walletIds.map((id) => normalizeWalletId(id));
+    setSelectedWallets(normalizedIds);
     setShowModal(false);
   };
 
@@ -119,9 +169,7 @@ const Index = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="px-4 py-2 rounded-full bg-secondary text-secondary-foreground font-medium shadow hover:bg-primary hover:text-primary-foreground transition">
-                    {walletFilter
-                      ? selectedWallets.find(w => w === walletFilter)?.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^\w/, c => c.toUpperCase())
-                      : "Filtrar billetera"}
+                    {walletFilter ? getWalletLabel(walletFilter) : "Filtrar billetera"}
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -129,9 +177,9 @@ const Index = () => {
                   <DropdownMenuItem onClick={() => setWalletFilter(null)}>
                     Todas
                   </DropdownMenuItem>
-                  {selectedWallets.map(walletId => (
+                  {selectedWallets.map((walletId) => (
                     <DropdownMenuItem key={walletId} onClick={() => setWalletFilter(walletId)}>
-                      {walletId.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^\w/, c => c.toUpperCase())}
+                      {getWalletLabel(walletId)}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -139,8 +187,11 @@ const Index = () => {
             </div>
             <div className="flex flex-wrap gap-2">
               {selectedWallets.map((walletId) => (
-                <span key={walletId} className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">
-                  {walletId.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^w/, c => c.toUpperCase())}
+                <span
+                  key={walletId}
+                  className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm font-medium"
+                >
+                  {getWalletLabel(walletId)}
                 </span>
               ))}
             </div>
