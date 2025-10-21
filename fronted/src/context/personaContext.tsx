@@ -131,7 +131,7 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {// si hay error
             console.error("Error al verificar token:", error);// mostrar error en consola
             setIsAuthenticated(false);
-            setPersona(null);
+            setPersona(null);// NO HAY PERSONA
             setLoading(false);
 
         }}
