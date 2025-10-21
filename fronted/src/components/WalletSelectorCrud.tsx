@@ -4,7 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowRight, Wallet as WalletIcon, Check, CreditCard, Smartphone } from "lucide-react";
 import { getWallets } from "../api/wallets";
+import { updatePersonaWallets } from "../api/personas";
+import { usePersonaAuth } from "@/context/personaContext";
 import ConfirmAlert from "./ConfirmAlert";
+import type { PersonaData } from "../api/personas";
 
 interface WalletData {
   _id: string;
@@ -62,11 +65,15 @@ interface WalletSelectionModalProps {
 }
 
 const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets: initialSelectedWallets = [] }: WalletSelectionModalProps) => {
+  const { persona } = usePersonaAuth();
   const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
   const [wallets, setWallets] = useState<WalletData[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<string | null>(null);
+  const [updating, setUpdating] = useState(false);
+  const personaData = (persona || null) as unknown as PersonaData | null;
+  const personaId = personaData?._id ?? personaData?.id ?? personaData?.data?.id;
 
   useEffect(() => {
     setSelectedWallets(initialSelectedWallets || []);
@@ -102,13 +109,11 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
   };
 
   const confirmRemove = () => {
-  if (!pendingRemove) return;
-  const next = selectedWallets.filter(id => id !== pendingRemove);
-  setSelectedWallets(next);
-  setPendingRemove(null);
-  setConfirmOpen(false);
-  // notify parent with updated selection (do NOT close the parent modal)
-  onSelectWallets(next);
+    if (!pendingRemove) return;
+    const next = selectedWallets.filter(id => id !== pendingRemove);
+    setSelectedWallets(next);
+    setPendingRemove(null);
+    setConfirmOpen(false);
   };
 
   const cancelRemove = () => {
@@ -116,11 +121,29 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
     setConfirmOpen(false);
   };
 
-  const handleContinue = () => {
-    if (selectedWallets.length > 0) {
-      onSelectWallets(selectedWallets);
+  const handleContinue = async () => {
+    if (!personaId) {
+      console.error("No se pudo determinar el ID de la persona autenticada");
+      return;
     }
-    if (onClose) onClose();
+
+    setUpdating(true);
+    try {
+      console.log("WalletSelectorCrud -> updatePersonaWallets payload", {
+        personaId,
+        walletIds: selectedWallets,
+      });
+      const response = await updatePersonaWallets(personaId, selectedWallets);
+      console.log("WalletSelectorCrud -> updatePersonaWallets response", response?.data ?? response);
+      onSelectWallets(selectedWallets);
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error al actualizar las billeteras seleccionadas:", error);
+    } finally {
+      setUpdating(false);
+    }
   };
 
   return (
@@ -186,7 +209,7 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
           </p>
           <Button
             onClick={handleContinue}
-            disabled={selectedWallets.length === 0}
+            disabled={selectedWallets.length === 0 || updating}
             className="w-full py-6 bg-gradient-primary hover:opacity-90 text-lg font-semibold group"
             size="lg"
           >

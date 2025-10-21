@@ -48,5 +48,9 @@ const verifyTokenRequest = () => instance.get(`/auth/verify-token`);
 
 const logoutRequest = () => instance.post(`/auth/logout`);
 
-export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, logoutRequest };
+const updatePersonaWallets = (personaId: string, walletIds: string[]) => {
+  return instance.patch(`/personas/${personaId}`, { wallets: walletIds });
+};
+
+export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, logoutRequest, updatePersonaWallets };
 

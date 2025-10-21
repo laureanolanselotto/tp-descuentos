@@ -20,7 +20,19 @@ Content-Type: application/json
 ### get the id
 @Id = {{ createVader.response.body.data.id }}
 ### GET one character
-GET http://localhost:3000/api/personas/68f2b003feefab744390d901
+GET http://localhost:3000/api/personas/{{id}}
+
+### PUT one persona
+PATCH  http://localhost:3000/api/personas/{{id}}
+Content-Type: application/json
+
+{
+    "wallets": ["68f196a54411f78ae5f2be6a"]
+
+}
+
+
+
 ### delete
 DELETE http://localhost:3000/api/personas/{{id}}
 ### Login con Auth Controller (Corregido)

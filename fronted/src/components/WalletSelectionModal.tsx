@@ -4,6 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowRight, Wallet, Check, CreditCard, Smartphone } from "lucide-react";
 import { getWallets } from "../api/wallets";
+import { updatePersonaWallets } from "../api/personas";
+import { usePersonaAuth } from "@/context/personaContext";
+import type { PersonaData } from "../api/personas";
 
 interface WalletData {
   _id: string;
@@ -12,8 +15,7 @@ interface WalletData {
   descripcion?: string;
   interes_anual?: number;
 }
-
-// Helper para asignar colores e íconos según el nombre de la wallet
+// Helper para asignar colores e íconos según el nombre de la wallet que despues se va a borrar
 const getWalletStyle = (name: string) => {
   const nameLower = name.toLowerCase();
   
@@ -63,7 +65,10 @@ const WalletSelectionModal = ({ isOpen, onSelectWallets, onClose }: WalletSelect
   const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
   const [wallets, setWallets] = useState<WalletData[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [submitting, setSubmitting] = useState(false);
+  const { persona } = usePersonaAuth();
+  const personaData = (persona || null) as unknown as PersonaData | null;
+  const personaId = personaData?._id ?? personaData?.id ?? personaData?.data?.id;
   useEffect(() => {
     const fetchWallets = async () => {
       try {
@@ -90,10 +95,32 @@ const WalletSelectionModal = ({ isOpen, onSelectWallets, onClose }: WalletSelect
     });
   };
 
-  const handleContinue = () => {
-    if (selectedWallets.length > 0) {
+  const handleContinue = async () => {
+    if (!personaId) {
+      console.error("No se pudo determinar el ID de la persona autenticada");
+      return;
+    }
+
+    if (selectedWallets.length === 0) {
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      console.log("WalletSelectionModal -> updatePersonaWallets payload", {
+        personaId,
+        walletIds: selectedWallets,
+      });
+      const response = await updatePersonaWallets(personaId, selectedWallets);
+      console.log("WalletSelectionModal -> updatePersonaWallets response", response?.data ?? response);
       onSelectWallets(selectedWallets);
-  if (onClose) onClose();
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error al actualizar las billeteras seleccionadas:", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -160,7 +187,7 @@ const WalletSelectionModal = ({ isOpen, onSelectWallets, onClose }: WalletSelect
           </p>
           <Button
             onClick={handleContinue}
-            disabled={selectedWallets.length === 0}
+            disabled={selectedWallets.length === 0 || submitting}
             className="w-full py-6 bg-gradient-primary hover:opacity-90 text-lg font-semibold group"
             size="lg"
           >
