@@ -13,25 +13,40 @@ export interface Localidad {
   pais: string;
 }
 
+// Tipo para los datos de Persona que vienen del backend (basado en personas.entity.ts)
+export interface PersonaData {
+  _id?: string;
+  id?: string;
+  name: string;
+  apellido: string;
+  email: string;
+  tel: number | string;  // Puede ser number (entidad) o string (formulario)
+  direccion?: string;  // Es opcional en la entidad
+  password?: string;  // Para actualizaciones, no siempre viene
+  localidad?: string | Localidad | { _id?: string; id?: string; localidadId?: string };
+  wallets?: Array<string | { _id?: string; id?: string; walletId?: string }>;
+  notificaciones?: Array<unknown>;  // Collection de notificaciones
+  data?: {
+    id?: string;
+    [key: string]: unknown;
+  };
+}
+
 // La ruta correcta es /api/personas/ (sin /register)
 const registerPersona = (user: RegisterPersonaData) => instance.post(`/personas`, user);
 const loginRequest = (user: { email: string; password: string }) => instance.post(`/auth/login`, user);
-
-// Obtener todas las localidades
-const getLocalidades = async (): Promise<Localidad[]> => {
-  const response = await instance.get(`/localidades`);
-  return response.data.data || [];
-};
 
 const modificarPersona = (id: string, updatedData: Partial<RegisterPersonaData>) => {
   return instance.put(`/personas/${id}`, updatedData);
 };
 
-const getPersonaById = async (id: string) => {
+const getPersonaById = async (id: string): Promise<PersonaData> => {
   const response = await instance.get(`/personas/${id}`);
   return response.data?.data || response.data;
 };
 const verifyTokenRequest = () => instance.get(`/auth/verify-token`);
 
-export { registerPersona, loginRequest, getLocalidades, verifyTokenRequest, modificarPersona, getPersonaById };
+const logoutRequest = () => instance.post(`/auth/logout`);
+
+export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, logoutRequest };
 

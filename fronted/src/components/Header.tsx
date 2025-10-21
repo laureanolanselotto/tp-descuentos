@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { ArrowLeft, Settings, Wallet } from "lucide-react";
+import { ArrowLeft, LogOut, Settings, Wallet } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/switch";
 import WalletSelectorCrud from "@/components/WalletSelectorCrud";
 import AccountModal from "@/components/AccountModal";
 import NotificationsModal from "@/components/NotificationsModal";
-
+import { usePersonaAuth } from "../context/personaContext";
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   return (
@@ -36,6 +36,7 @@ const walletNames: Record<string, string> = {
 };
 
 const Header = ({ userName, selectedWallet, selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
+  const { logout } = usePersonaAuth();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
@@ -73,7 +74,7 @@ const Header = ({ userName, selectedWallet, selectedWallets, onUpdateSelectedWal
               <Button variant="secondary" className="w-full" onClick={() => setShowAccountModal(true)}>
                 Cuenta
               </Button>
-              <Button variant="destructive" className="w-full mt-2" onClick={onLogout}>Cerrar sesión</Button>
+              <Button variant="destructive" className="w-full mt-2" onClick={logout}>Cerrar sesión</Button>
             </div>
           </SheetContent>
         </Sheet>

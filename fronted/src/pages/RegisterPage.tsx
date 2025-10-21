@@ -5,7 +5,8 @@ import { registroSchema } from "../../../src/schema/personas.validator";
 import { usePersonaAuth } from "../context/personaContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getLocalidades, Localidad } from "../api/personas";
+import { registerPersona } from "../api/personas";
+import { cargarLocalidades, Localidad } from "../api/localidad";
 
 // Extendemos el schema del backend para agregar confirmPassword
 const registerSchema = registroSchema.extend({
@@ -38,7 +39,7 @@ function RegisterPage() {
   useEffect(() => {
     const fetchLocalidades = async () => {
       try {
-        const data = await getLocalidades();
+        const data = await cargarLocalidades();
         setLocalidades(data);
       } catch (error) {
         console.error("Error al cargar localidades:", error);

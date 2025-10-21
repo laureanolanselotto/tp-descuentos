@@ -95,10 +95,10 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = () => {
+        Cookies.remove('token'); // Eliminar la cookie del token
         setPersona(null);
         setIsAuthenticated(false);
-        setErrors([]);
-    };
+    }
 
     useEffect(() => {
       if (errors.length > 0) {

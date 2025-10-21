@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
+import { any } from "zod";
 
 type WalletId = string | { $oid: string };
 
@@ -141,7 +142,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header 
         userName={persona?.name || "Usuario"}
-        selectedWallet={selectedWallets[0]}
+        selectedWallet={selectedWallets['']}
         selectedWallets={selectedWallets}
         onUpdateSelectedWallets={setSelectedWallets}
         onBackToWalletSelection={handleBackToWalletSelection}

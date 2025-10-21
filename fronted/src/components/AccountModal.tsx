@@ -6,7 +6,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registroSchema } from "../../../src/schema/personas.validator";
 import { usePersonaAuth } from "@/context/personaContext";
-import { getLocalidades, Localidad, modificarPersona, getPersonaById } from "@/api/personas";
+import { modificarPersona, getPersonaById, PersonaData } from "@/api/personas";
+import { cargarLocalidades, Localidad } from "@/api/localidad";
+
+// Tipo para extraer ID de diferentes estructuras de persona
+type PersonaWithId = {
+  id?: string;
+  _id?: string;
+  data?: { id?: string };
+};
 
 const accountSchema = registroSchema
   .extend({
@@ -34,13 +42,14 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
   const [localidades, setLocalidades] = useState<Localidad[]>([]);
   const [loadingLocalidades, setLoadingLocalidades] = useState(true);
   const [loadingPersona, setLoadingPersona] = useState(false);
-  const [personaData, setPersonaData] = useState<any | null>(null);
+  const [personaData, setPersonaData] = useState<PersonaData | null>(null);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
   const personaId = useMemo(() => {
     if (!persona) return "";
-    const source = persona as any;
+    // El contexto usa RegisterPersonaData, pero necesitamos extraer el ID
+    const source = persona as PersonaWithId;
     return source.id || source._id || source.data?.id || "";
   }, [persona]);
 
@@ -64,7 +73,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
     },
   });
 
-  const extractLocalidadId = (value: any): string => {
+  const extractLocalidadId = (value: string | { _id?: string; id?: string; localidadId?: string } | undefined): string => {
     if (!value) return "";
     if (typeof value === "string") return value;
     if (typeof value === "object") {
@@ -73,7 +82,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
     return "";
   };
 
-  const extractWalletIds = (walletsValue: any): string[] => {
+  const extractWalletIds = (walletsValue: Array<string | { _id?: string; id?: string; walletId?: string }> | undefined): string[] => {
     if (!walletsValue) return [];
     if (Array.isArray(walletsValue)) {
       return walletsValue
@@ -95,7 +104,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
     const fetchLocalidades = async () => {
       setLoadingLocalidades(true);
       try {
-        const data = await getLocalidades();
+        const data = await cargarLocalidades();
         setLocalidades(data);
       } catch (error) {
         console.error("Error al cargar localidades:", error);
@@ -122,7 +131,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
           name: data?.name ?? "",
           apellido: data?.apellido ?? "",
           email: data?.email ?? "",
-          tel: data?.tel ?? data?.telefono ?? "",
+          tel: data?.tel ? String(data.tel) : "",  // Convertir number a string para el form
           direccion: data?.direccion ?? "",
           localidadId: extractLocalidadId(data?.localidad),
           password: "",
@@ -238,7 +247,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
             <input
               className="bg-[#333] text-white w-full pt-8 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none"
               type="tel"
-              placeholder={personaData?.tel || personaData?.telefono || "Teléfono"}
+              placeholder={personaData?.tel ? String(personaData.tel) : "Teléfono"}
               {...register("tel")}
             />
             <span className="absolute left-3 top-3 text-white/50 text-sm">Teléfono</span>
