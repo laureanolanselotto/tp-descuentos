@@ -109,9 +109,19 @@ const WalletSelectionModal = ({ isOpen, onSelectWallets, onClose }: WalletSelect
     try {
       console.log("WalletSelectionModal -> updatePersonaWallets payload", {
         personaId,
-        walletIds: selectedWallets,
+        walletIds: selectedWallets
       });
       const response = await updatePersonaWallets(personaId, selectedWallets);
+      const rawRequestData = response?.config?.data;
+      let parsedRequestData: unknown = rawRequestData;
+      if (typeof rawRequestData === "string") {
+        try {
+          parsedRequestData = JSON.parse(rawRequestData);
+        } catch {
+          parsedRequestData = rawRequestData;
+        }
+      }
+      console.log("WalletSelectionModal -> axios request data", parsedRequestData);
       console.log("WalletSelectionModal -> updatePersonaWallets response", response?.data ?? response);
       onSelectWallets(selectedWallets);
       if (onClose) {

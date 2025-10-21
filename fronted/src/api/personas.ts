@@ -44,6 +44,17 @@ const getPersonaById = async (id: string): Promise<PersonaData> => {
   const response = await instance.get(`/personas/${id}`);
   return response.data?.data || response.data;
 };
+const getAllPersonas = async (): Promise<PersonaData[]> => {
+  const response = await instance.get(`/personas`);
+  const data = response.data?.data || response.data;
+  return Array.isArray(data) ? data : [];
+};
+
+const getPersonaByEmail = async (email: string): Promise<PersonaData | null> => {
+  const personas = await getAllPersonas();
+  const target = personas.find((item) => item.email === email);
+  return target ?? null;
+};
 const verifyTokenRequest = () => instance.get(`/auth/verify-token`);
 
 const logoutRequest = () => instance.post(`/auth/logout`);
@@ -52,5 +63,5 @@ const updatePersonaWallets = (personaId: string, walletIds: string[]) => {
   return instance.patch(`/personas/${personaId}`, { wallets: walletIds });
 };
 
-export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, logoutRequest, updatePersonaWallets };
+export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets };
 

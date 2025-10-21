@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { ComponentProps } from "react";
 import { useNavigate } from "react-router-dom";
 import WalletSelectionModal from "@/components/WalletSelectionModal";
 import Header from "@/components/Header";
@@ -10,6 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InterestWalletsList from "@/components/InterestWalletsList";
 import { usePersonaAuth } from "@/context/personaContext";
 import { getWallets } from "@/api/wallets";
+import { getPersonaById, getPersonaByEmail } from "@/api/personas";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,7 +19,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
-import { any } from "zod";
+import type { PersonaData } from "@/api/personas";
+
+type BenefitDetailData = ComponentProps<typeof BenefitDetail>["benefit"];
 
 type WalletId = string | { $oid: string };
 
@@ -38,8 +42,9 @@ const Index = () => {
   const [selectedDiscountType, setSelectedDiscountType] = useState<string>("all");
   const [showModal, setShowModal] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedBenefit, setSelectedBenefit] = useState<any>(null);
+  const [selectedBenefit, setSelectedBenefit] = useState<BenefitDetailData | null>(null);
   const [walletFilter, setWalletFilter] = useState<string | null>(null);
+  const [personaRecord, setPersonaRecord] = useState<PersonaData | null>(null);
 
   const normalizeWalletId = (value: WalletId | undefined): string => {
     if (!value) return "";
@@ -78,12 +83,86 @@ const Index = () => {
     fetchWallets();
   }, []);
 
-  // Redirigir a /login si no está autenticado
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+    const hydrateWalletsFromBackend = async () => {
+      if (!persona) {
+        setPersonaRecord(null);
+        setSelectedWallets([]);
+        setShowModal(true);
+        return;
+      }
+
+      const personaData = (persona ?? null) as PersonaData | null;
+      const personaId = personaData?._id ?? personaData?.id ?? personaData?.data?.id;
+
+      try {
+        let personaFromDb: PersonaData | null = null;
+
+        if (personaId) {
+          personaFromDb = await getPersonaById(personaId);
+        } else if (personaData?.email) {
+          personaFromDb = await getPersonaByEmail(personaData.email);
+        }
+
+        if (!personaFromDb) {
+          console.warn("No se encontró la persona en la base de datos para hidratar wallets");
+          return;
+        }
+
+        setPersonaRecord(personaFromDb);
+
+        const rawWallets = Array.isArray(personaFromDb.wallets)
+          ? (personaFromDb.wallets as NonNullable<PersonaData["wallets"]>)
+          : [];
+
+        type PersonaWalletEntry = NonNullable<PersonaData["wallets"]>[number];
+
+        const normalizedWallets = rawWallets.reduce<string[]>((acc, walletEntry) => {
+          if (!walletEntry) {
+            return acc;
+          }
+
+          const appendIfValid = (value: WalletId | undefined) => {
+            if (!value) {
+              return;
+            }
+            const normalized = normalizeWalletId(value);
+            if (normalized) {
+              acc.push(normalized);
+            }
+          };
+
+          if (typeof walletEntry === "string") {
+            appendIfValid(walletEntry);
+            return acc;
+          }
+
+          const walletObject = walletEntry as Exclude<PersonaWalletEntry, string>;
+          const candidate = (walletObject?._id as WalletId | undefined)
+            ?? (walletObject?.id as WalletId | undefined)
+            ?? (walletObject?.walletId as WalletId | undefined);
+
+          appendIfValid(candidate);
+
+          return acc;
+        }, []);
+
+        if (normalizedWallets.length > 0) {
+          setSelectedWallets(normalizedWallets);
+          setShowModal(false);
+          return;
+        }
+
+        setSelectedWallets([]);
+        setShowModal(true);
+      } catch (error) {
+        console.error("Error al obtener la persona desde la base de datos:", error);
+      }
+    };
+
+    hydrateWalletsFromBackend();
+  }, [persona]);
 
   // Mientras se redirige, no renderizar nada
   if (!isAuthenticated) {
@@ -141,7 +220,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header 
-        userName={persona?.name || "Usuario"}
+        userName={personaRecord?.name || persona?.name || "Usuario"}
         selectedWallet={selectedWallets['']}
         selectedWallets={selectedWallets}
         onUpdateSelectedWallets={setSelectedWallets}
@@ -221,7 +300,12 @@ const Index = () => {
                 selectedCategory={selectedCategory}
                 selectedDiscountType={selectedDiscountType}
                 selectedDate={selectedDate}
-                onBenefitClick={setSelectedBenefit}
+                onBenefitClick={(benefit) =>
+                  setSelectedBenefit({
+                    ...benefit,
+                    discountType: benefit.discountType ?? "",
+                  })
+                }
               />
             </div>
           </TabsContent>
