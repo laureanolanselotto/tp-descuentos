@@ -1,69 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { 
-  Grid3X3, 
-  Coffee, 
-  Flame, 
-  Shirt, 
-  Baby, 
-  Dumbbell, 
-  Home, 
-  Sparkles, 
-  Gamepad2
-} from "lucide-react";
-
-interface Category {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-}
-
-const categories: Category[] = [
-  {
-    id: "all",
-    name: "Todas",
-    icon: <Grid3X3 className="w-4 h-4" />
-  },
-  {
-    id: "food",
-    name: "Comida",
-    icon: <Coffee className="w-4 h-4" />
-  },
-  {
-    id: "combustible",
-    name: "Combustible",
-    icon: <Flame className="w-4 h-4" />
-  },
-  {
-    id: "indumentaria",
-    name: "Indumentaria",
-    icon: <Shirt className="w-4 h-4" />
-  },
-  {
-    id: "ninos",
-    name: "Niños",
-    icon: <Baby className="w-4 h-4" />
-  },
-  {
-    id: "deporte",
-    name: "Deporte",
-    icon: <Dumbbell className="w-4 h-4" />
-  },
-  {
-    id: "hogar",
-    name: "Hogar",
-    icon: <Home className="w-4 h-4" />
-  },
-  {
-    id: "belleza",
-    name: "Belleza",
-    icon: <Sparkles className="w-4 h-4" />
-  },
-  {
-    id: "entertainment",
-    name: "Entretenimiento",
-    icon: <Gamepad2 className="w-4 h-4" />
-  }
-];
+import { useState, useEffect } from "react";
+import { getCategoriesFromRubros, type Category } from "@/api/rubros";
 
 interface CategoryFilterProps {
   selectedCategory: string;
@@ -72,14 +9,40 @@ interface CategoryFilterProps {
   onDiscountTypeSelect?: (discountType: string) => void;
 }
 
-  const discountTypes = [
-    { id: "all", label: "Todos" },
-    { id: "En cuotas", label: "Cuotas" },
-    { id: "Reintegro", label: "Reintegro" },
-    { id: "Sin tope", label: "Sin tope" }
-  ];
+const discountTypes = [
+  { id: "all", label: "Todos" },
+  { id: "En cuotas", label: "Cuotas" },
+  { id: "Reintegro", label: "Reintegro" },
+  { id: "Sin tope", label: "Sin tope" }
+];
 
 const CategoryFilter = ({ selectedCategory, onCategorySelect, selectedDiscountType = "all", onDiscountTypeSelect }: CategoryFilterProps) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categoriesFromBackend = await getCategoriesFromRubros();
+        setCategories(categoriesFromBackend);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al cargar categorías:", error);
+        setLoading(false);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center mb-4">
+        <p className="text-muted-foreground">Cargando categorías...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex justify-center mb-4">
       <div className="flex flex-wrap gap-3 items-center max-w-4xl w-full justify-center">
