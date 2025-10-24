@@ -21,6 +21,10 @@ interface BenefitDetailProps {
     limit?: string;
     tope_reintegro?: number;
     imageUrl?: string;
+    infoWallet?: {
+      name: string;
+      [key: string]: unknown;
+    };
   };
   onBack: () => void;
 }
@@ -28,9 +32,9 @@ interface BenefitDetailProps {
 const dayLabels = ["L", "M", "X", "J", "V", "S", "D"];
 
 const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
-  // Buscar el nombre de la billetera correspondiente
+  // Usar el nombre de la wallet desde infoWallet o fallback al array estático
+  const walletName = benefit.infoWallet?.name || wallets.find(w => w.id === benefit.walletId)?.name || benefit.walletId;
   const wallet = wallets.find(w => w.id === benefit.walletId);
-  const walletName = wallet ? wallet.name : benefit.walletId;
   // calcular cuánto hay que gastar para alcanzar el tope de reintegro
   const spendToReachTop = (benefit.tope_reintegro && benefit.discount && benefit.discount > 0)
     ? Math.ceil(benefit.tope_reintegro / (benefit.discount / 100))

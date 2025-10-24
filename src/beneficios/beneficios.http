@@ -37,7 +37,7 @@ Content-Type: application/json
 @beneficioId1 = {{createBeneficio1.response.body.data.id}}
 
 ### 4. GET - Obtener beneficio por ID
-GET {{baseUrl}}/{{beneficioId1}}
+GET {{baseUrl}}/68e7cd606f9a531e6381f51f
 
 ###
 

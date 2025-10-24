@@ -12,6 +12,9 @@ import {
   Hotel
 } from "lucide-react";
 import { format, getDay } from "date-fns";
+import { useState, useEffect } from "react";
+import { getBeneficios } from "@/api/beneficios";
+import { getWalletById } from "@/api/wallets";
 
 import { wallets } from "./data/wallets.tsx";
 interface Benefit {
@@ -26,170 +29,13 @@ interface Benefit {
   availableDays: number[]; // 0 = domingo, 1 = lunes, etc.
   discountType?: string;
   tope_reintegro?: number;
+  infoWallet?: {
+    name: string;
+    [key: string]: unknown;
+  };
 }
 
-const benefits: Benefit[] = [
-  {
-    id: "starbucks",
-    name: "wallet a",
-    discount: 25,
-    icon: <Coffee className="w-8 h-8" />,
-    category: "belleza",
-    walletId: "mercadopago",
-    availableDays: [1, 2, 5],
-    fecha_hasta: "2024-12-31",
-    fecha_desde: "2024-01-01",
-    discountType: "Sin tope"
-  },
-  {
-    id: "starbucks",
-    name: "camilo",
-    discount: 12,
-    icon: <Gamepad2 className="w-8 h-8" />,
-    category: "hogar",
-    walletId: "mercadopago",
-    availableDays: [1, 3,4, 5,6],
-    fecha_desde: "2025-08-15",
-    fecha_hasta: "2025-12-31",
-    discountType: "En cuotas"
-  },
-  {
-    id: "mcdonalds",
-    name: "McDonald's",
-    discount: 30,
-    icon: <Pizza className="w-8 h-8" />,
-    category: "Music",
-    walletId: "mercadopago",
-    availableDays: [0, 6],
-    fecha_desde: "2025-01-01",
-    fecha_hasta: "2025-12-31",
-  discountType: "Reintegro",
-  tope_reintegro: 5000
-  },
-  {
-    id: "uber",
-    name: "Uber",
-    discount: 20,
-    icon: <Car className="w-8 h-8" />,
-    category: "transport",
-    walletId: "rapipago",
-    availableDays: [1, 2, 3, 4, 5],
-    fecha_desde: "2025-09-15",
-    fecha_hasta: "2025-10-15",
-    discountType: "Sin tope"
-  },
-  {
-    id: "steam",
-    name: "Steam",
-    discount: 45,
-    icon: <Gamepad2 className="w-8 h-8" />,
-    category: "entertainment",
-    walletId: "uala",
-    availableDays: [5, 6, 0],
-    fecha_desde: "2025-06-01",
-    fecha_hasta: "2025-09-20",
-    discountType: "En cuotas"
-  },
-  {
-    id: "spotify",
-    name: "Spotify",
-    discount: 50,
-    icon: <Music className="w-8 h-8" />,
-    category: "deporte",
-    walletId: "pagofacil",
-    availableDays: [0, 2, 3, 4, 5, 6],
-    fecha_desde: "2025-09-10",
-    fecha_hasta: "2025-09-30",
-    discountType: "Sin tope"
-  },
-  {
-    id: "amazon",
-    name: "Amazon",
-    discount: 15,
-    icon: <ShoppingCart className="w-8 h-8" />,
-    category: "shopping",
-    walletId: "mercadopago",
-    availableDays: [1, 3, 5],
-    fecha_desde: "2025-11-01",
-    fecha_hasta: "2025-12-31",
-  discountType: "Reintegro",
-  tope_reintegro: 16000
-  },
-  {
-    id: "booking",
-    name: "Booking.com",
-    discount: 35,
-    icon: <Hotel className="w-8 h-8" />,
-    category: "travel",
-    walletId: "rapipago",
-    availableDays: [0, 6],
-    fecha_desde: "2025-07-01",
-    fecha_hasta: "2025-09-18",
-    discountType: "En cuotas"
-  },
-  {
-    id: "coursera",
-    name: "Coursera",
-    discount: 40,
-    icon: <BookOpen className="w-8 h-8" />,
-    category: "education",
-    walletId: "uala",
-    availableDays: [1, 2, 3, 4],
-    fecha_desde: "2025-01-01",
-    fecha_hasta: "2025-03-31",
-    discountType: "Sin tope"
-  },
-  {
-    id: "latam",
-    name: "LATAM Airlines",
-    discount: 25,
-    icon: <Plane className="w-8 h-8" />,
-    category: "travel",
-    walletId: "pagofacil",
-    availableDays: [2, 4],
-    fecha_desde: "2025-09-14",
-    fecha_hasta: "2025-09-21",
-  discountType: "Reintegro",
-  tope_reintegro: 5000
-  },
-  {
-    id: "burguer-king",
-    name: "Burger King",
-    discount: 35,
-    icon: <Pizza className="w-8 h-8" />,
-    category: "food",
-    walletId: "cuenta-dni",
-    availableDays: [0, 6],
-    fecha_desde: "2025-09-01",
-    fecha_hasta: "2025-12-31",
-    discountType: "Sin tope"
-  },
-  {
-    id: "netflix",
-    name: "Netflix",
-    discount: 8,
-    icon: <Music className="w-8 h-8" />,
-    category: "entertainment",
-    walletId: "brubank",
-    availableDays: [0, 1, 2, 3, 4, 5, 6],
-    fecha_desde: "2025-01-01",
-    fecha_hasta: "2025-12-31",
-    discountType: "En cuotas"
-  },
-  {
-    id: "cabify",
-    name: "Cabify",
-    discount: 25,
-    icon: <Car className="w-8 h-8" />,
-    category: "transport",
-    walletId: "modo",
-    availableDays: [1, 2, 3, 4, 5],
-    fecha_desde: "2025-09-10",
-    fecha_hasta: "2025-09-25",
-  discountType: "Reintegro",
-  tope_reintegro: 5000
-  }
-];
+// Static benefits removed - now loaded from backend
 
 interface BenefitsGridProps {
   selectedWallets: string[];
@@ -200,6 +46,114 @@ interface BenefitsGridProps {
 }
 
 const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType = "all", selectedDate, onBenefitClick }: BenefitsGridProps) => {
+  const [benefits, setBenefits] = useState<Benefit[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Helper function to map icon strings to React components
+  const getIconComponent = (iconName?: string): React.ReactNode => {
+    const iconMap: Record<string, React.ReactNode> = {
+      'coffee': <Coffee className="w-8 h-8" />,
+      'shopping': <ShoppingCart className="w-8 h-8" />,
+      'car': <Car className="w-8 h-8" />,
+      'pizza': <Pizza className="w-8 h-8" />,
+      'gamepad': <Gamepad2 className="w-8 h-8" />,
+      'book': <BookOpen className="w-8 h-8" />,
+      'music': <Music className="w-8 h-8" />,
+      'plane': <Plane className="w-8 h-8" />,
+      'hotel': <Hotel className="w-8 h-8" />,
+    };
+    return iconMap[iconName || ''] || <Coffee className="w-8 h-8" />;
+  };
+
+  useEffect(() => {
+    const fetchBeneficios = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getBeneficios();
+        const beneficiosData = response.data?.data || response.data || [];
+        
+        // Transform backend data to match expected Benefit structure
+        const transformedBenefits: Benefit[] = await Promise.all(beneficiosData.map(async (item: unknown) => {
+          const beneficioItem = item as {
+            _id?: string;
+            id?: string;
+            name?: string;
+            discount?: number;
+            fecha_desde?: string;
+            fecha_hasta?: string;
+            icon?: string;
+            rubro?: { name?: string };
+            category?: string;
+            wallet?: { _id?: string; id?: string };
+            walletId?: string;
+            availableDays?: number[];
+            discountType?: string;
+            tope_reintegro?: number;
+          };
+          
+          const walletId = beneficioItem.wallet?._id || beneficioItem.wallet?.id || beneficioItem.walletId || '';
+          let infoWallet = undefined;
+          
+          if (walletId) {
+            try {
+              const walletResponse = await getWalletById(walletId);
+              infoWallet = {
+                name: walletResponse.data?.data?.name || walletResponse.data?.name || walletId,
+                ...walletResponse.data?.data || walletResponse.data
+              };
+            } catch (error) {
+              console.warn(`Error fetching wallet ${walletId}:`, error);
+              infoWallet = { name: walletId };
+            }
+          }
+          
+          return {
+            id: beneficioItem._id || beneficioItem.id || '',
+            name: beneficioItem.name || '',
+            discount: beneficioItem.discount || 0,
+            fecha_desde: beneficioItem.fecha_desde,
+            fecha_hasta: beneficioItem.fecha_hasta,
+            icon: getIconComponent(beneficioItem.icon),
+            category: beneficioItem.rubro?.name || beneficioItem.category || '',
+            walletId,
+            availableDays: Array.isArray(beneficioItem.availableDays) ? beneficioItem.availableDays : [],
+            discountType: beneficioItem.discountType || '',
+            tope_reintegro: beneficioItem.tope_reintegro,
+            infoWallet,
+          };
+        }));
+        
+        setBenefits(transformedBenefits);
+      } catch (err) {
+        console.error("Error al cargar beneficios:", err);
+        setError("Error al cargar beneficios");
+        setBenefits([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBeneficios();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-muted-foreground text-lg">Cargando beneficios...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-red-500 text-lg">{error}</div>
+      </div>
+    );
+  }
+
   const selectedDayOfWeek = getDay(selectedDate);
   const filteredBenefits = benefits.filter(benefit => {
     const walletMatch = selectedWallets.includes(benefit.walletId);
@@ -242,7 +196,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             <div className="text-center space-y-2">
               <div className="flex items-center justify-center">
                 <h3 className="font-bold text-lg text-card-foreground">
-                  {wallets.find(w => w.id === benefit.walletId)?.name || benefit.walletId}
+                  {benefit.infoWallet?.name || benefit.walletId}
                 </h3>
               </div>
             {/* cambie en funcion del tipo de descuento descuento*/ }
