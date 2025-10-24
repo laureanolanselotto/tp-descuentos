@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ArrowRight, Wallet, Check, CreditCard, Smartphone } from "lucide-react";
 import { getWallets } from "../api/wallets";
 import { updatePersonaWallets } from "../api/personas";
@@ -145,9 +145,9 @@ const WalletSelectionModal = ({ isOpen, onSelectWallets, onClose }: WalletSelect
             <DialogTitle className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent text-center">
               Selecciona tus Billeteras Virtuales
             </DialogTitle>
-            <p className="text-muted-foreground text-center">
+            <DialogDescription className="text-muted-foreground text-center">
               Elige una o varias billeteras virtuales para ver todos los beneficios disponibles
-            </p>
+            </DialogDescription>
           </div>
         </DialogHeader>
 

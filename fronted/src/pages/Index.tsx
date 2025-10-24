@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InterestWalletsList from "@/components/InterestWalletsList";
 import { usePersonaAuth } from "@/context/personaContext";
 import { getWallets } from "@/api/wallets";
-import { getPersonaById, getPersonaByEmail } from "@/api/personas";
+import { getPersonaById, getPersonaByEmail, updatePersonaWallets, getPersonaWithWallets } from "@/api/personas";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -35,16 +35,17 @@ interface WalletData {
 
 const Index = () => {
   const navigate = useNavigate();
-  const { persona, isAuthenticated, logout } = usePersonaAuth();
+  const { persona, isAuthenticated, logout, loading } = usePersonaAuth();
   const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
   const [wallets, setWallets] = useState<WalletData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDiscountType, setSelectedDiscountType] = useState<string>("all");
-  const [showModal, setShowModal] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedBenefit, setSelectedBenefit] = useState<BenefitDetailData | null>(null);
   const [walletFilter, setWalletFilter] = useState<string | null>(null);
   const [personaRecord, setPersonaRecord] = useState<PersonaData | null>(null);
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
 
   const normalizeWalletId = (value: WalletId | undefined): string => {
     if (!value) return "";
@@ -86,93 +87,135 @@ const Index = () => {
 
   useEffect(() => {
     const hydrateWalletsFromBackend = async () => {
-      if (!persona) {
+      // Esperar a que termine de cargar el contexto
+      if (loading) {
+        return;
+      }
+
+      // Si no está autenticado, terminar inicialización
+      if (!isAuthenticated) {
         setPersonaRecord(null);
         setSelectedWallets([]);
-        setShowModal(true);
+        setShowModal(false);
+        setIsInitializing(false);
+        return;
+      }
+
+      // Verificar que tenemos una persona válida
+      if (!persona) {
         return;
       }
 
       const personaData = (persona ?? null) as PersonaData | null;
-      const personaId = personaData?._id ?? personaData?.id ?? personaData?.data?.id;
+      
+      // Con el backend actualizado, el contexto ya trae los datos completos
+      console.log("✅ Datos de persona desde contexto:", personaData);
+      
+      setPersonaRecord(personaData);
 
-      try {
-        let personaFromDb: PersonaData | null = null;
+      // Buscar wallets en la estructura correcta
+      // Puede venir como personaData.wallets o personaData.wallet (por si acaso)
+      const walletsArray = personaData?.wallets || (personaData as any)?.wallet || [];
+      
+      const rawWallets = Array.isArray(walletsArray)
+        ? walletsArray
+        : [];
 
-        if (personaId) {
-          personaFromDb = await getPersonaById(personaId);
-        } else if (personaData?.email) {
-          personaFromDb = await getPersonaByEmail(personaData.email);
-        }
+      console.log("📦 Raw wallets encontradas:", rawWallets);
 
-        if (!personaFromDb) {
-          console.warn("No se encontró la persona en la base de datos para hidratar wallets");
-          return;
-        }
+      type PersonaWalletEntry = NonNullable<PersonaData["wallets"]>[number];
 
-        setPersonaRecord(personaFromDb);
-
-        const rawWallets = Array.isArray(personaFromDb.wallets)
-          ? (personaFromDb.wallets as NonNullable<PersonaData["wallets"]>)
-          : [];
-
-        type PersonaWalletEntry = NonNullable<PersonaData["wallets"]>[number];
-
-        const normalizedWallets = rawWallets.reduce<string[]>((acc, walletEntry) => {
-          if (!walletEntry) {
-            return acc;
-          }
-
-          const appendIfValid = (value: WalletId | undefined) => {
-            if (!value) {
-              return;
-            }
-            const normalized = normalizeWalletId(value);
-            if (normalized) {
-              acc.push(normalized);
-            }
-          };
-
-          if (typeof walletEntry === "string") {
-            appendIfValid(walletEntry);
-            return acc;
-          }
-
-          const walletObject = walletEntry as Exclude<PersonaWalletEntry, string>;
-          const candidate = (walletObject?._id as WalletId | undefined)
-            ?? (walletObject?.id as WalletId | undefined)
-            ?? (walletObject?.walletId as WalletId | undefined);
-
-          appendIfValid(candidate);
-
+      const normalizedWallets = rawWallets.reduce<string[]>((acc, walletEntry) => {
+        if (!walletEntry) {
           return acc;
-        }, []);
-
-        if (normalizedWallets.length > 0) {
-          setSelectedWallets(normalizedWallets);
-          setShowModal(false);
-          return;
         }
 
+        const appendIfValid = (value: WalletId | undefined) => {
+          if (!value) {
+            return;
+          }
+          const normalized = normalizeWalletId(value);
+          if (normalized) {
+            acc.push(normalized);
+          }
+        };
+
+        if (typeof walletEntry === "string") {
+          appendIfValid(walletEntry);
+          return acc;
+        }
+
+        const walletObject = walletEntry as Exclude<PersonaWalletEntry, string>;
+        const candidate = (walletObject?._id as WalletId | undefined)
+          ?? (walletObject?.id as WalletId | undefined)
+          ?? (walletObject?.walletId as WalletId | undefined);
+
+        appendIfValid(candidate);
+
+        return acc;
+      }, []);
+
+      // Si tiene wallets, cargarlas y NO mostrar modal
+      if (normalizedWallets.length > 0) {
+        console.log("✅ Usuario con", normalizedWallets.length, "wallets existentes:", normalizedWallets);
+        setSelectedWallets(normalizedWallets);
+        setShowModal(false);
+      } else {
+        // Si NO tiene wallets (primera vez), mostrar modal para seleccionar
+        console.log("ℹ️ Usuario sin wallets, mostrando modal de selección");
         setSelectedWallets([]);
         setShowModal(true);
-      } catch (error) {
-        console.error("Error al obtener la persona desde la base de datos:", error);
       }
+      
+      // Finalizar inicialización
+      setIsInitializing(false);
     };
 
     hydrateWalletsFromBackend();
-  }, [persona]);
+  }, [persona, isAuthenticated, loading]);
 
-  // Mientras se redirige, no renderizar nada
-  if (!isAuthenticated) {
+  // Mientras se redirige o está cargando, mostrar pantalla de carga
+  if (loading || !isAuthenticated) {
     return null;
   }
 
-  const handleWalletsSelect = (walletIds: string[]) => {
+  // Mostrar loading mientras inicializamos los datos del usuario
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-muted-foreground">Cargando tus datos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleWalletsSelect = async (walletIds: string[]) => {
     const normalizedIds = walletIds.map((id) => normalizeWalletId(id));
     setSelectedWallets(normalizedIds);
     setShowModal(false);
+
+    // Guardar las wallets seleccionadas en el backend
+    const personaData = (persona ?? null) as PersonaData | null;
+    const personaId = personaData?._id ?? personaData?.id ?? personaData?.data?.id;
+    
+    if (personaId && normalizedIds.length > 0) {
+      try {
+        await updatePersonaWallets(personaId, normalizedIds);
+        console.log("Wallets guardadas en el backend:", normalizedIds);
+      } catch (error) {
+        console.error("Error al guardar wallets:", error);
+      }
+    }
+  };
+
+  const handleUpdateSelectedWallets = async (walletIds: string[]) => {
+    console.log("Actualizando wallets seleccionadas:", walletIds);
+    setSelectedWallets(walletIds);
+    
+    // No necesitamos actualizar en el backend aquí porque WalletSelectorCrud ya lo hace
+    // Solo actualizamos el estado local
   };
 
   const handleBackToWalletSelection = () => {
@@ -193,8 +236,8 @@ const Index = () => {
     setSelectedDate(date);
   };
 
-  // Mostrar selección de billeteras si no se han seleccionado aún
-  if (showModal || selectedWallets.length === 0) {
+  // Mostrar selección de billeteras SOLO si es primera vez (no tiene wallets)
+  if (showModal) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
         <div className="text-center space-y-4 mb-8">
@@ -221,9 +264,9 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header 
         userName={personaRecord?.name || persona?.name || "Usuario"}
-        selectedWallet={selectedWallets['']}
+        selectedWallet={selectedWallets[0]}
         selectedWallets={selectedWallets}
-        onUpdateSelectedWallets={setSelectedWallets}
+        onUpdateSelectedWallets={handleUpdateSelectedWallets}
         onBackToWalletSelection={handleBackToWalletSelection}
         onLogout={logout}
       />

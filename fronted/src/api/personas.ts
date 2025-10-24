@@ -1,17 +1,15 @@
 import instance from './axios'; 
 import { z } from 'zod'
 import { registroSchema } from '../../../src/schema/personas.validator'
+import { Localidad, cargarLocalidades } from './localidad';
 
 // Tipo inferido del schema de validación del backend
 type RegisterPersonaData = z.infer<typeof registroSchema>;
 
-// Tipo para Localidad
-export interface Localidad {
-  _id: string;
-  id?: string;
-  nombre_localidad: string;
-  pais: string;
-}
+// Re-exportar Localidad para mantener compatibilidad
+export type { Localidad };
+
+
 
 // Tipo para los datos de Persona que vienen del backend (basado en personas.entity.ts)
 export interface PersonaData {
@@ -63,5 +61,22 @@ const updatePersonaWallets = (personaId: string, walletIds: string[]) => {
   return instance.patch(`/personas/${personaId}`, { wallets: walletIds });
 };
 
-export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets };
+// Obtener localidades (usa la función de localidad.ts)
+const getLocalidades = async (): Promise<Localidad[]> => {
+  return cargarLocalidades();
+};
+
+// Helper: Obtener persona completa con populate
+const getPersonaWithWallets = async (personaId: string): Promise<PersonaData> => {
+  try {
+    const personaFromDb = await getPersonaById(personaId);
+    console.log("Persona cargada desde backend:", personaFromDb);
+    return personaFromDb;
+  } catch (error) {
+    console.error("Error al cargar persona desde backend:", error);
+    throw error;
+  }
+};
+
+export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets };
 

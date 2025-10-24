@@ -8,7 +8,7 @@ export interface Localidad {
   pais: string;
 }
 
-// Función constante para cargar localidades
+// Función para cargar localidades
 export const cargarLocalidades = async (): Promise<Localidad[]> => {
   try {
     const response = await instance.get(`/localidades`);
@@ -18,3 +18,4 @@ export const cargarLocalidades = async (): Promise<Localidad[]> => {
     throw error;
   }
 };
+

@@ -26,11 +26,13 @@ const App = () => (
           <Route path="/login" element={<Login/>} />
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Index />} />
             <Route path="/HomePage" element={<Index />} />
             <Route path="/hola" element={<Hola />} />
             <Route path="/account" element={<AccountPage />} />
-            <Route path="*" element={<NotFound />} />
           </Route>
+          {/* Catch-all route for 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

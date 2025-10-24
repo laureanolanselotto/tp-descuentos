@@ -72,7 +72,8 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
             setErrors([]); // Limpiar errores previos
             const res = await loginRequest(user);
             console.log(res.data);
-            setPersona(res.data);
+            // Guardar solo el objeto user, no toda la respuesta
+            setPersona(res.data.user || res.data);
             setIsAuthenticated(true);
         } catch (error) {
             console.error("Error al iniciar sesión:", error);

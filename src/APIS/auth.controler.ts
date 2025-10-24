@@ -14,7 +14,7 @@ async function login(req: Request, res: Response ) {
   try {
     const { email, password } = req.body;
     
-    // Buscar persona por email - sin populate para obtener el password
+    // Buscar persona por email - sin populate primero para verificar password
     const userFound = await em.findOne(persona, { email });
     
     if (!userFound) {
@@ -36,6 +36,9 @@ async function login(req: Request, res: Response ) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
     
+    // Ahora sí, cargar las relaciones (wallets y localidad)
+    await em.populate(userFound, ['wallets', 'localidad']);
+    
     // Crear token
     const token = jwt.sign(
       { id: userFound._id, email: userFound.email }, 
@@ -56,12 +59,15 @@ async function login(req: Request, res: Response ) {
       message: 'Login exitoso', 
       token,
       user: {
-        id: userFound._id,
+        _id: userFound._id,
+        id: userFound.id,
         email: userFound.email,
         name: userFound.name,
         apellido: userFound.apellido,
+        tel: userFound.tel,
+        direccion: userFound.direccion,
         localidad: userFound.localidad,
-        wallet: userFound.wallets
+        wallets: userFound.wallets
       }
     });
     
@@ -116,16 +122,21 @@ async function verifyToken(req: Request, res: Response) {
 
     try {
       const decoded = jwt.verify(token, TOKEN_SECRET) as any;
-      const userFound = await em.findOne(persona, { _id: new ObjectId(decoded.id) });
+      const userFound = await em.findOne(persona, { _id: new ObjectId(decoded.id) }, { populate: ['wallets', 'localidad'] });
       if (!userFound) {
         return res.status(401).json({ message: 'Usuario no encontrado' });
       }
       return res.status(200).json({ 
-        message: 'Token válido', 
+        message: 'Token válido',
+        _id: userFound._id,
         id: userFound.id,
         name: userFound.name,
         email: userFound.email,
-        localidad: userFound.localidad
+        apellido: userFound.apellido,
+        tel: userFound.tel,
+        direccion: userFound.direccion,
+        localidad: userFound.localidad,
+        wallets: userFound.wallets
       });
     } catch (err) {
       return res.status(401).json({ message: 'Token inválido' });
