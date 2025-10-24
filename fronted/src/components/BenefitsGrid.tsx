@@ -25,6 +25,7 @@ interface Benefit {
   fecha_hasta?: string;
   icon: React.ReactNode;
   category: string;
+  categoryId?: string; // ID del rubro para filtrar
   walletId: string;
   availableDays: number[]; // 0 = domingo, 1 = lunes, etc.
   discountType?: string;
@@ -84,7 +85,11 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             fecha_desde?: string;
             fecha_hasta?: string;
             icon?: string;
-            rubro?: { name?: string };
+            rubro?: { 
+              name?: string;
+              _id?: string;
+              id?: string;
+            };
             category?: string;
             wallet?: { _id?: string; id?: string };
             walletId?: string;
@@ -109,6 +114,11 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             }
           }
           
+          // Extraer el ID del rubro para comparar con selectedCategory
+          const rubroId = beneficioItem.rubro?._id || beneficioItem.rubro?.id || '';
+          
+          console.log('Beneficio:', beneficioItem.name, '| Rubro:', beneficioItem.rubro?.name, '| RubroID:', rubroId);
+          
           return {
             id: beneficioItem._id || beneficioItem.id || '',
             name: beneficioItem.name || '',
@@ -117,6 +127,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             fecha_hasta: beneficioItem.fecha_hasta,
             icon: getIconComponent(beneficioItem.icon),
             category: beneficioItem.rubro?.name || beneficioItem.category || '',
+            categoryId: rubroId, // Guardar el ID del rubro
             walletId,
             availableDays: Array.isArray(beneficioItem.availableDays) ? beneficioItem.availableDays : [],
             discountType: beneficioItem.discountType || '',
@@ -155,13 +166,31 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
   }
 
   const selectedDayOfWeek = getDay(selectedDate);
+  
+  console.log('Filtrando beneficios con:', {
+    selectedCategory,
+    selectedWallets,
+    selectedDiscountType,
+    selectedDayOfWeek
+  });
+  
   const filteredBenefits = benefits.filter(benefit => {
     const walletMatch = selectedWallets.includes(benefit.walletId);
-    const categoryMatch = selectedCategory === "all" || benefit.category === selectedCategory;
+    
+    // Comparar por ID de rubro (categoryId) en lugar de nombre (category)
+    const categoryMatch = selectedCategory === "all" || benefit.categoryId === selectedCategory;
+    
     const dayMatch = benefit.availableDays.includes(selectedDayOfWeek);
     const discountTypeMatch = selectedDiscountType === "all" || (benefit.discountType && benefit.discountType.toLowerCase().includes(selectedDiscountType.toLowerCase()));
+    
+    if (categoryMatch && benefit.categoryId) {
+      console.log('✅ Beneficio filtrado:', benefit.name, '| Categoría:', benefit.category, '| ID:', benefit.categoryId);
+    }
+    
     return walletMatch && categoryMatch && dayMatch && discountTypeMatch;
   });
+  
+  console.log('Total beneficios filtrados:', filteredBenefits.length);
 
   const getDiscountColor = (discount: number) => {
     if (discount >= 40) return "bg-green-500";
