@@ -28,14 +28,7 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
-const walletNames: Record<string, string> = {
-  mercadopago: "Mercado Pago",
-  rapipago: "Rapipago",
-  pagofacil: "Pago Fácil",
-  ualá: "Ualá"
-};
-
-const Header = ({ userName, selectedWallet, selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
+const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
   const { logout } = usePersonaAuth();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);

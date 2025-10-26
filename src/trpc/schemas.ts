@@ -57,13 +57,11 @@ export const updateRubroSchema = createRubroSchema.partial();
 
 // Schema para Beneficio
 export const createBeneficioSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  descripcion: z.string().min(1, 'Descripcion is required'),
   discount: z.number().positive('Discount must be positive'),
+  cant_cuotas: z.number().positive().optional(),
   discountType: z.string().min(1, 'Discount type is required'),
-  icon: z.string().optional(),
-  category: z.string().min(1, 'Category is required'),
   availableDays: z.array(z.number().min(0).max(6)).min(1, 'At least one day is required'),
-  validity: z.string().min(1, 'Validity is required'),
   fecha_desde: z.string().min(1, 'Fecha desde is required'),
   fecha_hasta: z.string().min(1, 'Fecha hasta is required'),
   limit: z.string().min(1, 'Limit is required'),

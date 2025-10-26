@@ -1,16 +1,5 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Coffee, 
-  ShoppingCart, 
-  Car, 
-  Pizza, 
-  Gamepad2, 
-  BookOpen,
-  Music,
-  Plane,
-  Hotel
-} from "lucide-react";
 import { format, getDay } from "date-fns";
 import { useState, useEffect } from "react";
 import { getBeneficios } from "@/api/beneficios";
@@ -19,7 +8,7 @@ import { getWalletById } from "@/api/wallets";
 import { wallets } from "./data/wallets.tsx";
 interface Benefit {
   id: string;
-  name: string;
+  descripcion: string;
   discount: number;
   fecha_desde?: string;
   fecha_hasta?: string;
@@ -51,21 +40,6 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper function to map icon strings to React components
-  const getIconComponent = (iconName?: string): React.ReactNode => {
-    const iconMap: Record<string, React.ReactNode> = {
-      'coffee': <Coffee className="w-8 h-8" />,
-      'shopping': <ShoppingCart className="w-8 h-8" />,
-      'car': <Car className="w-8 h-8" />,
-      'pizza': <Pizza className="w-8 h-8" />,
-      'gamepad': <Gamepad2 className="w-8 h-8" />,
-      'book': <BookOpen className="w-8 h-8" />,
-      'music': <Music className="w-8 h-8" />,
-      'plane': <Plane className="w-8 h-8" />,
-      'hotel': <Hotel className="w-8 h-8" />,
-    };
-    return iconMap[iconName || ''] || <Coffee className="w-8 h-8" />;
-  };
 
   useEffect(() => {
     const fetchBeneficios = async () => {
@@ -80,7 +54,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
           const beneficioItem = item as {
             _id?: string;
             id?: string;
-            name?: string;
+            descripcion?: string;
             discount?: number;
             fecha_desde?: string;
             fecha_hasta?: string;
@@ -117,15 +91,14 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
           // Extraer el ID del rubro para comparar con selectedCategory
           const rubroId = beneficioItem.rubro?._id || beneficioItem.rubro?.id || '';
           
-          console.log('Beneficio:', beneficioItem.name, '| Rubro:', beneficioItem.rubro?.name, '| RubroID:', rubroId);
+          console.log('Beneficio:', beneficioItem.descripcion, '| Rubro:', beneficioItem.rubro?.name, '| RubroID:', rubroId);
           
           return {
             id: beneficioItem._id || beneficioItem.id || '',
-            name: beneficioItem.name || '',
+            descripcion: beneficioItem.descripcion || '',
             discount: beneficioItem.discount || 0,
             fecha_desde: beneficioItem.fecha_desde,
             fecha_hasta: beneficioItem.fecha_hasta,
-            icon: getIconComponent(beneficioItem.icon),
             category: beneficioItem.rubro?.name || beneficioItem.category || '',
             categoryId: rubroId, // Guardar el ID del rubro
             walletId,
@@ -184,7 +157,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
     const discountTypeMatch = selectedDiscountType === "all" || (benefit.discountType && benefit.discountType.toLowerCase().includes(selectedDiscountType.toLowerCase()));
     
     if (categoryMatch && benefit.categoryId) {
-      console.log('✅ Beneficio filtrado:', benefit.name, '| Categoría:', benefit.category, '| ID:', benefit.categoryId);
+      console.log(' Beneficio filtrado:', benefit.descripcion, '| Categoría:', benefit.category, '| ID:', benefit.categoryId);
     }
     
     return walletMatch && categoryMatch && dayMatch && discountTypeMatch;
@@ -200,21 +173,21 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
       {filteredBenefits.map((benefit) => (
         <Card
           key={benefit.id}
-          className="p-6 hover:scale-105 transition-all cursor-pointer group bg-card border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20"
+          className="p-3 md:p-6 hover:scale-105 transition-all cursor-pointer group bg-card border-border hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20"
           onClick={() => onBenefitClick && onBenefitClick(benefit)}
         >
-            <div className="flex flex-col items-center space-y-4">
-            <div className="w-20 h-20 rounded-2xl bg-white flex items-center justify-center group-hover:animate-float">
+            <div className="flex flex-col items-center space-y-2 md:space-y-4">
+            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-white flex items-center justify-center group-hover:animate-float">
               <div className="text-primary">
                 {wallets.find(w => w.id === benefit.walletId)?.image ? (
                   <img
                     src={wallets.find(w => w.id === benefit.walletId)!.image as string}
                     alt={wallets.find(w => w.id === benefit.walletId)!.name}
-                    className="w-10 h-10 object-contain mix-blend-multiply"
+                    className="w-6 h-6 md:w-10 md:h-10 object-contain mix-blend-multiply"
                   />
                 ) : (
                   wallets.find(w => w.id === benefit.walletId)?.icon || benefit.icon
@@ -222,15 +195,15 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
               </div>
             </div>
             {/* el nombre de benefico asociado a la wallet con logo */ }
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-1 md:space-y-2">
               <div className="flex items-center justify-center">
-                <h3 className="font-bold text-lg text-card-foreground">
+                <h3 className="font-bold text-sm md:text-lg text-card-foreground">
                   {benefit.infoWallet?.name || benefit.walletId}
                 </h3>
               </div>
             {/* cambie en funcion del tipo de descuento descuento*/ }
 
-              <Badge className={`${getDiscountColor(benefit.discount)} text-white font-bold text-lg px-4 py-2`}>
+              <Badge className={`${getDiscountColor(benefit.discount)} text-white font-bold text-xs md:text-lg px-2 py-1 md:px-4 md:py-2`}>
                 {benefit.discountType?.toLowerCase().includes("cuota")
                 
                   ? `${benefit.discount} cuotas`
@@ -242,7 +215,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
               </Badge>
             </div>
             
-            <div className="text-sm text-muted-foreground capitalize">
+            <div className="text-xs md:text-sm text-muted-foreground capitalize">
               {/* Aquí va el tipo de descuento, por ejemplo: "Reintegro", "Sin tope", "En cuotas" */}
               {/* Puedes agregar una propiedad "discountType" al objeto Benefit y mostrarla aquí */}
               {benefit.discountType }

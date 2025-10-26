@@ -8,27 +8,24 @@ import { Localidad } from "../localidad/localidad.entity.js";
 export class Beneficio extends BaseEntity {
   // Basic identifying/title fields
   @Property({ nullable: false })
-  name!: string;
+  descripcion!: string;
 
   // Discount information
   @Property({ nullable: true })
-  discount!: number;
+  discount?: number;
+
+  @Property({ nullable: true })
+  cant_cuotas?: number;
 
   @Property({ nullable: false })
   discountType!: string; // e.g. 'cuota' | 'reintegro' | 'off'
-
-  // Icon representation: store a string identifier (e.g. icon name or class) instead of ReactNode
-  @Property({ nullable: true })
-  icon?: string;
 
 
   // Days available stored as JSON array of numbers (0-6 or custom mapping)
   @Property({ type: 'json', nullable: false })
   availableDays!: number[];
 
-  // Optional validity / date range / limit fields
-  @Property({ nullable: false })
-  validity!: string;
+ 
 
   @Property({ nullable: false })
   fecha_desde!: string;

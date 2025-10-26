@@ -8,7 +8,7 @@ import { wallets } from "./data/wallets.tsx";
 interface BenefitDetailProps {
   benefit: {
     id: string;
-    name: string;
+    descripcion: string;
     discount: number;
     discountType: string; // New property for discount type
     icon: React.ReactNode;
@@ -61,7 +61,7 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
                   className="w-24 h-24 object-contain mix-blend-multiply"
                 />
               ) : benefit.imageUrl ? (
-                <img src={benefit.imageUrl} alt={benefit.name} className="w-28 h-28 rounded-full object-cover" />
+                <img src={benefit.imageUrl} alt={benefit.descripcion} className="w-28 h-28 rounded-full object-cover" />
               ) : (
                 benefit.icon
               )}
