@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format, getDay } from "date-fns";
 import { useState, useEffect } from "react";
-import { getBeneficios } from "@/api/beneficios";
+import { useBeneficios } from "@/api/beneficios";
 import { getWalletById } from "@/api/wallets";
 
 import { wallets } from "./data/wallets.tsx";
@@ -37,20 +37,34 @@ interface BenefitsGridProps {
 
 const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType = "all", selectedDate, onBenefitClick }: BenefitsGridProps) => {
   const [benefits, setBenefits] = useState<Benefit[]>([]);
+  
+  // Usar el hook que filtra por localidad
+  const { beneficios: beneficiosLocalidad, loading: loadingBeneficios, errors: errorsBeneficios } = useBeneficios();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
 
   useEffect(() => {
-    const fetchBeneficios = async () => {
+    const transformBeneficios = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await getBeneficios();
-        const beneficiosData = response.data?.data || response.data || [];
         
-        // Transform backend data to match expected Benefit structure
-        const transformedBenefits: Benefit[] = await Promise.all(beneficiosData.map(async (item: unknown) => {
+        // Verificar si hay errores del hook
+        if (errorsBeneficios && errorsBeneficios.length > 0) {
+          setError(errorsBeneficios.join(", "));
+          setBenefits([]);
+          setLoading(false);
+          return;
+        }
+        
+        // Verificar si aún está cargando
+        if (loadingBeneficios) {
+          return;
+        }
+        
+        // Transformar los beneficios ya filtrados por localidad
+        const transformedBenefits: Benefit[] = await Promise.all(beneficiosLocalidad.map(async (item: unknown) => {
           const beneficioItem = item as {
             _id?: string;
             id?: string;
@@ -99,6 +113,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             discount: beneficioItem.discount || 0,
             fecha_desde: beneficioItem.fecha_desde,
             fecha_hasta: beneficioItem.fecha_hasta,
+            icon: null, // El ícono se obtiene del wallet
             category: beneficioItem.rubro?.name || beneficioItem.category || '',
             categoryId: rubroId, // Guardar el ID del rubro
             walletId,
@@ -111,16 +126,16 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
         
         setBenefits(transformedBenefits);
       } catch (err) {
-        console.error("Error al cargar beneficios:", err);
-        setError("Error al cargar beneficios");
+        console.error("Error al transformar beneficios:", err);
+        setError("Error al procesar beneficios");
         setBenefits([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBeneficios();
-  }, []);
+    transformBeneficios();
+  }, [beneficiosLocalidad, loadingBeneficios, errorsBeneficios]);
 
   if (loading) {
     return (

@@ -3,6 +3,8 @@
 
 ### 1. GET all localidades
 GET {{baseUrl}}
+### 2. GET - Obtener localidad por ID fija
+GET {{baseUrl}}/68f2b18bfa1e3a9e31e8e0ab
 
 ###
 

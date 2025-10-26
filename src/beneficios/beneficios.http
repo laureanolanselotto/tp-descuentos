@@ -15,14 +15,13 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "ni idea",
+    "descripcion": "Descuento en Gastronomía",
     "discount": 20,
     "discountType": "sin tope",
     "walletId": "68f2af59e6d126af8427e2e6",
     "rubroId": "68f2b18bfa1e3a9e31e8e0a5",
-    "localidades": ["68f2afaefeefab744390d8ff"],
-    "availableDays": [1,2,3,4,5],
-    "validity": "Válido durante todo septiembre",
+    "localidades": ["68f2b18bfa1e3a9e31e8e0ab", "68f2b18bfa1e3a9e31e8e0ac"],
+    "availableDays": [1,2,3,4,6],
     "fecha_desde": "2025-09-01",
     "fecha_hasta": "2025-12-30",
     "limit": "Máximo 1 vez por día",
@@ -30,7 +29,6 @@ Content-Type: application/json
     "imageUrl": "https://example.com/images/coffee.png"
 }
 
-###
 
 ### 3. Capturar ID del beneficio creado
 @beneficioId1 = {{createBeneficio1.response.body.data.id}}
