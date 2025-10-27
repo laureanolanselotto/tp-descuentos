@@ -4,6 +4,8 @@ import { ArrowLeft, Calendar, Timer, DollarSign, Wallet } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import React from "react";
 import { wallets } from "./data/wallets.tsx";
+import { MapPin } from 'lucide-react';
+
 
 interface BenefitDetailProps {
   benefit: {
@@ -11,6 +13,7 @@ interface BenefitDetailProps {
     descripcion: string;
     discount: number;
     discountType: string; // New property for discount type
+    cant_cuotas?: number;
     icon: React.ReactNode;
     category: string;
     walletId: string;
@@ -21,6 +24,7 @@ interface BenefitDetailProps {
     limit?: string;
     tope_reintegro?: number;
     imageUrl?: string;
+    localidad?: string;
     infoWallet?: {
       name: string;
       [key: string]: unknown;
@@ -39,6 +43,11 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
   const spendToReachTop = (benefit.tope_reintegro && benefit.discount && benefit.discount > 0)
     ? Math.ceil(benefit.tope_reintegro / (benefit.discount / 100))
     : null;
+  
+  // Debug: ver qué localidad llega
+  console.log('[BenefitDetail] Localidad recibida:', benefit.localidad);
+  console.log('[BenefitDetail] Benefit completo:', benefit);
+  
   return (
     <Dialog.Root open onOpenChange={open => { if (!open) onBack(); }}>
       <Dialog.Portal>
@@ -68,13 +77,20 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
             </div>
           </div>
           <Card className="bg-card rounded-t-3xl mt-6 p-6 shadow-lg">
-            <h2 className="text-2xl font-bold text-white mb-2 text-center">
-              {benefit.discountType?.toLowerCase().includes("cuota")
-                ? `¡Aprovechá ${benefit.discount} cuotas con ${walletName}!`
-                : benefit.discountType?.toLowerCase().includes("reintegro")
-                  ? `¡Aprovechá ${benefit.discount}% de reintegro con ${walletName}!`
-                  : `¡Aprovechá ${benefit.discount}% OFF con ${walletName}!`}
-            </h2>
+            <Dialog.Title asChild>
+              <h2 className="text-2xl font-bold text-white mb-2 text-center">
+                {benefit.discountType?.toLowerCase().includes("cuota")
+                  ? `¡Aprovechá ${benefit.discount}  en cuotas con ${walletName}!`
+                  : benefit.discountType?.toLowerCase().includes("reintegro")
+                    ? `¡Aprovechá ${benefit.discount}% de reintegro con ${walletName}!`
+                    : `¡Aprovechá ${benefit.discount}% OFF con ${walletName}!`}
+              </h2>
+            </Dialog.Title>
+            <Dialog.Description asChild>
+              <div className="sr-only">
+                Detalles del beneficio disponible con {walletName}
+              </div>
+            </Dialog.Description>
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />
@@ -102,26 +118,58 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
                 <span className="ml-2 text-sm text-foreground">{benefit.fecha_hasta || "Consultar condiciones"}</span>
               
               </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3">
                   <DollarSign className="w-5 h-5 text-primary" />
-                  <span className="text-sm text-muted-foreground">Tope de reintegro</span>
-                  <span className="ml-2 text-sm text-foreground">
+                  <span className="text-sm text-muted-foreground">Tope De Reintegro</span>
+                  <span className="ml-1 text-sm text-foreground">
                     {benefit.tope_reintegro
                       ? new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(benefit.tope_reintegro)
                       : benefit.limit || "Consultar condiciones"}
                   </span>
                 </div>
 
+                {/* Máximo a gastar para reintegro */}
                 {benefit.discountType?.toLowerCase().includes("reintegro") && benefit.tope_reintegro && spendToReachTop && (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Wallet className="w-5 h-5 text-primary" />
-                    <span className="text-sm text-muted-foreground">Aprovechá el descuento al máximo gastando hasta</span>
+                    <span className="text-sm text-muted-foreground">Gastá Hasta</span>
                     <span className="ml-2 text-sm font-semibold text-foreground">
                       {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(spendToReachTop)}
                     </span>
                   </div>
                 )}
+                
+                {/* Cantidad de cuotas - solo para cuotas */}
+                {benefit.discountType?.toLowerCase().includes("cuota") && benefit.cant_cuotas && benefit.cant_cuotas > 0 && (
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-primary" />
+                    <span className="text-sm text-muted-foreground">Cantidad De Cuotas</span>
+                    <span className="ml-2 text-sm font-semibold text-foreground">
+                      {benefit.cant_cuotas}
+                    </span>
+                  </div>
+                )}
+
+                {/* Máximo a gastar para cuota */}
+                {benefit.discountType?.toLowerCase().includes("cuota") && benefit.tope_reintegro && spendToReachTop && (
+                  <div className="flex items-center gap-3">
+                    <Wallet className="w-5 h-5 text-primary" />
+                    <span className="text-sm text-muted-foreground">Gastá Hasta</span>
+                    <span className="ml-2 text-sm font-semibold text-foreground">
+                      {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(spendToReachTop)}
+                    </span>
+                  </div>
+                )}
+              {/* localidad beneficio */}
+               <div className="flex items-center gap-3">
+                    <MapPin  className="w-6 h-6 text-primary" />
+                    <span className="text-sm text-muted-foreground">Se Encuentra Disponible En</span>
+                    <span className="ml-2 text-sm font-semibold text-foreground">
+                      {benefit.localidad || "Consultar condiciones"}
+                    </span>
+                  </div>
+                
               </div>
               <Button variant="outline" className="mt-4 w-full">Términos y condiciones</Button>
             </div>

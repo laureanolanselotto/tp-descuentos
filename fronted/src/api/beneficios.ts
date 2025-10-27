@@ -13,6 +13,7 @@ const useBeneficios = () => {
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState<string[]>([]);
     const { persona } = usePersonaAuth();
+    const [localidad, setLocalidad] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchBeneficiosPorLocalidad = async () => {

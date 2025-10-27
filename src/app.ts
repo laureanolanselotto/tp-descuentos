@@ -10,6 +10,7 @@ import { RubrosRouter } from "./rubros/rubros.routes.js";
 import { LocalidadRouter } from "./localidad/localidad.routes.js";
 import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 import { AuthRouter } from "./APIS/auth.routes.js";
+import { ImagenRouter } from "./imagenes/imagen.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 const app = express();
@@ -55,6 +56,7 @@ app.use('/api/notificaciones', NotificacionRouter)
 app.use('/api/rubros', RubrosRouter)
 app.use('/api/localidades', LocalidadRouter)
 app.use('/api/ciudades', CiudadRouter);
+app.use('/api/imagenes', ImagenRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' })

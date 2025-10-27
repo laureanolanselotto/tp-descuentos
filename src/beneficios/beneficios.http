@@ -8,24 +8,25 @@
 GET {{baseUrl}}
 
 ###
-
+###  tipos de beneficios:  'reintegro', 'sin tope', 'cuota'
 ### 2. POST - Crear un nuevo beneficio con wallet, rubro y localidades
 # @name createBeneficio1
 POST {{baseUrl}}
 Content-Type: application/json
 
+
 {
-    "descripcion": "Descuento en Gastronomía",
-    "discount": 20,
-    "discountType": "sin tope",
-    "walletId": "68f2af59e6d126af8427e2e6",
-    "rubroId": "68f2b18bfa1e3a9e31e8e0a5",
-    "localidades": ["68f2b18bfa1e3a9e31e8e0ab", "68f2b18bfa1e3a9e31e8e0ac"],
+    "descripcion": "todo los supermedcados de coto",
+    "discount": 25,
+    "discountType": "reintegro",
+    "walletId": "68f196974411f78ae5f2be68",
+    "rubroId": "68e1e130f63328dc654c67b5",
+    "localidades": ["68ff8ae81e7a28d50e809375"],
     "availableDays": [1,2,3,4,6],
     "fecha_desde": "2025-09-01",
-    "fecha_hasta": "2025-12-30",
-    "limit": "Máximo 1 vez por día",
-    "tope_reintegro": 500,
+    "fecha_hasta": "2300-12-31",
+    "limit": "todos los dias",
+    "tope_reintegro": 16000,
     "imageUrl": "https://example.com/images/coffee.png"
 }
 

@@ -12,9 +12,9 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Ualá",
+    "name": "Banco Galicia",
     "descripcion": "Tarjeta prepaga y billetera digital",
-    "interes_anual": 8.76
+    "interes_anual": 14.7
 }
 ###
 

@@ -6,6 +6,37 @@ import { useBeneficios } from "@/api/beneficios";
 import { getWalletById } from "@/api/wallets";
 
 import { wallets } from "./data/wallets.tsx";
+
+const extractLocalidadNames = (value: unknown): string[] => {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .map((loc) => {
+        if (typeof loc === "string") {
+          return loc;
+        }
+        if (loc && typeof loc === "object") {
+          const { name, nombre, descripcion } = loc as { name?: string; nombre?: string; descripcion?: string };
+          return name ?? nombre ?? descripcion ?? "";
+        }
+        return "";
+      })
+      .filter((loc): loc is string => typeof loc === "string" && loc.trim().length > 0);
+  }
+
+  if (value && typeof value === "object") {
+    const maybeCollection = value as { toArray?: () => unknown[]; items?: unknown[] };
+    if (typeof maybeCollection.toArray === "function") {
+      return extractLocalidadNames(maybeCollection.toArray());
+    }
+    if (Array.isArray(maybeCollection.items)) {
+      return extractLocalidadNames(maybeCollection.items);
+    }
+  }
+
+  return [];
+};
 interface Benefit {
   id: string;
   descripcion: string;
@@ -19,6 +50,9 @@ interface Benefit {
   availableDays: number[]; // 0 = domingo, 1 = lunes, etc.
   discountType?: string;
   tope_reintegro?: number;
+  cant_cuotas?: number;
+  localidad?: string;
+  localidades?: string[];
   infoWallet?: {
     name: string;
     [key: string]: unknown;
@@ -84,7 +118,12 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             availableDays?: number[];
             discountType?: string;
             tope_reintegro?: number;
+            cant_cuotas?: number;
+            localidad?: string;
+            localidades?: Array<{ _id?: string; id?: string; name?: string; nombre?: string }>;
           };
+
+          console.log("[BenefitsGrid] beneficio crudo", beneficioItem);
           
           const walletId = beneficioItem.wallet?._id || beneficioItem.wallet?.id || beneficioItem.walletId || '';
           let infoWallet = undefined;
@@ -105,6 +144,16 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
           // Extraer el ID del rubro para comparar con selectedCategory
           const rubroId = beneficioItem.rubro?._id || beneficioItem.rubro?.id || '';
           
+          // Extraer los nombres de las localidades
+          const localidadesArray = extractLocalidadNames(
+            beneficioItem.localidades ?? beneficioItem.localidad
+          );
+          const localidadTexto = localidadesArray.length > 0
+            ? localidadesArray.join(', ')
+            : typeof beneficioItem.localidad === "string"
+              ? beneficioItem.localidad
+              : "";
+          
           console.log('Beneficio:', beneficioItem.descripcion, '| Rubro:', beneficioItem.rubro?.name, '| RubroID:', rubroId);
           
           return {
@@ -120,6 +169,9 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             availableDays: Array.isArray(beneficioItem.availableDays) ? beneficioItem.availableDays : [],
             discountType: beneficioItem.discountType || '',
             tope_reintegro: beneficioItem.tope_reintegro,
+            cant_cuotas: beneficioItem.cant_cuotas,
+            localidad: localidadTexto,
+            localidades: localidadesArray,
             infoWallet,
           };
         }));
@@ -221,7 +273,7 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
               <Badge className={`${getDiscountColor(benefit.discount)} text-white font-bold text-xs md:text-lg px-2 py-1 md:px-4 md:py-2`}>
                 {benefit.discountType?.toLowerCase().includes("cuota")
                 
-                  ? `${benefit.discount} cuotas`
+                  ? `${benefit.discount} % OFF`
                   : benefit.discountType?.toLowerCase().includes("reintegro")
                     ? `Reintegro ${benefit.discount}%`
                     : benefit.discountType?.toLowerCase().includes("sin tope")

@@ -11,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import InterestWalletsList from "@/components/InterestWalletsList";
 import { usePersonaAuth } from "@/context/personaContext";
 import { getWallets } from "@/api/wallets";
-import { getPersonaById, getPersonaByEmail, updatePersonaWallets, getPersonaWithWallets } from "@/api/personas";
+import { updatePersonaWallets } from "@/api/personas";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -109,7 +109,7 @@ const Index = () => {
       const personaData = (persona ?? null) as PersonaData | null;
       
       // Con el backend actualizado, el contexto ya trae los datos completos
-      console.log("✅ Datos de persona desde contexto:", personaData);
+      console.log("Datos de persona desde contexto:", personaData);
       
       setPersonaRecord(personaData);
 
@@ -285,7 +285,7 @@ const Index = () => {
             </div>
           </div>
           <h1 className="max-w-7xl mx-auto p-6 space-y-8 text-2xl font-bold">
-            Encuentra las mejores ofertas y descuentos disponibles con tus billeteras virtuales
+            Encuentra las mejores ofertas y descuentos disponibles para tus billeteras virtuales
           </h1>
           <div className="flex justify-center items-center gap-4 mb-4">
             <div>

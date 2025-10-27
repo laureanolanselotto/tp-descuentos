@@ -18,7 +18,7 @@ interface CategoryFilterProps {
 
 const discountTypes = [
   { id: "all", label: "Todos" },
-  { id: "En cuotas", label: "Cuotas" },
+  { id: "cuota", label: "Cuotas" },
   { id: "Reintegro", label: "Reintegro" },
   { id: "Sin tope", label: "Sin tope" }
 ];
