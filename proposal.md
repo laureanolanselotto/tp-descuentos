@@ -1,4 +1,3 @@
-<img width="2341" height="1381" alt="VirtualBenefit drawio" src="https://github.com/user-attachments/assets/04e71f3b-fb07-4b2d-b4af-cc7f58470af9" /># Propuesta TP DSW
 
 ## Grupo
 ### Integrantes
