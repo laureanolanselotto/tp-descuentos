@@ -1,0 +1,63 @@
+### Seed wallet images
+# Primero, asegúrate de que el servidor esté corriendo
+# Luego ejecuta estas peticiones para crear las imágenes en la base de datos
+
+### Crear imagen para Brubank
+POST http://localhost:3000/api/imagenes
+Content-Type: application/json
+
+{
+  "nombre": "Brubank",
+  "url": "/wallets/iconos-billeteras/Brubank_idqsFC7rrR_0.png"
+}
+
+### Crear imagen para Banco Galicia
+POST http://localhost:3000/api/imagenes
+Content-Type: application/json
+
+{
+  "nombre": "Banco Galicia",
+  "url": "/wallets/iconos-billeteras/banco-galicia-logo.svg"
+}
+
+### Crear imagen para Mercado Pago
+POST http://localhost:3000/api/imagenes
+Content-Type: application/json
+
+{
+  "nombre": "Mercado Pago",
+  "url": "/wallets/iconos-billeteras/mercado-pago-logo-0-1-2048x2048.png"
+}
+
+### Crear imagen para Modo
+POST http://localhost:3000/api/imagenes
+Content-Type: application/json
+
+{
+  "nombre": "Modo",
+  "url": "/wallets/iconos-billeteras/modo-seeklogo.png"
+}
+
+### Crear imagen para Personal Pay
+POST http://localhost:3000/api/imagenes
+Content-Type: application/json
+
+{
+  "nombre": "Personal Pay",
+  "url": "/wallets/iconos-billeteras/personal pay.png"
+}
+
+### Buscar imagen por nombre
+GET http://localhost:3000/api/imagenes/buscar?nombre=Brubank
+
+### Buscar imagen de Banco Galicia
+GET http://localhost:3000/api/imagenes/buscar?nombre=Banco Galicia
+
+### Obtener todas las imágenes
+GET http://localhost:3000/api/imagenes
+
+### Verificar que la imagen de Brubank se sirve correctamente
+GET http://localhost:3000/wallets/iconos-billeteras/Brubank_idqsFC7rrR_0.png
+
+### Verificar que la imagen de Banco Galicia se sirve correctamente
+GET http://localhost:3000/wallets/iconos-billeteras/banco-galicia-logo.svg

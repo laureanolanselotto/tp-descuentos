@@ -4,6 +4,7 @@ import { format, getDay } from "date-fns";
 import { useState, useEffect } from "react";
 import { useBeneficios } from "@/api/beneficios";
 import { getWalletById } from "@/api/wallets";
+import { WalletImage } from './WalletImage';
 
 import { wallets } from "./data/wallets.tsx";
 
@@ -248,19 +249,12 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
           onClick={() => onBenefitClick && onBenefitClick(benefit)}
         >
             <div className="flex flex-col items-center space-y-2 md:space-y-4">
-            <div className="w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-white flex items-center justify-center group-hover:animate-float">
-              <div className="text-primary">
-                {wallets.find(w => w.id === benefit.walletId)?.image ? (
-                  <img
-                    src={wallets.find(w => w.id === benefit.walletId)!.image as string}
-                    alt={wallets.find(w => w.id === benefit.walletId)!.name}
-                    className="w-6 h-6 md:w-10 md:h-10 object-contain mix-blend-multiply"
-                  />
-                ) : (
-                  wallets.find(w => w.id === benefit.walletId)?.icon || benefit.icon
-                )}
-              </div>
-            </div>
+            <WalletImage
+              walletName={benefit.infoWallet?.name || benefit.walletId}
+              size="md"
+              className="group-hover:animate-float"
+              fallbackIcon={benefit.icon}
+            />
             {/* el nombre de benefico asociado a la wallet con logo */ }
             <div className="text-center space-y-1 md:space-y-2">
               <div className="flex items-center justify-center">

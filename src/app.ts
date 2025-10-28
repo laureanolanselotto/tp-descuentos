@@ -1,5 +1,7 @@
 import express from "express";
 import 'reflect-metadata';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { PersonasRouter } from "./personas/personas.routes.js";
 import { BeneficiosRouter } from './beneficios/beneficios.routes.js';
 import { orm } from "./shared/db/orm.js";
@@ -13,6 +15,10 @@ import { AuthRouter } from "./APIS/auth.routes.js";
 import { ImagenRouter } from "./imagenes/imagen.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 // Configuración de CORS para permitir múltiples orígenes
@@ -43,6 +49,9 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+
+// Servir archivos estáticos desde la carpeta public
+app.use('/wallets', express.static(path.join(__dirname, '..', 'public', 'wallets')));
 
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);

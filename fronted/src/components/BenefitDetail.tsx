@@ -5,6 +5,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import React from "react";
 import { wallets } from "./data/wallets.tsx";
 import { MapPin } from 'lucide-react';
+import { WalletImage } from './WalletImage';
+
 
 
 interface BenefitDetailProps {
@@ -61,20 +63,12 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
               </Button>
             </Dialog.Close>
           </div>
-          <div className="flex flex-col items-center -mt-4">
-            <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center mb-4 shadow-lg">
-              {wallet?.image ? (
-                <img
-                  src={wallet.image}
-                  alt={walletName}
-                  className="w-24 h-24 object-contain mix-blend-multiply"
-                />
-              ) : benefit.imageUrl ? (
-                <img src={benefit.imageUrl} alt={benefit.descripcion} className="w-28 h-28 rounded-full object-cover" />
-              ) : (
-                benefit.icon
-              )}
-            </div>
+          <div className="flex flex-col items-center -mt-4 mb-4">
+            <WalletImage 
+              walletName={walletName}
+              size="xl"
+              fallbackIcon={benefit.icon}
+            />
           </div>
           <Card className="bg-card rounded-t-3xl mt-6 p-6 shadow-lg">
             <Dialog.Title asChild>

@@ -43,4 +43,8 @@ export class ImagenService {
     await em.persistAndFlush(imagen);
     return imagen;
   }
+
+  static async findByNombre(nombre: string) {
+    return em.findOne(Imagen, { nombre });
+  }
 }

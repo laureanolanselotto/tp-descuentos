@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowRight, Wallet as WalletIcon, Check, CreditCard, Smartphone } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ArrowRight, Wallet as WalletIcon, Check } from "lucide-react";
 import { getWallets } from "../api/wallets";
 import { updatePersonaWallets } from "../api/personas";
 import { usePersonaAuth } from "@/context/personaContext";
+import { WalletImage } from './WalletImage';
 import ConfirmAlert from "./ConfirmAlert";
 import type { PersonaData } from "../api/personas";
 
@@ -16,46 +17,6 @@ interface WalletData {
   descripcion?: string;
   interes_anual?: number;
 }
-
-// Helper para asignar colores e íconos según el nombre de la wallet
-const getWalletStyle = (name: string) => {
-  const nameLower = name.toLowerCase();
-  
-  // Asignar ícono según tipo
-  let icon = <WalletIcon className="w-6 h-6" />;
-  if (nameLower.includes('banco') || nameLower.includes('galicia') || nameLower.includes('brubank')) {
-    icon = <CreditCard className="w-6 h-6" />;
-  } else if (nameLower.includes('pago') || nameLower.includes('modo')) {
-    icon = <Smartphone className="w-6 h-6" />;
-  } else if (nameLower.includes('uala') || nameLower.includes('ualá')) {
-    icon = <CreditCard className="w-6 h-6" />;
-  }
-  
-  // Asignar colores según nombre
-  const colorMap: Record<string, string> = {
-    'mercado': 'from-blue-500 to-blue-600',
-    'galicia': 'from-red-500 to-red-600',
-    'pagofacil': 'from-green-500 to-green-600',
-    'pago facil': 'from-green-500 to-green-600',
-    'uala': 'from-purple-500 to-purple-600',
-    'ualá': 'from-purple-500 to-purple-600',
-    'cuenta dni': 'from-orange-500 to-orange-600',
-    'dni': 'from-orange-500 to-orange-600',
-    'brubank': 'from-indigo-500 to-indigo-600',
-    'modo': 'from-pink-500 to-pink-600',
-    'personal': 'from-cyan-500 to-cyan-600',
-  };
-  
-  let color = 'from-gray-500 to-gray-600'; // default
-  for (const [key, value] of Object.entries(colorMap)) {
-    if (nameLower.includes(key)) {
-      color = value;
-      break;
-    }
-  }
-  
-  return { icon, color };
-};
 
 interface WalletSelectionModalProps {
   isOpen: boolean;
@@ -157,9 +118,9 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
             <DialogTitle className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent text-center">
               Tus Billeteras Virtuales
             </DialogTitle>
-            <p className="text-muted-foreground text-center">
+            <DialogDescription className="text-muted-foreground text-center">
               Elige una o varias billeteras virtuales para ver todos los beneficios disponibles
-            </p>
+            </DialogDescription>
           </div>
         </DialogHeader>
 
@@ -171,7 +132,6 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
           <div className="flex flex-col gap-2 max-h-80 overflow-y-auto p-2">
             {wallets.map((wallet) => {
               const walletId = wallet._id || wallet.id || "";
-              const { icon, color } = getWalletStyle(wallet.name);
               return (
                 <div
                   key={walletId}
@@ -182,11 +142,11 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
                   }`}
                   onClick={() => handleWalletToggle(walletId)}
                 >
-                  <div className={`p-2 rounded-full flex items-center justify-center bg-gradient-to-r ${color}`}>
-                    <div className="text-white">
-                      {icon}
-                    </div>
-                  </div>
+                  <WalletImage 
+                    walletName={wallet.name}
+                    size="sm"
+                    fallbackIcon={<WalletIcon className="w-6 h-6 text-primary" />}
+                  />
                   <div className="flex-1 flex flex-col items-center">
                     <span className="font-medium text-card-foreground text-base">
                       {wallet.name}
