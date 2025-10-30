@@ -51,7 +51,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/imagenes/buscar?nombre=Brubank
 
 ### Buscar imagen de Banco Galicia
-GET http://localhost:3000/api/imagenes/buscar?nombre=Banco Galicia
+GET http://localhost:3000/api/imagenes/Banco Galicia
 
 ### Obtener todas las imágenes
 GET http://localhost:3000/api/imagenes
@@ -61,3 +61,5 @@ GET http://localhost:3000/wallets/iconos-billeteras/Brubank_idqsFC7rrR_0.png
 
 ### Verificar que la imagen de Banco Galicia se sirve correctamente
 GET http://localhost:3000/wallets/iconos-billeteras/banco-galicia-logo.svg
+
+GET 

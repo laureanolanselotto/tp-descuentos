@@ -69,7 +69,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
       localidadId: "",
       password: "",
       confirmPassword: "",
-      wallets: [],
+      wallets: [], // IDs de wallets seleccionadas porque se mada como put
     },
   });
 
@@ -134,7 +134,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
           tel: data?.tel ? String(data.tel) : "",  // Convertir number a string para el form
           direccion: data?.direccion ?? "",
           localidadId: extractLocalidadId(data?.localidad),
-          password: "",
+          password: "" ,
           confirmPassword: "",
           wallets: extractWalletIds(data?.wallets),
         });
@@ -230,16 +230,6 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
               />
               <span className="absolute left-3 top-3 text-white/50 text-sm">Nombre</span>
               {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
-            </label>
-            <label className="flex-1 relative">
-              <input
-                className="bg-[#333] text-white w-full pt-8 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none"
-                type="text"
-                placeholder={personaData?.apellido || "Apellido"}
-                {...register("apellido")}
-              />
-              <span className="absolute left-3 top-3 text-white/50 text-sm">Apellido</span>
-              {errors.apellido && <p className="text-red-400 text-xs mt-1">{errors.apellido.message}</p>}
             </label>
           </div>
 

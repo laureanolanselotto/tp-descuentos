@@ -27,7 +27,6 @@ Content-Type: application/json
     "fecha_hasta": "2300-12-31",
     "limit": "todos los dias",
     "tope_reintegro": 16000,
-    "imageUrl": "https://example.com/images/coffee.png"
 }
 
 

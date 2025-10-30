@@ -52,7 +52,7 @@ export async function add(req: Request, res: Response) {
 
 export async function findByNombre(req: Request, res: Response) {
   try {
-    const { nombre } = req.query;
+    const { nombre } = req.query; 
     
     if (!nombre || typeof nombre !== 'string') {
       res.status(400).json({ message: 'El parámetro "nombre" es requerido' });

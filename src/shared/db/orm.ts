@@ -7,7 +7,7 @@ export const orm = await MikroORM.init<MongoDriver>({
   entities: ["dist/**/*.entity.js"], // path to our JS entities (dist), relative to `baseDir`
   entitiesTs: ["src/**/*.entity.ts"], // path to our TS entities (src), relative to `baseDir`
   dbName: "tp-desuentos",
-  clientUrl: process.env.MONGO_URL || "mongodb://localhost:27017",
+  clientUrl:  "mongodb://localhost:27017",
   highlighter: new MongoHighlighter(),
   debug: true,
   schemaGenerator: {

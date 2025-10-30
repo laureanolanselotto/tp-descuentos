@@ -4,7 +4,6 @@ import { string, z } from "zod";
 import { registroSchema } from "../../../src/schema/personas.validator";
 import { AxiosError } from "axios";
 import Cookies from 'js-cookie';
-import { set } from "date-fns";
 
 // Tipos del backend
 type RegisterPersonaData = z.infer<typeof registroSchema>;

@@ -13,18 +13,12 @@ const walletImages = [
     nombre: 'mercado pago',
     url: '/wallets/iconos-billeteras/mercado-pago-logo-0-1-2048x2048.png'
   },
-  // Brubank y tralalero no tienen imagen específica por ahora
-  // Puedes agregar las imágenes a la carpeta public/wallets/iconos-billeteras/ y descomentar:
-  // {
-  //   nombre: 'Brubank',
-  //   url: '/wallets/iconos-billeteras/brubank.png'
-  // },
-  // {
-  //   nombre: 'tralalero',
-  //   url: '/wallets/iconos-billeteras/tralalero.png'
-  // },
+   {
+    nombre: 'Brubank',
+     url: '/wallets/iconos-billeteras/brubank-seeklogo.png'
+ },
+
   
-  // Adicionales por si las necesitas después
   {
     nombre: 'Banco Nación',
     url: '/wallets/iconos-billeteras/banco-nacion-seeklogo.png'

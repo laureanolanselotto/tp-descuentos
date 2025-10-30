@@ -127,11 +127,6 @@ function RegisterPage() {
             <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Nombre</span>
             {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
           </label>
-          <label className="flex-1 relative">
-            <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="text" {...register("apellido")} />
-            <span className="absolute left-3 top-3 text-white/50 text-sm pointer-events-none transition-all duration-300 peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#00bfff]">Apellido</span>
-            {errors.apellido && <p className="text-red-400 text-xs mt-1">{errors.apellido.message}</p>}
-          </label>
         </div>
         <label className="relative">
           <input className="input bg-[#333] text-white w-full pt-5 pb-1 px-3 rounded-lg border border-[#69696965] focus:outline-none" type="tel" {...register("tel")} />
@@ -170,7 +165,7 @@ function RegisterPage() {
             </select>
             {/* Icono de flecha personalizado */}
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/50">
-              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns=" ">
                 <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
@@ -196,4 +191,3 @@ function RegisterPage() {
 
 export default RegisterPage;
 
-// --- referencias de codigo que se uso para hacer los cambios ---

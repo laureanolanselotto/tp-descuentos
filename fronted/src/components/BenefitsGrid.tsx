@@ -6,7 +6,6 @@ import { useBeneficios } from "@/api/beneficios";
 import { getWalletById } from "@/api/wallets";
 import { WalletImage } from './WalletImage';
 
-import { wallets } from "./data/wallets.tsx";
 
 const extractLocalidadNames = (value: unknown): string[] => {
   if (!value) return [];

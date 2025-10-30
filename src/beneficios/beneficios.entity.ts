@@ -39,8 +39,7 @@ export class Beneficio extends BaseEntity {
   @Property({ nullable: true })
   tope_reintegro?: number;
 
-  @Property({ nullable: true })
-  imageUrl?: string;
+
 
   // Relation to Wallet (many beneficios belong to one wallet)
   @ManyToOne(() => Wallet, { nullable: false })
