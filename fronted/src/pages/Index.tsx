@@ -121,7 +121,7 @@ const Index = () => {
         ? walletsArray
         : [];
 
-      console.log("📦 Raw wallets encontradas:", rawWallets);
+      console.log("Raw wallets encontradas:", rawWallets);
 
       type PersonaWalletEntry = NonNullable<PersonaData["wallets"]>[number];
 
