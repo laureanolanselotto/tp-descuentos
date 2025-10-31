@@ -8,7 +8,6 @@ Content-Type: application/json
 
 {
     "name": "laureano",
-    "apellido": "tralala",
     "password": "123456",
     "email": "213@ose.com",
     "tel": "2477309913",

@@ -62,4 +62,3 @@ GET http://localhost:3000/wallets/iconos-billeteras/Brubank_idqsFC7rrR_0.png
 ### Verificar que la imagen de Banco Galicia se sirve correctamente
 GET http://localhost:3000/wallets/iconos-billeteras/banco-galicia-logo.svg
 
-GET 

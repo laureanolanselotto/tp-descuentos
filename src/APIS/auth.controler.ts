@@ -63,7 +63,6 @@ async function login(req: Request, res: Response ) {
         id: userFound.id,
         email: userFound.email,
         name: userFound.name,
-        apellido: userFound.apellido,
         tel: userFound.tel,
         direccion: userFound.direccion,
         localidad: userFound.localidad,
@@ -107,7 +106,6 @@ async function profile(req: Request, res: Response) {
       id: userFound._id,
       email: userFound.email,
       name: userFound.name,
-      apellido: userFound.apellido,
       wallets: userFound.wallets
     });
   } catch (error: any) {
@@ -132,7 +130,6 @@ async function verifyToken(req: Request, res: Response) {
         id: userFound.id,
         name: userFound.name,
         email: userFound.email,
-        apellido: userFound.apellido,
         tel: userFound.tel,
         direccion: userFound.direccion,
         localidad: userFound.localidad,

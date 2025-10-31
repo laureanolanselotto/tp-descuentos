@@ -12,7 +12,6 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     password: req.body.password, // Lo hashearemos en add/update
-    apellido: req.body.apellido,
     email: req.body.email,
     tel: req.body.tel,
     direccion: req.body.direccion,

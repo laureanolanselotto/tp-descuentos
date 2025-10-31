@@ -16,7 +16,6 @@ interface BenefitDetailProps {
     discount: number;
     discountType: string; // New property for discount type
     cant_cuotas?: number;
-    icon: React.ReactNode;
     category: string;
     walletId: string;
     availableDays: number[];
@@ -67,17 +66,16 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
             <WalletImage 
               walletName={walletName}
               size="xl"
-              fallbackIcon={benefit.icon}
             />
           </div>
           <Card className="bg-card rounded-t-3xl mt-6 p-6 shadow-lg">
             <Dialog.Title asChild>
               <h2 className="text-2xl font-bold text-white mb-2 text-center">
                 {benefit.discountType?.toLowerCase().includes("cuota")
-                  ? `¡Aprovechá ${benefit.discount}  en cuotas con ${walletName}!`
+                  ? `¡Aprovechá ${benefit.discount}  en Cuotas con ${walletName}!`
                   : benefit.discountType?.toLowerCase().includes("reintegro")
-                    ? `¡Aprovechá ${benefit.discount}% de reintegro con ${walletName}!`
-                    : `¡Aprovechá ${benefit.discount}% OFF con ${walletName}!`}
+                    ? `¡Aprovechá ${benefit.discount}% de Reintegro con ${walletName}!`
+                    : `¡Aprovechá ${benefit.discount}% Sin Tope con ${walletName}!`}
               </h2>
             </Dialog.Title>
             <Dialog.Description asChild>

@@ -8,9 +8,6 @@ export class persona extends BaseEntity {
   @Property({ nullable: false })
   name!: string;
 
-  @Property({ nullable: false })
-  apellido!: string;
-
   @Property({ nullable: false }) // Removido hidden: true para poder acceder al password en login
   password!: string;
 

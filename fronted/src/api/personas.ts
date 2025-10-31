@@ -41,13 +41,13 @@ const modificarPersona = (id: string, updatedData: Partial<RegisterPersonaData>)
 const getPersonaById = async (id: string): Promise<PersonaData> => {
   const response = await instance.get(`/personas/${id}`);
   return response.data?.data || response.data;
-};
+};// Obtener todas las personas
 const getAllPersonas = async (): Promise<PersonaData[]> => {
   const response = await instance.get(`/personas`);
   const data = response.data?.data || response.data;
   return Array.isArray(data) ? data : [];
 };
-
+// Obtener persona por email
 const getPersonaByEmail = async (email: string): Promise<PersonaData | null> => {
   const personas = await getAllPersonas();
   const target = personas.find((item) => item.email === email);
@@ -57,6 +57,7 @@ const verifyTokenRequest = () => instance.get(`/auth/verify-token`);
 
 const logoutRequest = () => instance.post(`/auth/logout`);
 
+// Actualizar las wallets asociadas a una persona
 const updatePersonaWallets = (personaId: string, walletIds: string[]) => {
   return instance.patch(`/personas/${personaId}`, { wallets: walletIds });
 };
@@ -77,6 +78,10 @@ const getPersonaWithWallets = async (personaId: string): Promise<PersonaData> =>
     throw error;
   }
 };
+{/*funcion para eliminar personas registradas*/ }
+const eliminarPersona = (id: string) => {
+  return instance.delete(`/personas/${id}`);
+};
 
-export { registerPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets };
+export { registerPersona, eliminarPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets };
 

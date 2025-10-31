@@ -1,6 +1,19 @@
 ### Variables base para testing wallets
 @baseUrl = http://localhost:3000/api/wallets
-
+const WALLET_NAMES = [
+  "Banco Galicia",
+  "Mercado Pago",
+  "Banco Nación",
+  "Banco Provincia",
+  "Banco Santander",
+  "Banco Hipotecario",
+  "BBVA",
+  "Modo",
+  "Personal Pay",
+  "Naranja X",
+  "Prex",
+  "Brubank",
+];
 ### 1. GET all wallets
 GET {{baseUrl}}
 
@@ -12,9 +25,9 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Naranja X",
-    "descripcion": "nose",
-    "interes_anual": 30.4
+    "name": "Modo",
+    "descripcion": "qsy",
+    "interes_anual": 5.51
 }
 ###
 

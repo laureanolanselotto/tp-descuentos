@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getWallets } from "@/api/wallets";
+import { WalletImage } from "./WalletImage.tsx";
 
 type WalletId = string | { $oid: string };
 
@@ -34,7 +35,7 @@ const InterestWalletsList = () => {
         const response = await getWallets();
         const walletsData = response.data.data || response.data || [];
         setWallets(walletsData);
-        console.log("Wallets cargadas - interes", walletsData);
+        console.log("Wallets cargadas e interes", walletsData);
       } catch (err) {
         console.error("Error al cargar wallets:", err);
         setError("No se pudieron cargar las billeteras");
@@ -60,8 +61,11 @@ const InterestWalletsList = () => {
             key={walletId}
             className="flex items-center justify-between p-4 rounded-lg bg-muted shadow"
           >
-            <div className="flex flex-col">
-              <span className="font-semibold text-lg">{wallet.name}</span>
+            <div className="flex items-center gap-4">
+              <WalletImage walletName={wallet.name} size="sm" />
+              <div className="flex flex-col">
+                <span className="font-semibold text-lg">{wallet.name}</span>
+              </div>
             </div>
             <span className="text-primary font-bold text-xl">
               {wallet.interes_anual !== undefined ? `${wallet.interes_anual}%` : "N/D"}

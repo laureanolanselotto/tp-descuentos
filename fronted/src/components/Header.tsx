@@ -1,14 +1,26 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { Button  } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "./ui/alert-dialog.tsx";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { ArrowLeft, LogOut, Settings, Wallet } from "lucide-react";
+import { Settings  } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Switch } from "@/components/ui/switch";
 import WalletSelectorCrud from "@/components/WalletSelectorCrud";
 import AccountModal from "@/components/AccountModal";
 import NotificationsModal from "@/components/NotificationsModal";
 import { usePersonaAuth } from "../context/personaContext";
-import { User } from "lucide-react";
+// icon imports removed (not used here)
+import type { PersonaData } from "../api/personas";
+import { getPersonaByEmail, eliminarPersona } from "@/api/personas";
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   return (
@@ -30,10 +42,50 @@ interface HeaderProps {
 }
 
 const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
-  const { logout } = usePersonaAuth();
+  const { logout, persona } = usePersonaAuth();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+  // Alert dialog open state (true/false) requested
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [personaExists, setPersonaExists] = useState(false);
+  const [personaId, setPersonaId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  // useStatus: buscar a la persona si existe (por email) y guardar su id
+  useEffect(() => {
+    let mounted = true;
+    const checkPersona = async () => {
+      const personaEmail = (persona as unknown as { email?: string })?.email;
+      if (!personaEmail) {
+        if (mounted) {
+          setPersonaExists(false);
+          setPersonaId(null);
+        }
+        return;
+      }
+      try {
+        const p = await getPersonaByEmail(personaEmail);
+        if (!mounted) return;
+        if (p) {
+          const pid = (p as PersonaData)._id ?? (p as PersonaData).id ?? null;
+          setPersonaExists(true);
+          setPersonaId(pid ?? null);
+        } else {
+          setPersonaExists(false);
+          setPersonaId(null);
+        }
+      } catch (err) {
+        console.error("Error checking persona status:", err);
+        if (mounted) {
+          setPersonaExists(false);
+          setPersonaId(null);
+        }
+      }
+    };
+    checkPersona();
+    return () => { mounted = false; };
+  }, [persona]);
   return (
     <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
@@ -69,8 +121,49 @@ const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelect
                 Cuenta
               </Button>
               <Button variant="destructive" className="w-full mt-2" onClick={logout}>Cerrar sesión</Button>
-                
-              <User className="ml-auto mt-5 cursor-pointer" onClick={() => setShowAccountModal(true)} />
+
+              {/* Eliminar persona: abrir AlertDialog solo si la persona existe */}
+              <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="flex flex-col justify-end" onClick={() => setAlertOpen(true)} disabled={!personaExists}>
+                    Eliminar cuenta
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Eliminar cuenta</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      ¿Estás seguro? Esta acción es irreversible y eliminará todos tus datos asociados.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="flex gap-2 justify-end pt-4">
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction asChild>
+                      <Button
+                        variant="destructive"
+                        onClick={async () => {
+                          if (!personaId) return;
+                          try {
+                            setDeleting(true);
+                            await eliminarPersona(personaId);
+                            // luego de eliminar, hacer logout y cerrar dialog
+                            console.log("Persona eliminada correctamente", personaId);
+                            setDeleting(false);
+                            setAlertOpen(false);
+                            logout();
+                          } catch (err) {
+                            console.error("Error eliminando persona:", err);
+                            setDeleting(false);
+                          }
+                        }}
+                        disabled={deleting}
+                      >
+                        {deleting ? "Eliminando..." : "Eliminar"}
+                      </Button>
+                    </AlertDialogAction>
+                  </div>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </SheetContent>
         </Sheet>
