@@ -1,4 +1,5 @@
 import { usePersonaAuth } from "../context/personaContext";
+
 const Hola = () => {
     const { persona } = usePersonaAuth();
     console.log("Persona en Hola:", persona);

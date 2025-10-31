@@ -3,6 +3,7 @@ import type { ComponentProps } from "react";
 import { useNavigate } from "react-router-dom";
 import WalletSelectionModal from "@/components/WalletSelectionModal";
 import Header from "@/components/Header";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, type CarouselApi } from "@/components/ui/carousel";
 import CategoryFilter from "@/components/CategoryFilter";
 import BenefitsGrid from "@/components/BenefitsGrid";
 import BenefitDetail from "@/components/BenefitDetail";
@@ -46,6 +47,30 @@ const Index = () => {
   const [walletFilter, setWalletFilter] = useState<string | null>(null);
   const [personaRecord, setPersonaRecord] = useState<PersonaData | null>(null);
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+  const [carouselSelected, setCarouselSelected] = useState<number>(0);
+  const [carouselSlides, setCarouselSlides] = useState<number>(0);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => {
+      try {
+        const idx = carouselApi.selectedScrollSnap();
+        setCarouselSelected(idx ?? 0);
+        const snaps = carouselApi.scrollSnapList();
+        setCarouselSlides(Array.isArray(snaps) ? snaps.length : 0);
+      } catch (e) {
+        // ignore
+      }
+    };
+    onSelect();
+    carouselApi.on("select", onSelect);
+    carouselApi.on("reInit", onSelect);
+    return () => {
+      carouselApi.off("select", onSelect);
+      carouselApi.off("reInit", onSelect);
+    };
+  }, [carouselApi]);
 
   const normalizeWalletId = (value: WalletId | undefined): string => {
     if (!value) return "";
@@ -113,9 +138,10 @@ const Index = () => {
       
       setPersonaRecord(personaData);
 
-      // Buscar wallets en la estructura correcta
-      // Puede venir como personaData.wallets o personaData.wallet (por si acaso)
-      const walletsArray = personaData?.wallets || (personaData as any)?.wallet || [];
+  // Buscar wallets en la estructura correcta
+  // Puede venir como personaData.wallets o personaData.wallet (por si acaso)
+  const pd = personaData as unknown as { wallets?: unknown; wallet?: unknown } | null;
+  const walletsArray = pd?.wallets ?? pd?.wallet ?? [];
       
       const rawWallets = Array.isArray(walletsArray)
         ? walletsArray
@@ -271,17 +297,62 @@ const Index = () => {
         onLogout={logout}
       />
       <div className="max-w-7xl mx-auto p-6 space-y-8">
-
         <div className="text-center space-y-4">
-          {/* Espacio para imagen rectangular */}
+          {/* Carrusel de imágenes usando el componente propio */}
           <div className="flex justify-center mb-4">
-            <div className="w-[800px] h-[300px] bg-muted rounded-xl overflow-hidden flex items-center justify-center">
-              {/* Aquí puedes colocar tu imagen: <img src="/ruta/imagen.jpg" alt="Banner" className="w-full h-full object-cover rounded-xl" /> */}
-              <img
-                src={`${import.meta.env.BASE_URL}public/git/Tito_Calder_n_Bailando.gif`}
-                alt="Banner"
-                className="w-full h-full object-contain rounded-xl"
-              />
+              <div className="w-[800px] h-[300px] bg-muted rounded-xl overflow-hidden flex items-center justify-center relative">
+              <Carousel setApi={setCarouselApi} className="w-full h-full" opts={{ loop: true, align: 'center', containScroll: 'trimSnaps', slidesToScroll: 1 }}>
+                <CarouselContent>
+                  <CarouselItem className="px-2" style={{ flex: '0 0 100%' }}>
+                    <img
+                      src={`${import.meta.env.BASE_URL}git/Tito_Calder_n_Bailando.gif`}
+                      alt="Banner 1"
+                      className="max-w-full max-h-full object-contain rounded-xl mx-auto"
+                    />
+                    <div className="absolute bottom-6 left-6 bg-white/80 rounded-lg px-4 py-2 shadow text-left">
+                      <h3 className="font-bold">Primer banner</h3>
+                      <p>Descubre los mejores beneficios</p>
+                    </div>
+                  </CarouselItem>
+
+                  <CarouselItem className="px-2" style={{ flex: '0 0 100%' }}>
+                    <img
+                      src={`${import.meta.env.BASE_URL}git/Tito_Calder_n_Bailando.gif`}
+                      alt="Banner 2"
+                      className="max-w-full max-h-full object-contain rounded-xl mx-auto"
+                    />
+                    <div className="absolute bottom-6 left-6 bg-white/80 rounded-lg px-4 py-2 shadow text-left">
+                      <h3 className="font-bold">Segundo banner</h3>
+                      <p>Ofertas exclusivas para vos</p>
+                    </div>
+                  </CarouselItem>
+
+                  <CarouselItem className="px-2" style={{ flex: '0 0 100%' }}>
+                    <img
+                      src={`${import.meta.env.BASE_URL}git/Tito_Calder_n_Bailando.gif`}
+                      alt="Banner 3"
+                      className="max-w-full max-h-full object-contain rounded-xl mx-auto"
+                    />
+                    <div className="absolute bottom-6 left-6 bg-white/80 rounded-lg px-4 py-2 shadow text-left">
+                      <h3 className="font-bold">Tercer banner</h3>
+                      <p>Descuentos y promociones</p>
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious style={{ left: 12 }} className="top-1/2 -translate-y-1/2" />
+                <CarouselNext style={{ right: 12 }} className="top-1/2 -translate-y-1/2" />
+              </Carousel>
+              {/* Dots / indicador de slide */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                {Array.from({ length: carouselSlides || 3 }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => carouselApi?.scrollTo(i)}
+                    className={`w-2 h-2 rounded-full transition ${carouselSelected === i ? 'bg-primary' : 'bg-gray-300'}`}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
           <h1 className="max-w-7xl mx-auto p-6 space-y-8 text-2xl font-bold">

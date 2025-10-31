@@ -276,8 +276,6 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             </div>
             
             <div className="text-xs md:text-sm text-muted-foreground capitalize">
-              {/* Aquí va el tipo de descuento, por ejemplo: "Reintegro", "Sin tope", "En cuotas" */}
-              {/* Puedes agregar una propiedad "discountType" al objeto Benefit y mostrarla aquí */}
               {benefit.discountType }
             </div>
             </div>

@@ -8,6 +8,7 @@ import WalletSelectorCrud from "@/components/WalletSelectorCrud";
 import AccountModal from "@/components/AccountModal";
 import NotificationsModal from "@/components/NotificationsModal";
 import { usePersonaAuth } from "../context/personaContext";
+import { User } from "lucide-react";
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   return (
@@ -68,6 +69,8 @@ const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelect
                 Cuenta
               </Button>
               <Button variant="destructive" className="w-full mt-2" onClick={logout}>Cerrar sesión</Button>
+                
+              <User className="ml-auto mt-5 cursor-pointer" onClick={() => setShowAccountModal(true)} />
             </div>
           </SheetContent>
         </Sheet>
