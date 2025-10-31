@@ -298,33 +298,27 @@ const Index = () => {
       />
       <div className="max-w-7xl mx-auto p-6 space-y-8">
         <div className="text-center space-y-4">
-          {/* Carrusel de imágenes usando el componente propio */}
+          {/* Carrusel de imágenes  */}
           <div className="flex justify-center mb-4">
               <div className="w-[800px] h-[300px] bg-muted rounded-xl overflow-hidden flex items-center justify-center relative">
               <Carousel setApi={setCarouselApi} className="w-full h-full" opts={{ loop: true, align: 'center', containScroll: 'trimSnaps', slidesToScroll: 1 }}>
                 <CarouselContent>
                   <CarouselItem className="px-2" style={{ flex: '0 0 100%' }}>
                     <img
-                      src={`${import.meta.env.BASE_URL}git/Tito_Calder_n_Bailando.gif`}
+                      src={`${import.meta.env.BASE_URL}/git/hero-mp-25-ani55-2.jpg`}
                       alt="Banner 1"
                       className="max-w-full max-h-full object-contain rounded-xl mx-auto"
                     />
                     <div className="absolute bottom-6 left-6 bg-white/80 rounded-lg px-4 py-2 shadow text-left">
-                      <h3 className="font-bold">Primer banner</h3>
-                      <p>Descubre los mejores beneficios</p>
                     </div>
                   </CarouselItem>
 
                   <CarouselItem className="px-2" style={{ flex: '0 0 100%' }}>
                     <img
-                      src={`${import.meta.env.BASE_URL}git/Tito_Calder_n_Bailando.gif`}
+                      src={`${import.meta.env.BASE_URL}/git/slider-desktop-sorteo-55ani-250925.jpg`}
                       alt="Banner 2"
                       className="max-w-full max-h-full object-contain rounded-xl mx-auto"
                     />
-                    <div className="absolute bottom-6 left-6 bg-white/80 rounded-lg px-4 py-2 shadow text-left">
-                      <h3 className="font-bold">Segundo banner</h3>
-                      <p>Ofertas exclusivas para vos</p>
-                    </div>
                   </CarouselItem>
 
                   <CarouselItem className="px-2" style={{ flex: '0 0 100%' }}>
@@ -334,8 +328,6 @@ const Index = () => {
                       className="max-w-full max-h-full object-contain rounded-xl mx-auto"
                     />
                     <div className="absolute bottom-6 left-6 bg-white/80 rounded-lg px-4 py-2 shadow text-left">
-                      <h3 className="font-bold">Tercer banner</h3>
-                      <p>Descuentos y promociones</p>
                     </div>
                   </CarouselItem>
                 </CarouselContent>
@@ -344,7 +336,7 @@ const Index = () => {
               </Carousel>
               {/* Dots / indicador de slide */}
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                {Array.from({ length: carouselSlides || 3 }).map((_, i) => (
+                {Array.from({ length: carouselSlides }).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => carouselApi?.scrollTo(i)}
