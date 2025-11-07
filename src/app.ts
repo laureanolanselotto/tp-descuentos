@@ -13,6 +13,9 @@ import { LocalidadRouter } from "./localidad/localidad.routes.js";
 import { CiudadRouter  } from "./ciudad/ciudad.routes.js";
 import { AuthRouter } from "./APIS/auth.routes.js";
 import { ImagenRouter } from "./imagenes/imagen.routes.js";
+import { ubicacionUsuarioRouter } from "./ubicacion_usuarios/ubicacion_usuario.routes.js";
+import { sucursalRouter } from "./sucursales/sucursal.routes.js";
+import { RolPersonasRouter } from "./rol_personas/rol_personas.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -66,6 +69,9 @@ app.use('/api/rubros', RubrosRouter)
 app.use('/api/localidades', LocalidadRouter)
 app.use('/api/ciudades', CiudadRouter);
 app.use('/api/imagenes', ImagenRouter);
+app.use('/api/ubicaciones-usuario', ubicacionUsuarioRouter);
+app.use('/api/sucursales', sucursalRouter);
+app.use('/api/roles', RolPersonasRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' })

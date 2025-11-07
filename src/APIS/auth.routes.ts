@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, logout, profile, verifyToken } from './auth.controler.js';
+import { login, logout, profile, verifyToken, verifyAdmin } from './auth.controler.js';
 import { authRequiredToken } from '../middlewares/validenteToken.js';
 import { validatorSchema } from '../middlewares/validator.middleware.js';
 import { loginSchema } from '../schema/personas.validator.js';
@@ -15,3 +15,12 @@ AuthRouter.get('/profile', authRequiredToken, profile);
 
 // @ts-ignore - solución temporal para el problema de tipos de Express
 AuthRouter.get('/verify-token', verifyToken);
+
+// Ruta de ejemplo protegida solo para administradores
+// @ts-ignore - solución temporal para el problema de tipos de Express
+AuthRouter.get('/admin-only', verifyAdmin, (req, res) => {
+  res.status(200).json({ 
+    message: 'Acceso permitido - Usuario administrador verificado',
+    adminEmail: req.decoded?.email
+  });
+});

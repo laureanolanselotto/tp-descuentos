@@ -21,6 +21,9 @@ export class persona extends BaseEntity {
   @Property({ nullable: true })
   direccion?: string;
 
+  @Property({ nullable: false  , default: false }) // se coloca por defecto en false 
+  rol_persona?: boolean;
+
   @ManyToMany(() => Wallet, (wallet) => wallet.personas, {
     cascade: [Cascade.PERSIST], // Solo persiste, NO elimina las wallets al borrar persona
     owner: true,

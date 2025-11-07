@@ -1,5 +1,9 @@
-### Login de usuario
-POST http://localhost:3000/api/auth/login
+### ============ TESTING AUTENTICACIÓN Y ROLES ============
+@baseUrl = http://localhost:3000/api/auth
+
+### 1. Login de usuario normal
+# @name loginUser
+POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
@@ -7,19 +11,95 @@ Content-Type: application/json
   "password": "1234"
 }
 
-### Logout de usuario
-POST http://localhost:3000/api/auth/logout
+###
 
+### 2. Verificar token (incluye campo isAdmin)
+GET {{baseUrl}}/verify-token
 
-### Profile de usuario (requiere token)
-# Primero haz login y copia el token de la respuesta
-# Luego reemplaza TU_TOKEN_AQUI con el token real
-GET http://localhost:3000/api/auth/profile
-### Test de login con credenciales de prueba para fallar
-POST http://localhost:3000/api/auth/login
+###
+
+### 3. Logout de usuario
+POST {{baseUrl}}/logout
+
+###
+
+### 4. Profile de usuario (requiere token)
+GET {{baseUrl}}/profile
+
+###
+
+### ============ TESTING ROL DE ADMINISTRADOR ============
+
+### 5. Login de usuario administrador
+### NOTA: Primero crear el rol en /api/roles con el email del admin
+# @name loginAdmin
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "admin@empresa.com.ar",
+  "password": "admin123"
+}
+
+###
+
+### 6. Verificar token de admin (isAdmin debe ser true)
+GET {{baseUrl}}/verify-token
+
+###
+
+### 7. Acceder a ruta protegida solo para admins (debe funcionar)
+GET {{baseUrl}}/admin-only
+
+###
+
+### 8. Login con usuario normal para comparar
+# @name loginNormal
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "usuario@gmail.com",
+  "password": "1234"
+}
+
+###
+
+### 9. Verificar token de usuario normal (isAdmin debe ser false)
+GET {{baseUrl}}/verify-token
+
+###
+
+### 10. Intentar acceder a ruta de admin con usuario normal (debe fallar con 403)
+GET {{baseUrl}}/admin-only
+
+###
+
+### ============ CASOS DE ERROR ============
+
+### 11. Login con credenciales incorrectas
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "noexiste@example.com",
+  "password": "wrongpass"
+}
+
+###
+
+### 12. Login con email incorrecto
+POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
   "email": "test@example.com",
   "password": "123456"
 }
+
+###
+
+### 13. Acceder a ruta protegida sin token (debe fallar con 401)
+GET {{baseUrl}}/admin-only
+
+###

@@ -1,0 +1,242 @@
+### Variables base para testing ubicaciones de usuario
+### NOTA: EJECUTAR PRIMERO personas.http y ciudad.http para crear personas y ciudades
+### Luego reemplazar los IDs de ejemplo con los IDs reales obtenidos
+@baseUrl = http://localhost:3000/api/ubicaciones-usuario
+
+### IDs de ejemplo - REEMPLAZAR con IDs reales de personas y ciudades existentes
+### Ejecutar personas.http y ciudad.http primero y copiar los IDs aquí
+
+// ID de una persona existente
+@personaId = 68e5b58603cec7b6df2b5e1a
+// ID de una ciudad existente (ej: La Plata)
+@ciudadId = 68e5b58603cec7b6df2b5e19
+
+### ============ TESTING UBICACIONES DE USUARIO ============
+
+### 1. GET all ubicaciones de usuario
+GET {{baseUrl}}
+
+###
+
+### 2. POST - Crear ubicación principal de usuario (casa)
+# @name createUbicacion1
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 776",
+    "alias": "Casa",
+    "activa": true,
+    "precision_metros": 15.50,
+    "personaId": "{{personaId}}",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 3. Capturar ID de ubicación creada
+@ubicacionId1 = {{createUbicacion1.response.body.data.id}}
+
+### 4. GET - Obtener ubicación con persona y ciudad pobladas
+GET {{baseUrl}}/{{ubicacionId1}}
+
+###
+
+### 5. POST - Crear ubicación de trabajo (inactiva)
+# @name createUbicacion2
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9033,
+    "longitud": -57.9373,
+    "direccion": "Av. 7 N° 1234",
+    "alias": "Trabajo",
+    "activa": false,
+    "precision_metros": 10.00,
+    "personaId": "{{personaId}}",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 6. Capturar ID de segunda ubicación
+@ubicacionId2 = {{createUbicacion2.response.body.data.id}}
+
+### 7. POST - Crear ubicación sin alias (opcional)
+# @name createUbicacion3
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9100,
+    "longitud": -57.9200,
+    "direccion": "Plaza San Martín",
+    "activa": true,
+    "precision_metros": 20.00,
+    "personaId": "{{personaId}}",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 8. Capturar ID de tercera ubicación
+@ubicacionId3 = {{createUbicacion3.response.body.data.id}}
+
+### 9. PUT - Actualizar ubicación completa (cambiar a inactiva)
+PUT {{baseUrl}}/{{ubicacionId1}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 776 - Piso 2",
+    "alias": "Casa (actualizada)",
+    "activa": false,
+    "precision_metros": 12.00,
+    "personaId": "{{personaId}}",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 10. PATCH - Actualización parcial (solo activar ubicación)
+PATCH {{baseUrl}}/{{ubicacionId2}}
+Content-Type: application/json
+
+{
+    "activa": true
+}
+
+###
+
+### 11. PATCH - Actualización parcial (cambiar alias y precisión)
+PATCH {{baseUrl}}/{{ubicacionId3}}
+Content-Type: application/json
+
+{
+    "alias": "Parque Central",
+    "precision_metros": 25.50
+}
+
+###
+
+### 12. GET - Verificar todas las ubicaciones actualizadas
+GET {{baseUrl}}
+
+###
+
+### 13. DELETE - Eliminar tercera ubicación
+DELETE {{baseUrl}}/{{ubicacionId3}}
+
+###
+
+### 14. GET - Verificar que se eliminó (debería retornar 404)
+GET {{baseUrl}}/{{ubicacionId3}}
+
+###
+
+### 15. GET - Listar ubicaciones restantes
+GET {{baseUrl}}
+
+###
+
+### ============ CASOS DE ERROR ============
+
+### 16. POST - Error: personaId inválido
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 776",
+    "alias": "Casa",
+    "activa": true,
+    "precision_metros": 15.50,
+    "personaId": "invalidId123",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 17. POST - Error: ciudadId inválido
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 776",
+    "alias": "Casa",
+    "activa": true,
+    "precision_metros": 15.50,
+    "personaId": "{{personaId}}",
+    "ciudadId": "invalidId456"
+}
+
+###
+
+### 18. POST - Error: personaId inexistente (ObjectId válido pero no existe)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 776",
+    "alias": "Casa",
+    "activa": true,
+    "precision_metros": 15.50,
+    "personaId": "000000000000000000000000",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 19. GET - Error: ID inexistente
+GET {{baseUrl}}/000000000000000000000000
+
+###
+
+### 20. PUT - Error: ID inexistente
+PUT {{baseUrl}}/000000000000000000000000
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 776",
+    "alias": "Casa",
+    "activa": true,
+    "precision_metros": 15.50,
+    "personaId": "{{personaId}}",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 21. DELETE - Error: ID inexistente
+DELETE {{baseUrl}}/000000000000000000000000
+
+###
+
+### ============ CLEANUP (OPCIONAL) ============
+### Ejecutar para limpiar las ubicaciones de prueba
+
+### 22. DELETE - Limpiar ubicación 1
+DELETE {{baseUrl}}/{{ubicacionId1}}
+
+###
+
+### 23. DELETE - Limpiar ubicación 2
+DELETE {{baseUrl}}/{{ubicacionId2}}
+
+###
+
+### 24. GET - Verificar limpieza completa
+GET {{baseUrl}}
+
+###

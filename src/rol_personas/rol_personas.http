@@ -1,0 +1,135 @@
+### Variables base para testing roles de personas (admins)
+@baseUrl = http://localhost:3000/api/roles
+
+### ============ TESTING ROL PERSONAS (ADMINS) ============
+
+### 1. GET all admin roles
+GET {{baseUrl}}
+
+###
+
+### 2. POST - Crear primer admin
+# @name createRole1
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "email_admins": "SuperAdmin@empresa.com.ar"
+}
+
+###
+
+### 3. Capturar ID del primer admin
+@roleId1 = {{createRole1.response.body.data.id}}
+
+### 4. GET - Obtener admin por ID
+GET {{baseUrl}}/{{roleId1}}
+
+###
+
+### 5. POST - Crear segundo admin
+# @name createRole2
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "email_admins": "superadmin@empresa.com.ar"
+}
+
+###
+
+### 6. Capturar ID del segundo admin
+@roleId2 = {{createRole2.response.body.data.id}}
+
+### 7. POST - Crear tercer admin
+# @name createRole3
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "email_admins": "root@empresa.com.ar"
+}
+
+###
+
+### 8. Capturar ID del tercer admin
+@roleId3 = {{createRole3.response.body.data.id}}
+
+### 9. GET - Listar todos los admins
+GET {{baseUrl}}
+
+###
+
+### 10. PUT - Actualizar email de admin
+PUT {{baseUrl}}/{{roleId1}}
+Content-Type: application/json
+
+{
+    "email_admins": "admin.principal@empresa.com.ar"
+}
+
+###
+
+### 11. PATCH - Actualización parcial
+PATCH {{baseUrl}}/{{roleId2}}
+Content-Type: application/json
+
+{
+    "email_admins": "super.admin@empresa.com.ar"
+}
+
+###
+
+### 12. GET - Verificar actualizaciones
+GET {{baseUrl}}
+
+###
+
+### 13. DELETE - Eliminar tercer admin
+DELETE {{baseUrl}}/{{roleId3}}
+
+###
+
+### 14. GET - Verificar eliminación
+GET {{baseUrl}}
+
+###
+
+### ============ CASOS DE ERROR ============
+
+### 15. GET - Error: ID inexistente
+GET {{baseUrl}}/000000000000000000000000
+
+###
+
+### 16. PUT - Error: ID inexistente
+PUT {{baseUrl}}/000000000000000000000000
+Content-Type: application/json
+
+{
+    "email_admins": "test@empresa.com.ar"
+}
+
+###
+
+### 17. DELETE - Error: ID inexistente
+DELETE {{baseUrl}}/000000000000000000000000
+
+###
+
+### ============ CLEANUP (OPCIONAL) ============
+
+### 18. DELETE - Limpiar admin 1
+DELETE {{baseUrl}}/{{roleId1}}
+
+###
+
+### 19. DELETE - Limpiar admin 2
+DELETE {{baseUrl}}/{{roleId2}}
+
+###
+
+### 20. GET - Verificar limpieza completa
+GET {{baseUrl}}
+
+###

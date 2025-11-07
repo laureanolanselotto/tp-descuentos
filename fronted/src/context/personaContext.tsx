@@ -14,6 +14,7 @@ interface PersonaContextType {
     signin: (user: { email: string; password: string }) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
+    isAdmin: boolean; //  Nuevo campo para rol de admin
     errors: string[];
     clearErrors: () => void;
     loading: boolean;
@@ -33,6 +34,7 @@ const usePersonaAuth = () => {
 const PersonaProvider = ({ children }: { children: ReactNode }) => {
     const [persona, setPersona] = useState<RegisterPersonaData | null>(null);// Estado de la persona autenticada
     const [isAuthenticated, setIsAuthenticated] = useState(false);// Estado de autenticación
+    const [isAdmin, setIsAdmin] = useState(false); //  Estado de rol admin
     const [errors, setErrors] = useState<string[]>([]); // Array de errores
     const [loading,setLoading]=useState(true);// Nuevo estado de carga
 
@@ -74,6 +76,8 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
             // Guardar solo el objeto user, no toda la respuesta
             setPersona(res.data.user || res.data);
             setIsAuthenticated(true);
+            //  Verificar si es admin desde la respuesta del login
+            setIsAdmin(res.data.user?.isAdmin || false);
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
             
@@ -98,6 +102,7 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         Cookies.remove('token'); // Eliminar la cookie del token
         setPersona(null);
         setIsAuthenticated(false);
+        setIsAdmin(false); //  Limpiar estado de admin
     }
 
     useEffect(() => {
@@ -121,16 +126,19 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
                 const res = await verifyTokenRequest();// Verificar token en el backend
                 if (!res.data) {// si el backend no devuelve datos
                     setIsAuthenticated(false);// NO ESTÁ AUTENTICADO
+                    setIsAdmin(false); //  NO ES ADMIN
                     setLoading(false);// TERMINA DE CARGAR
                     return;
                 }// si devuelve datos
                 setIsAuthenticated(true);// ESTÁ AUTENTICADO
                 setPersona(res.data);// SETEA LA PERSONA
+                setIsAdmin(res.data.isAdmin || false); //  VERIFICAR SI ES ADMIN
                 setLoading(false);// TERMINA DE CARGAR
 
         } catch (error) {// si hay error
             console.error("Error al verificar token:", error);// mostrar error en consola
             setIsAuthenticated(false);
+            setIsAdmin(false); //  NO ES ADMIN
             setPersona(null);// NO HAY PERSONA
             setLoading(false);
 
@@ -145,6 +153,7 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
             signin,
             logout,
             isAuthenticated,
+            isAdmin, //  Exportar estado de admin
             errors,
             clearErrors,
             loading,

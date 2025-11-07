@@ -1,11 +1,11 @@
-import { Request, Response ,NextFunction} from 'express'
+import e, { Request, Response ,NextFunction} from 'express'
 import { persona } from './personas.entity.js'
+import { roles } from '../rol_personas/rol_personas.entity.js' //  Importar entidad de roles
 import { orm } from '../shared/db/orm.js'
 import { ObjectId } from '@mikro-orm/mongodb'
 import bcrypt from 'bcryptjs';
 
 const em = orm.em
-
 
 
 function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
@@ -17,7 +17,8 @@ function sanitizePersonaInput(req: Request, res: Response, next: NextFunction) {
     direccion: req.body.direccion,
     wallets: req.body.wallets,
     localidad: req.body.localidadId || req.body.localidad, // Soportar ambos nombres
-    notificaciones: req.body.notificaciones
+    notificaciones: req.body.notificaciones,
+    rol_persona: req.body.rol_persona
   }
 
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -80,6 +81,19 @@ async function add(req: Request, res: Response) {
 
     const input = { ...req.body.sanitizedInput }; // cuerpo de la request
 
+    //  Verificar si el email está en la tabla de roles (admins)
+    const allRoles = await em.find(roles, {});
+    let isAdmin = false;
+    
+    allRoles.forEach((role) => {
+      if (role.email_admins === input.email) {
+        isAdmin = true;
+      }
+    });
+
+    //  Establecer rol_persona según si es admin
+    input.rol_persona = isAdmin;
+
     // Hash del password si está presente
     if (input.password) {
       input.password = await bcrypt.hash(input.password, 10);
@@ -97,8 +111,6 @@ async function add(req: Request, res: Response) {
     const personaCreated = em.create(persona, input); // creo la persona usando el input modificado y con los strings de 
     // wallets y localidad convertidos a ObjectId porque asi funcionan las relaciones en la base de datos 
     await em.flush(); // vacio el bus
-
- 
 
     res.status(201).json({ message: 'persona created', data: personaCreated }); // devuelvo la persona con las relaciones pobladas
   } catch (error: any) {

@@ -1,11 +1,13 @@
-import { Request, Response, } from 'express';
+import e, { Request, Response, NextFunction } from 'express';
 import { persona } from '../personas/personas.entity.js';
+import { roles } from '../rol_personas/rol_personas.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { TOKEN_SECRET } from './jwd.js';
 import { decode } from 'punycode';
+import { console } from 'inspector';
 
 const em = orm.em;
 
@@ -39,9 +41,16 @@ async function login(req: Request, res: Response ) {
     // Ahora sí, cargar las relaciones (wallets y localidad)
     await em.populate(userFound, ['wallets', 'localidad']);
     
+    //  Verificar si el usuario es admin desde el campo rol_persona
+    const isAdmin = userFound.rol_persona || false;
+    
     // Crear token
     const token = jwt.sign(
-      { id: userFound._id, email: userFound.email }, 
+      { 
+        id: userFound._id, 
+        email: userFound.email,
+        isAdmin: isAdmin 
+      }, 
       TOKEN_SECRET, 
       { expiresIn: '1d' }
     );
@@ -66,7 +75,8 @@ async function login(req: Request, res: Response ) {
         tel: userFound.tel,
         direccion: userFound.direccion,
         localidad: userFound.localidad,
-        wallets: userFound.wallets
+        wallets: userFound.wallets,
+        isAdmin: isAdmin
       }
     });
     
@@ -113,7 +123,7 @@ async function profile(req: Request, res: Response) {
   }
 }
 
-
+{/* Verificar token */}
 async function verifyToken(req: Request, res: Response) {
     const token = req.cookies.token 
     if (!token) return res.status(401).json({ message: 'No autorizado' });
@@ -124,6 +134,10 @@ async function verifyToken(req: Request, res: Response) {
       if (!userFound) {
         return res.status(401).json({ message: 'Usuario no encontrado' });
       }
+      
+      // Verificar si el usuario es admin desde el campo rol_persona
+      const isAdmin = userFound.rol_persona || false;
+      
       return res.status(200).json({ 
         message: 'Token válido',
         _id: userFound._id,
@@ -133,11 +147,34 @@ async function verifyToken(req: Request, res: Response) {
         tel: userFound.tel,
         direccion: userFound.direccion,
         localidad: userFound.localidad,
-        wallets: userFound.wallets
+        wallets: userFound.wallets,
+        isAdmin: isAdmin
       });
     } catch (err) {
       return res.status(401).json({ message: 'Token inválido' });
     }
   }
-export { login, logout, profile, verifyToken };
+async function verifyAdmin(req: Request, res: Response, next: NextFunction) {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: 'No autorizado - Token requerido' });
+
+  try {
+    const decoded = jwt.verify(token, TOKEN_SECRET) as any;
+    
+    // Verificar desde el payload del token
+    if (!decoded.isAdmin) {
+      return res.status(403).json({ 
+        message: 'Acceso denegado - Se requieren permisos de administrador' 
+      });
+    }
+
+    // Usuario es admin según el token, continuar
+    req.decoded = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Token inválido' });
+  }
+}
+
+export { login, logout, profile, verifyToken, verifyAdmin };
 

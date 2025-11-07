@@ -42,7 +42,7 @@ interface HeaderProps {
 }
 
 const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
-  const { logout, persona } = usePersonaAuth();
+  const { logout, persona, isAdmin } = usePersonaAuth(); // ⭐ Importar isAdmin
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
@@ -120,6 +120,14 @@ const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelect
               <Button variant="secondary" className="w-full" onClick={() => setShowAccountModal(true)}>
                 Cuenta
               </Button>
+              
+              {/* ⭐ Botón Admin - Solo visible para administradores */}
+              {isAdmin && (
+                <Button variant="default" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  Admin
+                </Button>
+              )}
+              
               <Button variant="destructive" className="w-full mt-2" onClick={logout}>Cerrar sesión</Button>
 
               {/* Eliminar persona: abrir AlertDialog solo si la persona existe */}

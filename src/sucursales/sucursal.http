@@ -1,0 +1,272 @@
+### Variables base para testing sucursales
+### NOTA: EJECUTAR PRIMERO ciudad.http para crear ciudades
+### Luego reemplazar los IDs de ejemplo con los IDs reales obtenidos
+@baseUrl = http://localhost:3000/api/sucursales
+
+### IDs de ejemplo - REEMPLAZAR con IDs reales de ciudades existentes
+### Ejecutar ciudad.http primero y copiar los IDs aquí
+
+// ID de una ciudad existente (ej: La Plata)
+@ciudadId = 68e5b58603cec7b6df2b5e19
+
+### ============ TESTING SUCURSALES ============
+
+### 1. GET all sucursales
+GET {{baseUrl}}
+
+###
+
+### 2. POST - Crear sucursal completa (con todos los campos)
+# @name createSucursal1
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Centro",
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 800",
+    "alias": "Centro - Oficina Principal",
+    "telefono": "+54 221 4231234",
+    "email_contacto": "centro@empresa.com.ar",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 3. Capturar ID de sucursal creada
+@sucursalId1 = {{createSucursal1.response.body.data.id}}
+
+### 4. GET - Obtener sucursal con ciudad poblada
+GET {{baseUrl}}/{{sucursalId1}}
+
+###
+
+### 5. POST - Crear sucursal solo con campos obligatorios
+# @name createSucursal2
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Norte",
+    "latitud": -34.9033,
+    "longitud": -57.9373,
+    "direccion": "Av. 44 N° 1567",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 6. Capturar ID de segunda sucursal
+@sucursalId2 = {{createSucursal2.response.body.data.id}}
+
+### 7. POST - Crear sucursal con alias pero sin teléfono
+# @name createSucursal3
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Sur",
+    "latitud": -34.9300,
+    "longitud": -57.9600,
+    "direccion": "Diagonal 74 N° 456",
+    "alias": "Sur - La Plata",
+    "email_contacto": "sur@empresa.com.ar",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 8. Capturar ID de tercera sucursal
+@sucursalId3 = {{createSucursal3.response.body.data.id}}
+
+### 9. POST - Crear sucursal con teléfono pero sin email
+# @name createSucursal4
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Este",
+    "latitud": -34.9100,
+    "longitud": -57.9200,
+    "direccion": "Calle 13 N° 999",
+    "alias": "Este - Oficina Satélite",
+    "telefono": "+54 221 4235678",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 10. Capturar ID de cuarta sucursal
+@sucursalId4 = {{createSucursal4.response.body.data.id}}
+
+### 11. PUT - Actualizar sucursal completa
+PUT {{baseUrl}}/{{sucursalId1}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Centro (Renovada)",
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle 7 N° 800 - Planta Baja",
+    "alias": "Centro - Casa Matriz",
+    "telefono": "+54 221 4231234",
+    "email_contacto": "matriz@empresa.com.ar",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 12. PATCH - Actualización parcial (solo teléfono y email)
+PATCH {{baseUrl}}/{{sucursalId2}}
+Content-Type: application/json
+
+{
+    "telefono": "+54 221 4237777",
+    "email_contacto": "norte@empresa.com.ar"
+}
+
+###
+
+### 13. PATCH - Actualización parcial (solo nombre)
+PATCH {{baseUrl}}/{{sucursalId3}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Sur - Plaza Italia"
+}
+
+###
+
+### 14. PATCH - Actualización parcial (solo alias)
+PATCH {{baseUrl}}/{{sucursalId4}}
+Content-Type: application/json
+
+{
+    "alias": "Este - Nuevo Barrio"
+}
+
+###
+
+### 15. GET - Verificar todas las sucursales actualizadas
+GET {{baseUrl}}
+
+###
+
+### 16. DELETE - Eliminar cuarta sucursal
+DELETE {{baseUrl}}/{{sucursalId4}}
+
+###
+
+### 17. GET - Verificar que se eliminó (debería retornar 404)
+GET {{baseUrl}}/{{sucursalId4}}
+
+###
+
+### 18. GET - Listar sucursales restantes
+GET {{baseUrl}}
+
+###
+
+### ============ CASOS DE ERROR ============
+
+### 19. POST - Error: ciudadId inválido
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Test Error",
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle Falsa 123",
+    "ciudadId": "invalidId123"
+}
+
+###
+
+### 20. POST - Error: ciudadId inexistente (ObjectId válido pero no existe)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Test Error",
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle Falsa 123",
+    "ciudadId": "000000000000000000000000"
+}
+
+###
+
+### 21. POST - Error: falta nombre (campo obligatorio)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle Falsa 123",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 22. POST - Error: falta direccion (campo obligatorio de UbicacionBase)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Test Error",
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 23. GET - Error: ID inexistente
+GET {{baseUrl}}/000000000000000000000000
+
+###
+
+### 24. PUT - Error: ID inexistente
+PUT {{baseUrl}}/000000000000000000000000
+Content-Type: application/json
+
+{
+    "nombre": "Sucursal Test",
+    "latitud": -34.9214,
+    "longitud": -57.9544,
+    "direccion": "Calle Falsa 123",
+    "ciudadId": "{{ciudadId}}"
+}
+
+###
+
+### 25. DELETE - Error: ID inexistente
+DELETE {{baseUrl}}/000000000000000000000000
+
+###
+
+### ============ CLEANUP (OPCIONAL) ============
+### Ejecutar para limpiar las sucursales de prueba
+
+### 26. DELETE - Limpiar sucursal 1
+DELETE {{baseUrl}}/{{sucursalId1}}
+
+###
+
+### 27. DELETE - Limpiar sucursal 2
+DELETE {{baseUrl}}/{{sucursalId2}}
+
+###
+
+### 28. DELETE - Limpiar sucursal 3
+DELETE {{baseUrl}}/{{sucursalId3}}
+
+###
+
+### 29. GET - Verificar limpieza completa
+GET {{baseUrl}}
+
+###
