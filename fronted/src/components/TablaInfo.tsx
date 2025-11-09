@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Loader2, Edit, Trash2 } from "lucide-react";
+import { RefreshCw, Loader2, Edit, Trash2, Wallet } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,19 +44,43 @@ const entityConfig: Record<EntityType, {
 }> = {
   beneficios: {
     endpoint: "/beneficios",
-    columns: ["descripcion", "discount", "discountType", "cant_cuotas", "fecha_desde", "fecha_hasta", "limit"],
+    columns: ["descripcion", "discount", "discountType", "wallet", "rubro", "localidades", "fecha_desde", "fecha_hasta"],
     columnLabels: {
       descripcion: "Descripción",
       discount: "Descuento",
       discountType: "Tipo",
-      cant_cuotas: "Cuotas",
+      wallet: "Wallet",
+      rubro: "Rubro",
+      localidades: "Localidades",
       fecha_desde: "Desde",
       fecha_hasta: "Hasta",
-      limit: "Límite",
     },
     formatters: {
-      discount: (val) => val ? `${val}%` : "-",
-      cant_cuotas: (val) => val ? String(val) : "-",
+      discount: (val) => val ? `${val}%` : "---",
+      wallet: (val) => {
+        if (!val || typeof val !== 'object') {
+          console.log('Wallet no válida:', val);
+          return "---";
+        }
+        const wallet = val as { name?: string };
+        return wallet.name || "---";
+      },
+      rubro: (val) => {
+        if (!val || typeof val !== 'object') return "---";
+        const rubro = val as { nombre?: string };
+        return rubro.nombre || "---";
+      },
+      localidades: (val) => {
+        if (!val || !Array.isArray(val)) return "---";
+        if (val.length === 0) return "Sin localidades";
+        const nombres = val.map((loc: unknown) => {
+          if (typeof loc === 'object' && loc !== null) {
+            return (loc as { nombre_localidad?: string }).nombre_localidad || "?";
+          }
+          return "?";
+        });
+        return nombres.join(", ");
+      },
     }
   },
   wallets: {

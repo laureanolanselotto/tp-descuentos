@@ -183,12 +183,12 @@ const Index = () => {
 
       // Si tiene wallets, cargarlas y NO mostrar modal
       if (normalizedWallets.length > 0) {
-        console.log("✅ Usuario con", normalizedWallets.length, "wallets existentes:", normalizedWallets);
+        console.log(" Usuario con", normalizedWallets.length, "wallets existentes:", normalizedWallets);
         setSelectedWallets(normalizedWallets);
         setShowModal(false);
       } else {
         // Si NO tiene wallets (primera vez), mostrar modal para seleccionar
-        console.log("ℹ️ Usuario sin wallets, mostrando modal de selección");
+        console.log("ℹ Usuario sin wallets, mostrando modal de selección");
         setSelectedWallets([]);
         setShowModal(true);
       }
