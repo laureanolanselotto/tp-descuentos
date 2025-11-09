@@ -14,7 +14,7 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "email_admins": "SuperAdmin@empresa.com.ar"
+    "email_admins": "laureanolanselotto1998@gmail.com"
 }
 
 ###
@@ -65,7 +65,7 @@ PUT {{baseUrl}}/{{roleId1}}
 Content-Type: application/json
 
 {
-    "email_admins": "admin.principal@empresa.com.ar"
+    "email_admins": "laureanolanselotto1998@gmail.com"
 }
 
 ###

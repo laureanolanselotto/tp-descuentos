@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import { PersonaProvider } from "./context/personaContext";
 import ProtectedRoute from "./ProtectedRoute";
 import Hola from "./pages/Hola";
+import Admint from "./pages/Admint";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/HomePage" element={<Index />} />
             <Route path="/hola" element={<Hola />} />
             <Route path="/account" element={<AccountPage />} />
+            <Route path="/admin" element={<Admint />} />
           </Route>
           {/* Catch-all route for 404 */}
           <Route path="*" element={<NotFound />} />

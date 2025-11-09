@@ -18,6 +18,7 @@ import WalletSelectorCrud from "@/components/WalletSelectorCrud";
 import AccountModal from "@/components/AccountModal";
 import NotificationsModal from "@/components/NotificationsModal";
 import { usePersonaAuth } from "../context/personaContext";
+import { useNavigate } from "react-router-dom";
 // icon imports removed (not used here)
 import type { PersonaData } from "../api/personas";
 import { getPersonaByEmail, eliminarPersona } from "@/api/personas";
@@ -43,6 +44,7 @@ interface HeaderProps {
 
 const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelection, onLogout }: HeaderProps) => {
   const { logout, persona, isAdmin } = usePersonaAuth(); // ⭐ Importar isAdmin
+  const navigate = useNavigate();
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
@@ -121,10 +123,11 @@ const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelect
                 Cuenta
               </Button>
               
-              {/* ⭐ Botón Admin - Solo visible para administradores */}
+              {/* Botón Admin - Solo visible para administradores */}
               {isAdmin && (
-                <Button variant="default" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                  Admin
+                <Button variant="default" className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" 
+                onClick={() => navigate("/admin")}>
+                  Configuraciones Admin
                 </Button>
               )}
               

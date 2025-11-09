@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Timer, DollarSign, Wallet } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import React from "react";
-import { wallets } from "./data/wallets.tsx";
 import { MapPin } from 'lucide-react';
 import { WalletImage } from './WalletImage';
 
@@ -37,9 +36,8 @@ interface BenefitDetailProps {
 const dayLabels = ["L", "M", "X", "J", "V", "S", "D"];
 
 const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
-  // Usar el nombre de la wallet desde infoWallet o fallback al array estático
-  const walletName = benefit.infoWallet?.name || wallets.find(w => w.id === benefit.walletId)?.name || benefit.walletId;
-  const wallet = wallets.find(w => w.id === benefit.walletId);
+  // Usar el nombre de la wallet desde infoWallet o usar el walletId como fallback
+  const walletName = benefit.infoWallet?.name || benefit.walletId;
   // calcular cuánto hay que gastar para alcanzar el tope de reintegro
   const spendToReachTop = (benefit.tope_reintegro && benefit.discount && benefit.discount > 0)
     ? Math.ceil(benefit.tope_reintegro / (benefit.discount / 100))
