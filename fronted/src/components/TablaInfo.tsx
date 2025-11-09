@@ -9,11 +9,23 @@ import {
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, Loader2 } from "lucide-react";
+import { RefreshCw, Loader2, Edit, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import instance from "@/api/axios";
+import FormularioUpdate from "./FormularioUpdate";
 
 // Tipos de entidades soportadas
-export type EntityType = "beneficios" | "wallets" | "personas" | "localidades" | "ciudades" | "rubros" | "roles";
+export type EntityType = "beneficios" | "wallets" | "localidades" | "ciudades" | "rubros" | "roles";
 
 interface TablaInfoProps {
   entityType: EntityType;
@@ -57,21 +69,6 @@ const entityConfig: Record<EntityType, {
     },
     formatters: {
       interes_anual: (val) => val ? `${val}%` : "-",
-    }
-  },
-  personas: {
-    endpoint: "/personas",
-    columns: ["name", "email", "tel", "direccion", "rol_persona"],
-    columnLabels: {
-      name: "Nombre",
-      email: "Email",
-      tel: "Teléfono",
-      direccion: "Dirección",
-      rol_persona: "Admin",
-    },
-    formatters: {
-      rol_persona: (val) => val ? "Sí" : "No",
-      direccion: (val) => val ? String(val) : "-",
     }
   },
   localidades: {
@@ -118,6 +115,13 @@ const TablaInfo = ({ entityType, title }: TablaInfoProps) => {
   const [data, setData] = useState<EntityData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const { toast } = useToast();
 
   const config = entityConfig[entityType];
 
@@ -169,6 +173,82 @@ const TablaInfo = ({ entityType, title }: TablaInfoProps) => {
   const getItemId = (item: EntityData) => {
     const id = item._id || item.id || item.ID;
     return id ? String(id) : Math.random().toString();
+  };
+
+  const handleUpdate = (itemId: string) => {
+    setSelectedItemId(itemId);
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleDeleteClick = (itemId: string) => {
+    setItemToDelete(itemId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      setDeleting(true);
+      
+      let deleteFunction;
+      switch (entityType) {
+        case 'beneficios': {
+          const { deleteBeneficio } = await import('@/api/beneficios');
+          deleteFunction = deleteBeneficio;
+          break;
+        }
+        case 'wallets': {
+          const { deleteWallet } = await import('@/api/wallets');
+          deleteFunction = deleteWallet;
+          break;
+        }
+        case 'rubros': {
+          const { deleteRubro } = await import('@/api/rubros');
+          deleteFunction = deleteRubro;
+          break;
+        }
+        case 'localidades': {
+          const { deleteLocalidad } = await import('@/api/localidad');
+          deleteFunction = deleteLocalidad;
+          break;
+        }
+        case 'ciudades': {
+          const { deleteCiudad } = await import('@/api/ciudades');
+          deleteFunction = deleteCiudad;
+          break;
+        }
+        case 'roles': {
+          const { deleteRol } = await import('@/api/roles');
+          deleteFunction = deleteRol;
+          break;
+        }
+      }
+
+      await deleteFunction(itemToDelete);
+
+      toast({
+        title: "¡Éxito!",
+        description: `Registro eliminado correctamente.`,
+      });
+
+      setIsDeleteDialogOpen(false);
+      setItemToDelete(null);
+      fetchData(); // Recargar datos
+    } catch (error: unknown) {
+      console.error(`Error al eliminar ${entityType}:`, error);
+      const errorMessage = error && typeof error === 'object' && 'response' in error 
+        ? (error as { response?: { data?: { message?: string } } }).response?.data?.message 
+        : `Error al eliminar ${entityType}`;
+      
+      toast({
+        title: "Error",
+        description: errorMessage || `No se pudo eliminar el registro`,
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -226,22 +306,100 @@ const TablaInfo = ({ entityType, title }: TablaInfoProps) => {
                     {config.columnLabels[column] || column}
                   </TableHead>
                 ))}
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item) => (
-                <TableRow key={getItemId(item)}>
-                  {config.columns.map((column) => (
-                    <TableCell key={column}>
-                      {getValue(item, column)}
+              {data.map((item) => {
+                const itemId = getItemId(item);
+                const isHovered = hoveredRow === itemId;
+                
+                return (
+                  <TableRow 
+                    key={itemId}
+                    onMouseEnter={() => setHoveredRow(itemId)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                    className="relative"
+                  >
+                    {config.columns.map((column) => (
+                      <TableCell key={column}>
+                        {getValue(item, column)}
+                      </TableCell>
+                    ))}
+                    <TableCell className="text-right">
+                      <div className={`flex gap-2 justify-end transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white border-yellow-600"
+                          onClick={() => handleUpdate(itemId)}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Update
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-red-500 hover:bg-red-600 text-white border-red-600"
+                          onClick={() => handleDeleteClick(itemId)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
       )}
+
+      {/* Modal de actualización */}
+      {selectedItemId && (
+        <FormularioUpdate
+          isOpen={isUpdateModalOpen}
+          onClose={() => {
+            setIsUpdateModalOpen(false);
+            setSelectedItemId(null);
+          }}
+          entityType={entityType}
+          itemId={selectedItemId}
+          onSuccess={() => {
+            fetchData();
+          }}
+        />
+      )}
+
+      {/* Dialog de confirmación de eliminación */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Confirmar eliminación?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={deleting}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Eliminando...
+                </>
+              ) : (
+                'Eliminar'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };

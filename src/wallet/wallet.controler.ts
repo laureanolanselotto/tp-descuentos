@@ -64,15 +64,20 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = req.params.id
-    const walletToUpdate = await em.findOneOrFail(Wallet, { id })
-    em.assign(walletToUpdate, req.body.sanitizedInput)
-    await em.flush()
+    const id = req.params.id;
+    let walletToUpdate;
+    try {
+      walletToUpdate = await em.findOneOrFail(Wallet, { id });
+    } catch (e) {
+      walletToUpdate = await em.findOneOrFail(Wallet, { _id: new ObjectId(id) });
+    }
+    em.assign(walletToUpdate, req.body.sanitizedInput);
+    await em.flush();
     res
       .status(200)
-      .json({ message: 'wallet updated', data: walletToUpdate })
+      .json({ message: 'wallet updated', data: walletToUpdate });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 

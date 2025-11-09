@@ -56,15 +56,20 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = req.params.id
-    const localidadToUpdate = await em.findOneOrFail(Localidad, { id })
-    em.assign(localidadToUpdate, req.body.sanitizedInput)
-    await em.flush()
+    const id = req.params.id;
+    let localidadToUpdate;
+    try {
+      localidadToUpdate = await em.findOneOrFail(Localidad, { id });
+    } catch (e) {
+      localidadToUpdate = await em.findOneOrFail(Localidad, { _id: new ObjectId(id) });
+    }
+    em.assign(localidadToUpdate, req.body.sanitizedInput);
+    await em.flush();
     res
       .status(200)
-      .json({ message: 'localidad updated', data: localidadToUpdate })
+      .json({ message: 'localidad updated', data: localidadToUpdate });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 async function remove(req: Request, res: Response) {

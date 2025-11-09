@@ -6,7 +6,13 @@ const getBeneficios = () => instance.get(`/beneficios`);
 
 const getBeneficioById = (id: string) => instance.get(`/beneficios/${id}`);
 
-export { getBeneficios, getBeneficioById };
+const createBeneficio = (data: Record<string, unknown>) => instance.post(`/beneficios`, data);
+
+const updateBeneficio = (id: string, data: Record<string, unknown>) => instance.put(`/beneficios/${id}`, data);
+
+const deleteBeneficio = (id: string) => instance.delete(`/beneficios/${id}`);
+
+export { getBeneficios, getBeneficioById, createBeneficio, updateBeneficio, deleteBeneficio };
 
 const useBeneficios = () => {
     const [beneficios, setBeneficios] = useState([]);

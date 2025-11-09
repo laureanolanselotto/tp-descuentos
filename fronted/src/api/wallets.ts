@@ -4,4 +4,10 @@ const getWallets = () => instance.get(`/wallets`);
 
 const getWalletById = (id: string) => instance.get(`/wallets/${id}`);
 
-export { getWallets, getWalletById };
+const createWallet = (data: Record<string, unknown>) => instance.post(`/wallets`, data);
+
+const updateWallet = (id: string, data: Record<string, unknown>) => instance.put(`/wallets/${id}`, data);
+
+const deleteWallet = (id: string) => instance.delete(`/wallets/${id}`);
+
+export { getWallets, getWalletById, createWallet, updateWallet, deleteWallet };

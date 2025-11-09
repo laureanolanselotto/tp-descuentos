@@ -83,5 +83,7 @@ const eliminarPersona = (id: string) => {
   return instance.delete(`/personas/${id}`);
 };
 
-export { registerPersona, eliminarPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets };
+const createPersona = (data: Record<string, unknown>) => instance.post(`/personas`, data);
+
+export { registerPersona, eliminarPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets, createPersona };
 
