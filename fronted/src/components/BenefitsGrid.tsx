@@ -207,13 +207,6 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
 
   const selectedDayOfWeek = getDay(selectedDate);
   
-  console.log('Filtrando beneficios con:', {
-    selectedCategory,
-    selectedWallets,
-    selectedDiscountType,
-    selectedDayOfWeek
-  });
-  
   const filteredBenefits = benefits.filter(benefit => {
     const walletMatch = selectedWallets.includes(benefit.walletId);
     
@@ -223,19 +216,14 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
     const dayMatch = benefit.availableDays.includes(selectedDayOfWeek);
     const discountTypeMatch = selectedDiscountType === "all" || (benefit.discountType && benefit.discountType.toLowerCase().includes(selectedDiscountType.toLowerCase()));
     
-    if (categoryMatch && benefit.categoryId) {
-      console.log(' Beneficio filtrado:', benefit.descripcion, '| Categoría:', benefit.category, '| ID:', benefit.categoryId);
-    }
-    
     return walletMatch && categoryMatch && dayMatch && discountTypeMatch;
   });
-  
-  console.log('Total beneficios filtrados:', filteredBenefits.length);
 
   const getDiscountColor = (discount: number) => {
     if (discount >= 40) return "bg-green-500";
     if (discount >= 25) return "bg-yellow-500";
     if (discount >= 15) return "bg-red-600";
+    if (discount < 15) return "bg-orange-500";
     return "bg-blue-500";
   };
 
@@ -265,18 +253,15 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
 
               <Badge className={`${getDiscountColor(benefit.discount)} text-white font-bold text-xs md:text-lg px-2 py-1 md:px-4 md:py-2`}>
                 {benefit.discountType?.toLowerCase().includes("cuota")
-                
-                  ? `${benefit.discount} % OFF`
+                  ? `${benefit.cant_cuotas || ''} cuotas al ${benefit.discount}%`
                   : benefit.discountType?.toLowerCase().includes("reintegro")
                     ? `Reintegro ${benefit.discount}%`
-                    : benefit.discountType?.toLowerCase().includes("sin tope")
-                      ? `${benefit.discount}% OFF`
-                  : `${benefit.discount}% OFF`}
+                    : `OFF ${benefit.discount}%`}
               </Badge>
             </div>
             
             <div className="text-xs md:text-sm text-muted-foreground capitalize">
-              {benefit.discountType }
+              {benefit.discountType}
             </div>
             </div>
           </Card>

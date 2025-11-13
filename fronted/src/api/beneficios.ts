@@ -47,16 +47,12 @@ const useBeneficios = () => {
                 }
 
                 const localidadPersonaId = localidadPersona._id || localidadPersona.id || localidadPersona;
-                console.log("Localidad de la persona:", localidadPersonaId);
 
                 // 1. Obtener TODOS los beneficios desde el backend
                 const res = await getBeneficios();
                 
                 // El backend devuelve { message: '...', data: [...] }
                 const todosBeneficios = res.data?.data || res.data || [];
-                
-                console.log("Respuesta completa del backend:", res.data);
-                console.log("Total de beneficios en BD:", Array.isArray(todosBeneficios) ? todosBeneficios.length : 'No es un array');
 
                 // Verificar que todosBeneficios sea un array
                 if (!Array.isArray(todosBeneficios)) {
@@ -81,8 +77,6 @@ const useBeneficios = () => {
 
                     return perteneceALocalidad;
                 });
-
-                console.log("Beneficios filtrados por localidad:", beneficiosFiltrados.length);
 
                 // 3. Guardar los beneficios filtrados
                 setBeneficios(beneficiosFiltrados);

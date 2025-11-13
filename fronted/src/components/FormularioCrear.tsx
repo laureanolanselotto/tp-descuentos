@@ -40,7 +40,7 @@ const formConfig: Record<EntityType, { title: string; campos: Campo[] }> = {
         type: "select", 
         required: true,
         options: [
-          { value: "off", label: "Off (Descuento directo)" },
+          { value: "sin tope", label: "Off (Descuento directo)" },
           { value: "cuota", label: "Cuota (Cuotas sin interés)" },
           { value: "reintegro", label: "Reintegro (Cashback)" }
         ]
@@ -175,12 +175,6 @@ const FormularioCrear = ({ isOpen, onClose, entityType, onSuccess }: FormularioC
       if (entityType === 'beneficios') {
         processedData.availableDays = selectedDays; // Usar los días seleccionados
       }
-
-      // Log para ver el objeto que se enviará a la base de datos
-      console.log('📤 Datos a enviar a la base de datos:', {
-        entityType,
-        data: processedData
-      });
 
       // Importar dinámicamente la función de creación
       let createFunction;

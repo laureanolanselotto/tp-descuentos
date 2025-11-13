@@ -134,8 +134,6 @@ const Index = () => {
       const personaData = (persona ?? null) as PersonaData | null;
       
       // Con el backend actualizado, el contexto ya trae los datos completos
-      console.log("Datos de persona desde contexto:", personaData);
-      
       setPersonaRecord(personaData);
 
   // Buscar wallets en la estructura correcta
@@ -146,8 +144,6 @@ const Index = () => {
       const rawWallets = Array.isArray(walletsArray)
         ? walletsArray
         : [];
-
-      console.log("Raw wallets encontradas:", rawWallets);
 
       type PersonaWalletEntry = NonNullable<PersonaData["wallets"]>[number];
 
@@ -183,12 +179,10 @@ const Index = () => {
 
       // Si tiene wallets, cargarlas y NO mostrar modal
       if (normalizedWallets.length > 0) {
-        console.log(" Usuario con", normalizedWallets.length, "wallets existentes:", normalizedWallets);
         setSelectedWallets(normalizedWallets);
         setShowModal(false);
       } else {
         // Si NO tiene wallets (primera vez), mostrar modal para seleccionar
-        console.log("ℹ Usuario sin wallets, mostrando modal de selección");
         setSelectedWallets([]);
         setShowModal(true);
       }
@@ -229,7 +223,6 @@ const Index = () => {
     if (personaId && normalizedIds.length > 0) {
       try {
         await updatePersonaWallets(personaId, normalizedIds);
-        console.log("Wallets guardadas en el backend:", normalizedIds);
       } catch (error) {
         console.error("Error al guardar wallets:", error);
       }
@@ -237,7 +230,6 @@ const Index = () => {
   };
 
   const handleUpdateSelectedWallets = async (walletIds: string[]) => {
-    console.log("Actualizando wallets seleccionadas:", walletIds);
     setSelectedWallets(walletIds);
     
     // No necesitamos actualizar en el backend aquí porque WalletSelectorCrud ya lo hace

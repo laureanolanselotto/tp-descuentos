@@ -51,7 +51,7 @@ const formConfig: Record<EntityType, { title: string; campos: Campo[] }> = {
         type: "select", 
         required: true,
         options: [
-          { value: "off", label: "Off (Descuento directo)" },
+          { value: "sin tope", label: "Off (Descuento directo)" },
           { value: "cuota", label: "Cuota (Cuotas sin interés)" },
           { value: "reintegro", label: "Reintegro (Cashback)" }
         ]
@@ -279,13 +279,6 @@ const FormularioUpdate = ({ isOpen, onClose, entityType, itemId, onSuccess }: Fo
         processedData.availableDays = selectedDays; // Usar los días seleccionados
       }
 
-      // Log para ver el objeto que se enviará
-      console.log(' Datos a actualizar:', {
-        entityType,
-        itemId,
-        data: processedData
-      });
-
       // Importar dinámicamente la función de actualización
       let updateFunction;
       switch (entityType) {
@@ -320,9 +313,6 @@ const FormularioUpdate = ({ isOpen, onClose, entityType, itemId, onSuccess }: Fo
           break;
         }
       }
-
-      console.log('Datos procesados a enviar:', processedData);
-      console.log('ID del item:', itemId);
       
       await updateFunction(itemId, processedData);
 

@@ -59,7 +59,6 @@ const entityConfig: Record<EntityType, {
       discount: (val) => val ? `${val}%` : "---",
       wallet: (val) => {
         if (!val || typeof val !== 'object') {
-          console.log('Wallet no válida:', val);
           return "---";
         }
         const wallet = val as { name?: string };

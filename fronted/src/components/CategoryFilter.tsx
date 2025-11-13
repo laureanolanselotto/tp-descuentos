@@ -19,8 +19,8 @@ interface CategoryFilterProps {
 const discountTypes = [
   { id: "all", label: "Todos" },
   { id: "cuota", label: "Cuotas" },
-  { id: "Reintegro", label: "Reintegro" },
-  { id: "Sin tope", label: "Sin tope" }
+  { id: "reintegro", label: "Reintegro" },
+  { id: "sin tope", label: "Sin tope" }
 ];
 
 const CategoryFilter = ({ selectedCategory, onCategorySelect, selectedDiscountType = "all", onDiscountTypeSelect }: CategoryFilterProps) => {

@@ -3,7 +3,6 @@ import NavegadorAdmin from "../components/NavegadorAdmin";
 
 const Admint = () => {
     const { persona } = usePersonaAuth();
-    console.log("Persona en Admin:", persona);
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
