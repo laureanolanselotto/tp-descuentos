@@ -45,8 +45,8 @@ export class Beneficio extends BaseEntity {
   @ManyToOne(() => Wallet, { nullable: false })
   wallet!: Rel<Wallet>;
 
-  @ManyToOne(() => Rubro, { nullable: false })
-  rubro!: Rel<Rubro>;
+  @ManyToOne(() => Rubro, { nullable: true })
+  rubro?: Rel<Rubro>;
 
   // Un beneficio puede aplicar en muchas provincias (localidades)
   @ManyToMany(() => Localidad, (localidad) => localidad.beneficios, {

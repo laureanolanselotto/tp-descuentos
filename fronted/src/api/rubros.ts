@@ -9,7 +9,9 @@ import {
   Home, 
   Sparkles, 
   Gamepad2,
-  ShoppingBag
+  ShoppingBag,
+  Accessibility,
+  Shovel ,
 } from "lucide-react";
 import { createElement } from 'react';
 
@@ -29,7 +31,7 @@ export interface Category {
   icon: React.ReactNode;
 }
 
-// Mapeo de nombres de rubros a iconos
+// Mapeo de nombres de rubros a iconos de lucide-react para que se vea facha
 const iconMap: Record<string, any> = {
   'comida': Coffee,
   'food': Coffee,
@@ -45,13 +47,16 @@ const iconMap: Record<string, any> = {
   'deportes': Dumbbell,
   'sport': Dumbbell,
   'sports': Dumbbell,
+  'fitness': Dumbbell,
   'hogar': Home,
   'home': Home,
   'belleza': Sparkles,
   'beauty': Sparkles,
   'entretenimiento': Gamepad2,
   'entertainment': Gamepad2,
-  'default': ShoppingBag
+  'default': ShoppingBag,
+  'pepe': Accessibility,
+  'antiPalapitecus': Shovel ,
 };
 
 // Función para obtener el icono basado en el nombre del rubro
@@ -148,7 +153,7 @@ export const createRubro = async (rubro: Omit<Rubro, '_id' | 'id'>): Promise<Rub
 // Actualizar un rubro existente
 export const updateRubro = async (id: string, rubro: Partial<Rubro>): Promise<Rubro> => {
   try {
-    const response = await instance.put(`/rubros/${id}`, rubro);
+    const response = await instance.patch(`/rubros/${id}`, rubro);
     return response.data?.data || response.data;
   } catch (error) {
     console.error(`Error al actualizar rubro ${id}:`, error);

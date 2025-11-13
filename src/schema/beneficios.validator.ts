@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const createBeneficioSchema = z.object({
-  descripcion: z.string().min(1, 'Descripcion is required'),
-  discount: z.number().positive('Discount must be positive').optional(),
+  descripcion: z.string().min(1, 'Descripcion is required').optional(),
+  discount: z.number().positive('Discount must be positive'),
   cant_cuotas: z.number().positive().optional(),
   discountType: z.string().min(1, 'Discount type is required'),
   availableDays: z.array(z.number().min(0).max(6)).min(1, 'At least one day is required'),

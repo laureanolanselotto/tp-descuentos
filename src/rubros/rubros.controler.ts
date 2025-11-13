@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Rubro } from './rubros.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { ObjectId } from '@mikro-orm/mongodb';
+import { Beneficio } from '../beneficios/beneficios.entity.js';
 
 const em = orm.em;
 
@@ -86,15 +87,35 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = req.params.id;
-    let rubroToRemove;
+    
+    // Buscar el rubro por id o _id
+    let rubro;
     try {
-      rubroToRemove = await em.findOneOrFail(Rubro, { id });
+      rubro = await em.findOneOrFail(Rubro, { id }, { populate: ['beneficios'] });
     } catch (e) {
-      rubroToRemove = await em.findOneOrFail(Rubro, { _id: new ObjectId(id) });
+      rubro = await em.findOneOrFail(Rubro, { _id: new ObjectId(id) }, { populate: ['beneficios'] });
     }
-    await em.removeAndFlush(rubroToRemove);
-    res.status(200).send({ message: 'rubro deleted' });
+
+    // Eliminar todos los beneficios asociados primero
+    const beneficios = await em.find(Beneficio, { rubro: rubro });
+    
+    if (beneficios.length > 0) {
+      console.log(`Eliminando ${beneficios.length} beneficios asociados al rubro ${rubro.nombre}`);
+      await em.removeAndFlush(beneficios);
+    }
+
+    // Ahora eliminar el rubro
+    await em.removeAndFlush(rubro);
+    
+    res.status(200).json({ 
+      message: 'Rubro eliminado correctamente', 
+      data: { 
+        deletedRubro: rubro.nombre,
+        deletedBeneficios: beneficios.length 
+      } 
+    });
   } catch (error: any) {
+    console.error('Error al eliminar rubro:', error);
     res.status(500).json({ message: error.message });
   }
 }

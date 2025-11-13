@@ -43,7 +43,7 @@ function NavegadorAdmin({ activeTab = "beneficios", onTabChange }: NavegadorAdmi
         className="w-full"
         onValueChange={handleTabChange}
       >
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="beneficios">Beneficios</TabsTrigger>
           <TabsTrigger value="wallets">Wallets</TabsTrigger>
           <TabsTrigger value="rubros">Rubros</TabsTrigger>

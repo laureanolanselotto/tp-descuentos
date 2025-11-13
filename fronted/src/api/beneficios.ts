@@ -8,7 +8,7 @@ const getBeneficioById = (id: string) => instance.get(`/beneficios/${id}`);
 
 const createBeneficio = (data: Record<string, unknown>) => instance.post(`/beneficios`, data);
 
-const updateBeneficio = (id: string, data: Record<string, unknown>) => instance.put(`/beneficios/${id}`, data);
+const updateBeneficio = (id: string, data: Record<string, unknown>) => instance.patch(`/beneficios/${id}`, data);
 
 const deleteBeneficio = (id: string) => instance.delete(`/beneficios/${id}`);
 

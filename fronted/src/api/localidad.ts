@@ -26,7 +26,7 @@ export const createLocalidad = (data: Record<string, unknown>) => instance.post(
 export const getLocalidadById = (id: string) => instance.get(`/localidades/${id}`);
 
 // Función para actualizar localidad
-export const updateLocalidad = (id: string, data: Record<string, unknown>) => instance.put(`/localidades/${id}`, data);
+export const updateLocalidad = (id: string, data: Record<string, unknown>) => instance.patch(`/localidades/${id}`, data);
 
 // Función para eliminar localidad
 export const deleteLocalidad = (id: string) => instance.delete(`/localidades/${id}`);
