@@ -10,7 +10,7 @@ type RegisterPersonaData = z.infer<typeof registroSchema>;
 
 interface PersonaContextType {
     persona: RegisterPersonaData | null;
-    signup: (user: RegisterPersonaData) => Promise<void>;
+    signup: (user: RegisterPersonaData) => Promise<unknown>;
     signin: (user: { email: string; password: string }) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
@@ -46,9 +46,9 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         try {
             setErrors([]); // Limpiar errores previos
             const res = await registerPersona(user);
-            user = res.data;
-            setPersona(res.data);
-            setIsAuthenticated(true);
+            // NO establecer isAuthenticated ni persona
+            // El usuario debe hacer login después de registrarse
+            return res.data; // Retornar los datos para que la página pueda manejarlos
         } catch (error) {
             console.error("Error al registrar usuario:", error);
             
@@ -66,6 +66,7 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
             } else {
                 setErrors(["Error desconocido al registrar usuario"]);
             }
+            throw error; // Re-lanzar el error para que la página pueda manejarlo
         }
     };
     const signin = async (user: { email: string; password: string }) => {

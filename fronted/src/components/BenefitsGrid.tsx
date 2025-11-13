@@ -123,7 +123,6 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
             localidades?: Array<{ _id?: string; id?: string; name?: string; nombre?: string }>;
           };
 
-          console.log("[BenefitsGrid] beneficio crudo", beneficioItem);
           
           const walletId = beneficioItem.wallet?._id || beneficioItem.wallet?.id || beneficioItem.walletId || '';
           let infoWallet = undefined;
@@ -154,7 +153,6 @@ const BenefitsGrid = ({ selectedWallets, selectedCategory, selectedDiscountType 
               ? beneficioItem.localidad
               : "";
           
-          console.log('Beneficio:', beneficioItem.descripcion, '| Rubro:', beneficioItem.rubro?.name, '| RubroID:', rubroId);
           
           return {
             id: beneficioItem._id || beneficioItem.id || '',

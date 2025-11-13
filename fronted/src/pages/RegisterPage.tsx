@@ -1,15 +1,20 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { registroSchema } from "../../../src/schema/personas.validator";
 import { usePersonaAuth } from "../context/personaContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerPersona } from "../api/personas";
 import { cargarLocalidades, Localidad } from "../api/localidad";
 
-// Extendemos el schema del backend para agregar confirmPassword
-const registerSchema = registroSchema.extend({
+// Schema de registro creado completamente en el frontend
+const registerSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido"),
+  tel: z.string().min(1, "El teléfono es requerido"),
+  email: z.string().email("Email inválido"),
+  direccion: z.string().min(1, "La dirección es requerida"),
+  localidadId: z.string().optional(),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   confirmPassword: z.string().min(6, "Confirma tu contraseña")
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Las contraseñas no coinciden",
@@ -30,10 +35,10 @@ function RegisterPage() {
   const { signup, isAuthenticated, errors: RegisterErros, clearErrors } = usePersonaAuth();
   const [localidades, setLocalidades] = useState<Localidad[]>([]);
   const [loadingLocalidades, setLoadingLocalidades] = useState(true);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  useEffect(() => {
-    if (isAuthenticated) nav("/login");
-  }, [isAuthenticated, nav]);
+  // Eliminamos el efecto que redirige al login cuando se autentica
+  // Ahora el registro NO autentica automáticamente
 
   // Cargar localidades al montar el componente
   useEffect(() => {
@@ -70,7 +75,17 @@ function RegisterPage() {
       }
     }
 
-    await signup(cleanedValues);
+    try {
+      await signup(cleanedValues);
+      // Si el registro es exitoso, mostrar mensaje y redirigir al login
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        nav("/login");
+      }, 2000); // Esperar 2 segundos antes de redirigir
+    } catch (error) {
+      // El error ya se maneja en el contexto
+      console.error("Error en registro:", error);
+    }
   });
 
   return (
@@ -111,6 +126,15 @@ function RegisterPage() {
               </button>
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Mensaje de éxito */}
+      {showSuccessMessage && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-20 max-w-[500px] w-full px-4" style={{ animation: 'slideDown 0.13s normal-out' }}>
+          <div className="bg-green-500 p-4 text-white rounded-lg shadow-lg text-center">
+            ¡Registro exitoso! Redirigiendo al inicio de sesión...
+          </div>
         </div>
       )}
       
@@ -155,7 +179,7 @@ function RegisterPage() {
               disabled={loadingLocalidades}
               aria-label="Seleccionar localidad"
             >
-              <option value="" disabled className="bg-[#333] text-gray-400">
+              <option key="placeholder" value="" disabled className="bg-[#333] text-gray-400">
                 Selecciona una localidad
               </option>
               {localidades.map((localidad) => (

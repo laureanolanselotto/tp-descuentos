@@ -133,7 +133,7 @@ const Header = ({ selectedWallets, onUpdateSelectedWallets, onBackToWalletSelect
               
               <Button variant="destructive" className="w-full mt-2" onClick={logout}>Cerrar sesión</Button>
 
-              {/* Eliminar persona: abrir AlertDialog solo si la persona existe */}
+              {/* pregunta antes de hacer cagada y si reponde que si se elimina la cuenta*/}
               <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive" className="flex flex-col justify-end" onClick={() => setAlertOpen(true)} disabled={!personaExists}>
