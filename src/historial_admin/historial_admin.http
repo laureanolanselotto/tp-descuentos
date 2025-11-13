@@ -1,0 +1,47 @@
+### Ver historial completo
+GET http://localhost:3000/api/historial-admin
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+### Ver historial filtrado por entidad
+GET http://localhost:3000/api/historial-admin?entidad=beneficios
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+### Ver historial filtrado por acción
+GET http://localhost:3000/api/historial-admin?accion=UPDATE
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+### Ver historial filtrado por persona
+GET http://localhost:3000/api/historial-admin?personaId=673a1896488b52e0bddf9a67
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+### Ver historial con rango de fechas
+GET http://localhost:3000/api/historial-admin?desde=2025-01-01&hasta=2025-12-31
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+### Ver historial con límite
+GET http://localhost:3000/api/historial-admin?limit=20
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+### Crear registro manual (normalmente lo hace el middleware automáticamente)
+POST http://localhost:3000/api/historial-admin
+Content-Type: application/json
+Cookie: token=YOUR_ADMIN_TOKEN_HERE
+
+{
+  "personaId": "673a1896488b52e0bddf9a67",
+  "personaNombre": "Admin User",
+  "entidad": "beneficios",
+  "entidadId": "673a1896488b52e0bddf9a68",
+  "accion": "UPDATE",
+  "cambios": {
+    "antes": {
+      "titulo": "Descuento antiguo",
+      "discount": 10
+    },
+    "despues": {
+      "titulo": "Descuento nuevo",
+      "discount": 20
+    }
+  },
+  "descripcion": "Se actualizó el descuento"
+}

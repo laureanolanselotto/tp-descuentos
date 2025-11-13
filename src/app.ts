@@ -16,6 +16,7 @@ import { ImagenRouter } from "./imagenes/imagen.routes.js";
 import { ubicacionUsuarioRouter } from "./ubicacion_usuarios/ubicacion_usuario.routes.js";
 import { sucursalRouter } from "./sucursales/sucursal.routes.js";
 import { RolPersonasRouter } from "./rol_personas/rol_personas.routes.js";
+import historialAdminRouter from "./historial_admin/historial_admin.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -72,6 +73,7 @@ app.use('/api/imagenes', ImagenRouter);
 app.use('/api/ubicaciones-usuario', ubicacionUsuarioRouter);
 app.use('/api/sucursales', sucursalRouter);
 app.use('/api/roles', RolPersonasRouter);
+app.use('/api/historial-admin', historialAdminRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' })
