@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useContext ,useEffect} from "react";
-import { loginRequest, registerPersona,verifyTokenRequest } from "../api/personas";
+import { loginRequest, registerPersona,verifyTokenRequest, checkAdminStatusRequest } from "../api/personas";
 import { string, z } from "zod";
 import { registroSchema } from "../../../src/schema/personas.validator";
 import { AxiosError } from "axios";
@@ -146,6 +146,49 @@ const PersonaProvider = ({ children }: { children: ReactNode }) => {
         }}
         checkLogin();
     },[]);
+
+    // Nuevo useEffect: Verificar periódicamente el estado de admin
+    useEffect(() => {
+        // Solo verificar si está autenticado
+        if (!isAuthenticated) return;
+
+        const checkAdminPeriodically = async () => {
+            try {
+                const res = await checkAdminStatusRequest();
+                const newIsAdmin = res.data.isAdmin || false;
+                
+                // Si el estado cambió, actualizar
+                if (newIsAdmin !== isAdmin) {
+                    setIsAdmin(newIsAdmin);
+                    
+                    // Si fue revocado, mostrar mensaje y hacer logout
+                    if (!newIsAdmin && res.data.revoked) {
+                        alert('Sus permisos de administrador han sido revocados. Por favor, vuelva a iniciar sesión.');
+                        logout();
+                    }
+                    
+                    // Si fueron otorgados, mostrar mensaje de bienvenida
+                    if (newIsAdmin && res.data.granted) {
+                        console.log(' Permisos de administrador otorgados');
+                        alert('¡Felicitaciones! Se le han otorgado permisos de administrador. Recargue la página para acceder al panel admin.');
+                        // Opcional: recargar la página automáticamente
+                        // window.location.reload();
+                    }
+                }
+            } catch (error) {
+                console.error('Error al verificar estado de admin:', error);
+            }
+        };
+
+        // Verificar inmediatamente al montar
+        checkAdminPeriodically();
+
+        // Verificar cada 30 segundos
+        const interval = setInterval(checkAdminPeriodically, 30000);
+
+        // Limpiar interval al desmontar
+        return () => clearInterval(interval);
+    }, [isAuthenticated, isAdmin]); // Re-ejecutar si cambia el estado de autenticación o admin
 
     return (
         <PersonaContext.Provider value={{

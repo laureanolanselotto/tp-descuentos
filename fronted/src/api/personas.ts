@@ -57,6 +57,9 @@ const verifyTokenRequest = () => instance.get(`/auth/verify-token`);
 
 const logoutRequest = () => instance.post(`/auth/logout`);
 
+// Nueva función: Verificar estado de admin en tiempo real
+const checkAdminStatusRequest = () => instance.get(`/auth/check-admin-status`);
+
 // Actualizar las wallets asociadas a una persona
 const updatePersonaWallets = (personaId: string, walletIds: string[]) => {
   return instance.patch(`/personas/${personaId}`, { wallets: walletIds });
@@ -85,5 +88,5 @@ const eliminarPersona = (id: string) => {
 
 const createPersona = (data: Record<string, unknown>) => instance.post(`/personas`, data);
 
-export { registerPersona, eliminarPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets, createPersona };
+export { registerPersona, eliminarPersona, loginRequest, verifyTokenRequest, modificarPersona, getPersonaById, getPersonaByEmail, logoutRequest, updatePersonaWallets, getLocalidades, getPersonaWithWallets, createPersona, checkAdminStatusRequest };
 

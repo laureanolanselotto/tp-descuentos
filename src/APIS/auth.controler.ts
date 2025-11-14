@@ -176,5 +176,70 @@ async function verifyAdmin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export { login, logout, profile, verifyToken, verifyAdmin };
+// Nueva función: Verificar estado de admin en tiempo real
+async function checkAdminStatus(req: Request, res: Response) {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: 'No autorizado', isAdmin: false });
+
+  try {
+    const decoded = jwt.verify(token, TOKEN_SECRET) as any;
+    
+    // Buscar la persona en la base de datos para obtener el estado actual
+    const userFound = await em.findOne(persona, { _id: new ObjectId(decoded.id) });
+    
+    if (!userFound) {
+      return res.status(404).json({ message: 'Usuario no encontrado', isAdmin: false });
+    }
+    
+    // Verificar si el email existe en la tabla de roles
+    const rolExiste = await em.findOne(roles, { email_admins: userFound.email });
+    
+    if (rolExiste) {
+      // El email SÍ está en roles → ACTIVAR permisos de admin
+      if (!userFound.rol_persona) {
+        // Si no tenía permisos, otorgarlos
+        userFound.rol_persona = true;
+        await em.persistAndFlush(userFound);
+        console.log('Permisos de administrador OTORGADOS para:', userFound.email);
+        
+        return res.status(200).json({ 
+          message: 'Permisos de administrador otorgados',
+          isAdmin: true,
+          granted: true // Indica que se acaban de otorgar
+        });
+      }
+      
+      // Ya tenía permisos, todo está bien
+      return res.status(200).json({ 
+        message: 'Usuario es administrador',
+        isAdmin: true 
+      });
+    } else {
+      // El email NO está en roles → REVOCAR permisos de admin
+      if (userFound.rol_persona) {
+        // Si tenía permisos, revocarlos
+        userFound.rol_persona = false;
+        await em.persistAndFlush(userFound);
+        console.log('Permisos de administrador REVOCADOS para:', userFound.email);
+        
+        return res.status(200).json({ 
+          message: 'Permisos de administrador revocados',
+          isAdmin: false,
+          revoked: true // Indica que se acaban de revocar
+        });
+      }
+      
+      // No tenía permisos, todo está bien
+      return res.status(200).json({ 
+        message: 'Usuario no es administrador',
+        isAdmin: false 
+      });
+    }
+    
+  } catch (error) {
+    return res.status(401).json({ message: 'Token inválido', isAdmin: false });
+  }
+}
+
+export { login, logout, profile, verifyToken, verifyAdmin, checkAdminStatus };
 

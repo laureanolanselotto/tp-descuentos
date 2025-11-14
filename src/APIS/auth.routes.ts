@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, logout, profile, verifyToken, verifyAdmin } from './auth.controler.js';
+import { login, logout, profile, verifyToken, verifyAdmin, checkAdminStatus } from './auth.controler.js';
 import { authRequiredToken } from '../middlewares/validenteToken.js';
 import { validatorSchema } from '../middlewares/validator.middleware.js';
 import { loginSchema } from '../schema/personas.validator.js';
@@ -15,6 +15,10 @@ AuthRouter.get('/profile', authRequiredToken, profile);
 
 // @ts-ignore - solución temporal para el problema de tipos de Express
 AuthRouter.get('/verify-token', verifyToken);
+
+// Nueva ruta: Verificar estado de admin en tiempo real
+// @ts-ignore - solución temporal para el problema de tipos de Express
+AuthRouter.get('/check-admin-status', checkAdminStatus);
 
 // Ruta de ejemplo protegida solo para administradores
 // @ts-ignore - solución temporal para el problema de tipos de Express

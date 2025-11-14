@@ -21,18 +21,31 @@ export async function verificarAdmin(req: Request, res: Response, next: NextFunc
       });
     }
 
+    
     // Validar que el email exista en la tabla de roles
     const rolExiste = await em.findOne(roles, { email_admins: personaData.email });
+    
 
     // Si no está en roles, quitarle el permiso de admin
     if (!rolExiste) {
-      await em.nativeUpdate(persona, { email: personaData.email }, { rol_persona: false });
-      await em.flush();
+      
+      // Buscar la persona por ObjectId para asegurar la actualización
+      const personaToUpdate = await em.findOne(persona, { _id: personaData._id });
+      
+      if (personaToUpdate) {
+        personaToUpdate.rol_persona = false;
+        await em.persistAndFlush(personaToUpdate);
+      } else {
+        console.error(' ERROR: No se encontró la persona en la base de datos');
+      }
       
       return res.status(403).json({ 
-        message: 'Permisos de administrador revocados. Su cuenta ya no tiene acceso administrativo.' 
+        message: 'Permisos de administrador revocados. Su cuenta ya no tiene acceso administrativo.',
+        action: 'Por favor, cierre sesión y vuelva a iniciar sesión.'
       });
     }
+    
+    console.log('✓ Admin validado correctamente');
 
     // El usuario es admin y está en roles, continuar
     next();

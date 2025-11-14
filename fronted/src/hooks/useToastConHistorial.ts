@@ -47,7 +47,7 @@ export const useToastConHistorial = () => {
               accion: options.historial.accion,
             };
 
-            console.log("📝 Intentando registrar en historial:", {
+            console.log(" Intentando registrar en historial:", {
               entidad: historialData.entidad,
               accion: historialData.accion,
               admin: historialData.personaNombre

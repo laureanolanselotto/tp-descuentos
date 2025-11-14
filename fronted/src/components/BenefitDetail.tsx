@@ -43,9 +43,6 @@ const BenefitDetail: React.FC<BenefitDetailProps> = ({ benefit, onBack }) => {
     ? Math.ceil(benefit.tope_reintegro / (benefit.discount / 100))
     : null;
   
-  // Debug: ver qué localidad llega
-  console.log('[BenefitDetail] Localidad recibida:', benefit.localidad);
-  console.log('[BenefitDetail] Benefit completo:', benefit);
   
   return (
     <Dialog.Root open onOpenChange={open => { if (!open) onBack(); }}>

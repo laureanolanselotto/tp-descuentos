@@ -26,12 +26,14 @@ async function authRequiredToken(req: Request, res: Response, next: NextFunction
         const decoded = jwt.verify(token, TOKEN_SECRET);
         req.decoded = decoded;
         
-        // Obtener la persona completa de la base de datos
+        // Obtener la persona completa de la base de datos (SIEMPRE FRESCO, SIN CACHE)
         if (decoded && (decoded as any).id) {
           const em = orm.em.fork();
-          const personaData = await em.findOne(persona, { _id: (decoded as any).id });
+          // refresh: true fuerza a obtener los datos más recientes de la DB
+          const personaData = await em.findOne(persona, { _id: (decoded as any).id }, { refresh: true });
           if (personaData) {
             req.persona = personaData;
+            console.log('👤 Usuario autenticado:', personaData.email, '| rol_persona:', personaData.rol_persona);
           }
         }
         

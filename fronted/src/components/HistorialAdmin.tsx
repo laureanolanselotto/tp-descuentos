@@ -122,11 +122,11 @@ export default function HistorialAdmin() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow key="header">
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Admin</TableHead>
-                  <TableHead>Entidad</TableHead>
-                  <TableHead>Tipo de Modificación</TableHead>
+                <TableRow>
+                  <TableHead key="fecha">Fecha</TableHead>
+                  <TableHead key="admin">Admin</TableHead>
+                  <TableHead key="entidad">Entidad</TableHead>
+                  <TableHead key="tipo">Tipo de Modificación</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
