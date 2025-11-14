@@ -18,8 +18,8 @@ const DISCOUNT_TYPES: { id: DiscountType; label: string }[] = [
 ];
 
 // Días de la semana (abreviados en español)
-export type Weekday = "Lun" | "Mar" | "Mié" | "Jue" | "Vie" | "Sáb" | "Dom";
-const WEEK_DAYS: Weekday[] = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+export type Weekday = "Lunes" | "Martes" | "Miércoles" | "Jueves" | "Viernes" | "Sábado" | "Domingo";
+const WEEK_DAYS: Weekday[] = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
 export interface NotificationsPrefs {
   enabled: boolean;

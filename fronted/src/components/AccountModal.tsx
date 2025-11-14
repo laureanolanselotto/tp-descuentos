@@ -92,7 +92,7 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
         .map((wallet) => {
           if (typeof wallet === "string") return wallet;
           if (wallet && typeof wallet === "object") {
-            return wallet._id || wallet.id || wallet.walletId;
+            return wallet.id || wallet.walletId;
           }
           return null;
         })

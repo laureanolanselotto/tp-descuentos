@@ -90,12 +90,7 @@ const WalletSelectorCrud = ({ isOpen, onSelectWallets, onClose, selectedWallets:
 
     setUpdating(true);
     try {
-      console.log("WalletSelectorCrud -> updatePersonaWallets payload", {
-        personaId,
-        walletIds: selectedWallets,
-      });
       const response = await updatePersonaWallets(personaId, selectedWallets);
-      console.log("WalletSelectorCrud -> updatePersonaWallets response", response?.data ?? response);
       onSelectWallets(selectedWallets);
       if (onClose) {
         onClose();
