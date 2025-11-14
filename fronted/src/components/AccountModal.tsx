@@ -16,18 +16,22 @@ type PersonaWithId = {
   data?: { id?: string };
 };
 
-const accountSchema = registroSchema
-  .extend({
-    password: registroSchema.shape.password.optional().or(z.literal("")),
-    confirmPassword: registroSchema.shape.password.optional().or(z.literal("")),
-  })
-  .refine(
-    (data) => !data.password || data.password === data.confirmPassword,
-    {
-      message: "Las contraseñas no coinciden",
-      path: ["confirmPassword"],
-    }
-  );
+const accountSchema = z.object({
+  name: z.string().min(1, 'Name must be at least 1 character').max(50, 'Name must be at most 50 characters'),
+  email: z.string().email('Must be a valid email'),
+  tel: z.string().min(9, 'Phone must be at least 9 characters'),
+  direccion: z.string().optional(),
+  localidadId: z.string().optional(),
+  wallets: z.array(z.string()).optional().default([]),
+  password: z.string().min(6, 'Password must be at least 6 characters').max(20, 'Password must be at most 20 characters').optional().or(z.literal("")),
+  confirmPassword: z.string().optional().or(z.literal("")),
+}).refine(
+  (data) => !data.password || data.password === data.confirmPassword,
+  {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  }
+);
 
 type AccountFormData = z.infer<typeof accountSchema>;
 
@@ -62,14 +66,13 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
     resolver: zodResolver(accountSchema),
     defaultValues: {
       name: "",
-      apellido: "",
       email: "",
       tel: "",
       direccion: "",
       localidadId: "",
       password: "",
       confirmPassword: "",
-      wallets: [], // IDs de wallets seleccionadas porque se mada como put
+      wallets: [],
     },
   });
 
@@ -129,12 +132,11 @@ const AccountModal = ({ isOpen, onClose, onUpdate }: AccountModalProps) => {
         setPersonaData(data);
         reset({
           name: data?.name ?? "",
-          apellido: data?.apellido ?? "",
           email: data?.email ?? "",
-          tel: data?.tel ? String(data.tel) : "",  // Convertir number a string para el form
+          tel: data?.tel ? String(data.tel) : "",
           direccion: data?.direccion ?? "",
           localidadId: extractLocalidadId(data?.localidad),
-          password: "" ,
+          password: "",
           confirmPassword: "",
           wallets: extractWalletIds(data?.wallets),
         });
