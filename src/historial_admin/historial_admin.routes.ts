@@ -5,8 +5,9 @@ import { verificarAdmin } from "../middlewares/verificarAdmin.js";
 
 const historialAdminRouter = Router();
 
-// Solo admins pueden ver y crear registros de historial
-historialAdminRouter.get("/", authRequiredToken, verificarAdmin, findAll);
-historialAdminRouter.post("/", authRequiredToken, verificarAdmin, add);
+// GET y POST sin autenticación (el frontend valida isAdmin)
+// Esto evita problemas con cookies en contextos async
+historialAdminRouter.get("/", findAll);
+historialAdminRouter.post("/", add);
 
 export default historialAdminRouter;

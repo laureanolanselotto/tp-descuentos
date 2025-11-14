@@ -8,12 +8,11 @@ const em = orm.em;
 // GET - Obtener historial con filtros opcionales
 async function findAll(req: Request, res: Response) {
   try {
-    const { personaId, entidad, accion, desde, hasta, limit = 100 } = req.query;
+    const { entidad, accion, desde, hasta, limit = 100 } = req.query;
 
     const filter: any = {};
 
     // Filtros opcionales
-    if (personaId) filter.personaId = personaId;
     if (entidad) filter.entidad = entidad;
     if (accion) filter.accion = accion;
     
@@ -42,26 +41,22 @@ async function findAll(req: Request, res: Response) {
   }
 }
 
-// POST - Crear registro de historial (usado por el middleware)
+// POST - Crear registro de historial
 async function add(req: Request, res: Response) {
   try {
-    const { personaId, personaNombre, entidad, entidadId, accion, cambios, descripcion } = req.body;
+    const { personaNombre, entidad, accion } = req.body;
 
     // Validaciones básicas
-    if (!personaId || !personaNombre || !entidad || !entidadId || !accion) {
+    if (!personaNombre || !entidad || !accion) {
       return res.status(400).json({
-        message: "Faltan campos requeridos: personaId, personaNombre, entidad, entidadId, accion"
+        message: "Faltan campos requeridos: personaNombre, entidad, accion"
       });
     }
 
     const historial = em.create(HistorialAdmin, {
-      personaId,
       personaNombre,
       entidad,
-      entidadId,
       accion,
-      cambios,
-      descripcion,
       fechaModificacion: new Date()
     });
 

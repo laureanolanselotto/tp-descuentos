@@ -20,7 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
+import { useToastConHistorial } from "@/hooks/useToastConHistorial";
 import instance from "@/api/axios";
 import FormularioUpdate from "./FormularioUpdate";
 
@@ -143,8 +143,9 @@ const TablaInfo = ({ entityType, title }: TablaInfoProps) => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const [itemToDeleteData, setItemToDeleteData] = useState<Record<string, unknown>>({});
   const [deleting, setDeleting] = useState(false);
-  const { toast } = useToast();
+  const { toast } = useToastConHistorial();
 
   const config = entityConfig[entityType];
 
@@ -204,6 +205,11 @@ const TablaInfo = ({ entityType, title }: TablaInfoProps) => {
   };
 
   const handleDeleteClick = (itemId: string) => {
+    // Buscar el item completo para guardar su estado antes de eliminar
+    const item = data.find(d => (d._id || d.id) === itemId);
+    if (item) {
+      setItemToDeleteData(JSON.parse(JSON.stringify(item)));
+    }
     setItemToDelete(itemId);
     setIsDeleteDialogOpen(true);
   };
@@ -253,10 +259,15 @@ const TablaInfo = ({ entityType, title }: TablaInfoProps) => {
       toast({
         title: "¡Éxito!",
         description: `Registro eliminado correctamente.`,
+        historial: {
+          entidad: entityType,
+          accion: "DELETE"
+        }
       });
 
       setIsDeleteDialogOpen(false);
       setItemToDelete(null);
+      setItemToDeleteData({});
       fetchData(); // Recargar datos
     } catch (error: unknown) {
       console.error(`Error al eliminar ${entityType}:`, error);

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToastConHistorial } from "@/hooks/useToastConHistorial";
 import DaySelector from "./DaySelector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -101,7 +101,7 @@ const FormularioCrear = ({ isOpen, onClose, entityType, onSuccess }: FormularioC
   const [wallets, setWallets] = useState<Array<{ value: string; label: string }>>([]);
   const [rubros, setRubros] = useState<Array<{ value: string; label: string }>>([]);
   const [localidades, setLocalidades] = useState<Array<{ value: string; label: string }>>([]);
-  const { toast } = useToast();
+  const { toast } = useToastConHistorial();
   
   const config = formConfig[entityType];
 
@@ -211,11 +211,15 @@ const FormularioCrear = ({ isOpen, onClose, entityType, onSuccess }: FormularioC
         }
       }
 
-      await createFunction(processedData);
-
+      const response = await createFunction(processedData);
+      
       toast({
         title: "¡Éxito!",
         description: `${config.title.replace('Crear ', '')} creado correctamente.`,
+        historial: {
+          entidad: entityType,
+          accion: "CREATE"
+        }
       });
 
       setFormData({});

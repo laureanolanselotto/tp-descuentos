@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToastConHistorial } from "@/hooks/useToastConHistorial";
 import DaySelector from "./DaySelector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -114,7 +114,8 @@ const FormularioUpdate = ({ isOpen, onClose, entityType, itemId, onSuccess }: Fo
   const [wallets, setWallets] = useState<Array<{ value: string; label: string }>>([]);
   const [rubros, setRubros] = useState<Array<{ value: string; label: string }>>([]);
   const [localidades, setLocalidades] = useState<Array<{ value: string; label: string }>>([]);
-  const { toast } = useToast();
+  const [estadoAnterior, setEstadoAnterior] = useState<Record<string, unknown>>({});
+  const { toast } = useToastConHistorial();
   
   const config = formConfig[entityType];
 
@@ -203,6 +204,9 @@ const FormularioUpdate = ({ isOpen, onClose, entityType, itemId, onSuccess }: Fo
 
       const response = await getFunction(itemId);
       const data = response.data?.data || response.data;
+      
+      // Guardar estado anterior para el historial
+      setEstadoAnterior(JSON.parse(JSON.stringify(data)));
       
       // Convertir los datos al formato del formulario
       const formattedData: Record<string, string | string[]> = {};
@@ -319,6 +323,10 @@ const FormularioUpdate = ({ isOpen, onClose, entityType, itemId, onSuccess }: Fo
       toast({
         title: "¡Éxito!",
         description: `${config.title.replace('Actualizar ', '')} actualizado correctamente.`,
+        historial: {
+          entidad: entityType,
+          accion: "UPDATE"
+        }
       });
 
       setFormData({});

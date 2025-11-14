@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import TablaInfo from "./TablaInfo";
 import FormularioCrear, { EntityType } from "./FormularioCrear";
+import HistorialAdmin from "./HistorialAdmin";
 
 interface NavegadorAdminProps {
   activeTab?: string;
@@ -11,12 +12,12 @@ interface NavegadorAdminProps {
 }
 
 function NavegadorAdmin({ activeTab = "beneficios", onTabChange }: NavegadorAdminProps) {
-  const [currentTab, setCurrentTab] = useState<EntityType>(activeTab as EntityType);
+  const [currentTab, setCurrentTab] = useState<string>(activeTab);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleTabChange = (value: string) => {
-    setCurrentTab(value as EntityType);
+    setCurrentTab(value);
     onTabChange?.(value);
   };
 
@@ -50,6 +51,7 @@ function NavegadorAdmin({ activeTab = "beneficios", onTabChange }: NavegadorAdmi
           <TabsTrigger value="localidades">Localidades</TabsTrigger>
           <TabsTrigger value="ciudades">Ciudades</TabsTrigger>
           <TabsTrigger value="roles">Roles</TabsTrigger>
+          <TabsTrigger value="historial">Historial</TabsTrigger>
         </TabsList>
         
         <TabsContent value="beneficios" className="space-y-4 mt-6">
@@ -117,14 +119,20 @@ function NavegadorAdmin({ activeTab = "beneficios", onTabChange }: NavegadorAdmi
           </Button>
           <TablaInfo key={`roles-${refreshKey}`} entityType="roles" title="Roles de Administrador" />
         </TabsContent>
+
+        <TabsContent value="historial" className="space-y-4 mt-6">
+          <HistorialAdmin />
+        </TabsContent>
       </Tabs>
 
-      <FormularioCrear
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        entityType={currentTab}
-        onSuccess={handleSuccess}
-      />
+      {currentTab !== "historial" && (
+        <FormularioCrear
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          entityType={currentTab as EntityType}
+          onSuccess={handleSuccess}
+        />
+      )}
     </>
   );
 }
